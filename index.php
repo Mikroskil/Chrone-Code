@@ -1,16 +1,8 @@
 <?php
-# This function reads your DATABASE_URL configuration automatically set by Heroku
-# the return value is a string that will work with pg_connect
-function pg_connection_string() {
-  // we will fill this out next
-}
+$dbconn = pg_connect("host=ec2-23-21-94-137.compute-1.amazonaws.com port=5432 dbname=doeul6s0b6ek user=jdjkyvhhicfzea password=Hf6wiJcig0DBCIXF7yG_HPQ2zf sslmode=require options='--client_encoding=UTF8'") or die('Could not connect: ' . pg_last_error());
 
-# Establish db connection
-$db = pg_connect(pg_connection_string());
-if (!$db) {
-   echo "Database connection error."
-   exit;
-}
-
-$result = pg_query($db, "SELECT statement goes here");
+# $result = pg_query($dbconn, "SELECT statement goes here");
 ?>
+
+<h1>Qattend</h1>
+<p>Connection established.</p>
