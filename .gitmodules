@@ -1,3 +1,3 @@
 [submodule "web"]
     path = web
-    url = git@heroku.com:qattend.git
+    url = https://github.com/rwinzcyruz/qattend.git
