@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <!-- Base application theme. -->
@@ -5,10 +6,10 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="LoginFormContainer">
+    <style name="FormContainer">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:padding">16dp</item>
+        <item name="android:padding">@dimen/activity_horizontal_margin</item>
     </style>
 
 </resources>

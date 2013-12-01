@@ -1,0 +1,77 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/general_settings">
+
+        <ListPreference
+            android:key="language_preference"
+            android:title="@string/language_title_preference"
+            android:summary="@string/language_summary_preference"
+            android:entries="@array/language_entries_preference"
+            android:entryValues="@array/language_entryvalues_preference"
+            android:defaultValue="EN"
+            android:dialogTitle="@string/language_dialog_title_preference" />
+
+        <ListPreference
+            android:key="theme_preference"
+            android:title="@string/theme_title_preference"
+            android:summary="@string/theme_summary_preference"
+            android:entries="@array/theme_entries_preference"
+            android:entryValues="@array/theme_entryvalues_preference"
+            android:defaultValue="LIGHT"
+            android:dialogTitle="@string/theme_dialog_title_preference" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/account_settings">
+
+        <EditTextPreference
+            android:key="username_preference"
+            android:title="@string/username_title_preference"
+            android:summary="@string/username_summary_preference"
+            android:singleLine="true"
+            android:selectAllOnFocus="true"
+            android:dialogTitle="@string/username_dialog_preference" />
+
+        <EditTextPreference
+            android:key="email_preference"
+            android:title="@string/email_title_preference"
+            android:summary="@string/email_summary_preference"
+            android:singleLine="true"
+            android:inputType="textEmailAddress"
+            android:selectAllOnFocus="true"
+            android:dialogTitle="@string/email_dialog_preference" />
+
+        <EditTextPreference
+            android:key="orgname_preference"
+            android:title="@string/orgname_title_preference"
+            android:summary="@string/orgname_summary_preference"
+            android:singleLine="true"
+            android:inputType="textCapWords"
+            android:selectAllOnFocus="true"
+            android:dialogTitle="@string/orgname_dialog_preference" />
+
+        <Preference
+            android:key="changepass_preference"
+            android:title="@string/changepass_title_preference" />
+
+        <Preference
+            android:key="logout_preference"
+            android:title="@string/logout_title_preference" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/about">
+
+        <PreferenceScreen
+            android:title="@string/website_title_preference"
+            android:summary="@string/website_summary_preference">
+            <intent android:action="android.intent.action.VIEW"
+                    android:data="https://qattend.herokuapp.com" />
+        </PreferenceScreen>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

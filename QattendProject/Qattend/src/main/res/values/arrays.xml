@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="language_entries_preference">
+        <item>@string/language_english_preference</item>
+        <item>@string/language_indonesian_preference</item>
+    </string-array>
+
+    <string-array name="language_entryvalues_preference">
+        <item>EN</item>
+        <item>ID</item>
+    </string-array>
+
+    <string-array name="theme_entries_preference">
+        <item>@string/theme_light_preference</item>
+        <item>@string/theme_dark_preference</item>
+    </string-array>
+
+    <string-array name="theme_entryvalues_preference">
+        <item>LIGHT</item>
+        <item>DARK</item>
+    </string-array>
+
+</resources>

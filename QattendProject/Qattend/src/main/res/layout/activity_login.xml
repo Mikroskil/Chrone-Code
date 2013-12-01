@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout style="@style/LoginFormContainer"
+        <LinearLayout style="@style/FormContainer"
             android:orientation="vertical">
 
             <EditText
