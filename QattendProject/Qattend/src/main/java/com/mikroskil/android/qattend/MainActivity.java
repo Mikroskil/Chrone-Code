@@ -34,6 +34,8 @@ public class MainActivity extends Activity
     private static final String TAG_NAME = "name";
     private static ArrayList<HashMap<String, String>> memberList = new ArrayList<HashMap<String, String>>();
 
+    private String[] sectionMenus;
+
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -48,6 +50,8 @@ public class MainActivity extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        sectionMenus = getResources().getStringArray(R.array.section_menus);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -69,17 +73,7 @@ public class MainActivity extends Activity
     }
 
     public void onSectionAttached(int number) {
-        switch (number) {
-            case 1:
-                mTitle = getString(R.string.title_section1);
-                break;
-            case 2:
-                mTitle = getString(R.string.title_section2);
-                break;
-            case 3:
-                mTitle = getString(R.string.title_section3);
-                break;
-        }
+        mTitle = sectionMenus[number - 1];
     }
 
     public void restoreActionBar() {

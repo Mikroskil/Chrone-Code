@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string-array name="section_menus">
+        <item>Ongoing Events</item>
+        <item>Upcoming Events</item>
+        <item>Past Events</item>
+        <item>Active Members</item>
+        <item>Inactive Members</item>
+        <item>User Request</item>
+        <item>Profile</item>
+    </string-array>
+
     <string-array name="language_entries_preference">
         <item>@string/language_english_preference</item>
         <item>@string/language_indonesian_preference</item>
