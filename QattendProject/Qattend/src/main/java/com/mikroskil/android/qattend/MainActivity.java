@@ -1,32 +1,38 @@
 package com.mikroskil.android.qattend;
 
 import android.app.Activity;
-;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Build;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+    // private static String url = "http://qattend.herokuapp.com/web/sites/process.php";
+    private static String url = "http://10.0.2.2/web/sites/process.php";
+    private static final String TAG_MEMBERS = "members";
+    private static final String TAG_NAME = "name";
+    private static ArrayList<HashMap<String, String>> memberList = new ArrayList<HashMap<String, String>>();
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -144,20 +150,7 @@ public class MainActivity extends Activity
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             ListView listView = (ListView) rootView.findViewById(R.id.listView);
-
-            String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
-                    "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-                    "Linux", "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux",
-                    "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux", "OS/2",
-                    "Android", "iPhone", "WindowsMobile" };
-            ArrayList<String> list = new ArrayList<String>();
-            for (int i = 0; i < values.length; i++) {
-                list.add(values[i]);
-            }
-            StableArrayAdapter adapter = new StableArrayAdapter(getActivity(),
-                    android.R.layout.simple_list_item_1, list);
-            listView.setAdapter(adapter);
-            // listView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+            new FetchJSON(listView).execute();
             return rootView;
         }
 
@@ -168,29 +161,63 @@ public class MainActivity extends Activity
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
 
-        private class StableArrayAdapter extends ArrayAdapter<String> {
+        private class FetchJSON extends AsyncTask<String, String, JSONObject> {
 
-            HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
+            private ProgressDialog pDialog;
+            private ListView listView;
 
-            public StableArrayAdapter(Context context, int textViewResourceId,
-                                      List<String> objects) {
-                super(context, textViewResourceId, objects);
-                for (int i = 0; i < objects.size(); ++i) {
-                    mIdMap.put(objects.get(i), i);
+            public FetchJSON(ListView listView) {
+                this.listView = listView;
+            }
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+                pDialog = new ProgressDialog(getActivity());
+                pDialog.setMessage("Getting Data ...");
+                pDialog.setIndeterminate(false);
+                pDialog.setCancelable(false);
+                pDialog.show();
+            }
+
+            @Override
+            protected JSONObject doInBackground(String... strings) {
+                JSONParser jParser = new JSONParser();
+
+                // Getting JSON from URL
+                JSONObject json = jParser.getJSONFromUrl(url);
+                return json;
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject json) {
+                pDialog.dismiss();
+                JSONArray members = null;
+
+                try {
+                    members = json.getJSONArray(TAG_MEMBERS);
+
+                    for (int i = 0; i < members.length(); i++) {
+                        JSONObject m = members.getJSONObject(i);
+                        String name = m.getString(TAG_NAME);
+
+                        HashMap<String, String> map = new HashMap<String, String>();
+
+                        map.put(TAG_NAME, name);
+
+                        memberList.add(map);
+                    }
                 }
-            }
+                catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
-            @Override
-            public long getItemId(int position) {
-                String item = getItem(position);
-                return mIdMap.get(item);
-            }
-
-            @Override
-            public boolean hasStableIds() {
-                return true;
+                SimpleAdapter adapter = new SimpleAdapter(getActivity(), memberList,
+                        android.R.layout.simple_list_item_1, new String[] { TAG_NAME }, new int[] { android.R.id.text1 });
+                listView.setAdapter(adapter);
+                // listView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
             }
         }
     }
-
 }
