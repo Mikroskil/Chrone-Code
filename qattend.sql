@@ -13,7 +13,8 @@ CREATE TABLE organization
   email character varying(100),
   photo character varying(255),
   about character varying(255),
-  created_at timestamp with time zone NOT NULL,
+  created_at timestamp NOT NULL,
+  last_login timestamp NOT NULL,
   member_count integer NOT NULL DEFAULT 0,
   CONSTRAINT organization_pkey PRIMARY KEY (id ),
   CONSTRAINT organization_username_key UNIQUE (username )
@@ -29,7 +30,7 @@ CREATE TABLE "user"
   photo character varying(255),
   about character varying(255),
   phone character varying(20),
-  created_at timestamp with time zone NOT NULL,
+  created_at timestamp NOT NULL,
   CONSTRAINT user_pkey PRIMARY KEY (id ),
   CONSTRAINT user_username_key UNIQUE (username )
 );
@@ -39,7 +40,7 @@ CREATE TABLE membership
   org_id serial NOT NULL,
   user_id serial NOT NULL,
   approved boolean NOT NULL DEFAULT false,
-  join_at timestamp with time zone NOT NULL,
+  join_at timestamp NOT NULL,
   qrcode character varying(255),
   CONSTRAINT membership_pkey PRIMARY KEY (org_id , user_id ),
   CONSTRAINT membership_org_id_fkey FOREIGN KEY (org_id)
@@ -56,9 +57,9 @@ CREATE TABLE event
   title character varying(255) NOT NULL,
   photo character varying(255),
   org_id serial NOT NULL,
-  created_at timestamp with time zone NOT NULL,
-  start_at timestamp with time zone,
-  end_at timestamp with time zone,
+  created_at timestamp NOT NULL,
+  start_at timestamp,
+  end_at timestamp,
   location character varying(255),
   "desc" character varying(255),
   public boolean NOT NULL DEFAULT false,
@@ -87,7 +88,7 @@ CREATE TABLE attendance
 (
   id serial NOT NULL,
   ticket_id serial NOT NULL,
-  verify_at timestamp with time zone NOT NULL,
+  verify_at timestamp NOT NULL,
   CONSTRAINT attendance_pkey PRIMARY KEY (id ),
   CONSTRAINT attendance_ticket_id_fkey FOREIGN KEY (ticket_id)
       REFERENCES ticket (id) MATCH SIMPLE
@@ -96,8 +97,8 @@ CREATE TABLE attendance
 
 -- DATA
 
-INSERT INTO organization (username, password, name, email, created_at) VALUES
-('mpc', 'mpc', 'Mikroskil Programming Club', 'mikroskilprogrammingclub@gmail.com', now());
+INSERT INTO organization (username, password, name, email, created_at, last_login) VALUES
+('mpc', 'mpc', 'Mikroskil Programming Club', 'mpc@gmail.com', now(), now());
 
 INSERT INTO "user" (username, password, name, created_at) VALUES
 ('erwin', 'erwin', 'Erwin', now()),
