@@ -37,7 +37,6 @@
 
         <string name="logout_title_preference">Logout</string>
         <string name="dialog_logout">Are you sure to <b>Logout</b>?</string>
-        <string name="cancel">Cancel</string>
 
     <string name="about">About</string>
 

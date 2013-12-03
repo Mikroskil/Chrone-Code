@@ -1,0 +1,69 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:background="@drawable/card_bg"
+        android:layout_margin="4dp">
+
+        <ImageView android:id="@+id/photo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/event_placeholder"
+            android:scaleType="centerCrop"
+            android:contentDescription="placeholder"/>
+
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:textColor="@android:color/primary_text_light"
+                style="?android:textAppearanceMedium"
+                android:ellipsize="marquee"
+                android:padding="8dp"
+                android:maxLines="2"
+                android:layout_weight="2"
+                android:layout_height="0dp"
+                android:gravity="fill_vertical"/>
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="match_parent"
+                android:textColor="@android:color/secondary_text_light"
+                style="?android:textAppearanceSmall"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="24 June 2013 at 02:00 pm"
+                android:layout_weight="1"
+                android:layout_height="0dp"
+                android:gravity="center_vertical"/>
+
+            <TextView
+                android:id="@+id/location"
+                android:layout_width="match_parent"
+                android:textColor="@android:color/secondary_text_light"
+                style="?android:textAppearanceSmall"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="Thamrin Plaza, Medan"
+                android:layout_weight="1"
+                android:layout_height="0dp"
+                android:gravity="center_vertical"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

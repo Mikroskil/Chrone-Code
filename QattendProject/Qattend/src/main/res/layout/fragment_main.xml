@@ -2,12 +2,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#eee"
     tools:context=".MainActivity$PlaceholderFragment">
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="4dp"
         android:id="@+id/listView"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"/>
 

@@ -86,12 +86,12 @@ public class SettingsActivity extends PreferenceActivity {
                 // Use the Builder class for convenient dialog construction
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage(R.string.dialog_logout)
-                        .setPositiveButton(R.string.logout_title_preference, new DialogInterface.OnClickListener() {
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                Toast.makeText(getActivity(), R.string.logout_title_preference, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), android.R.string.yes, Toast.LENGTH_SHORT).show();
                             }
                         })
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // User cancelled the dialog
                             }
