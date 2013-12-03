@@ -18,19 +18,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mikroskil.android.qattend.entity.Organization;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Activity which displays a login screen to the user, offering registration as
  * well.
  */
 public class LoginActivity extends Activity {
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello",
-            "bar@example.com:world"
-    };
+
+    private static final String URL = "http://10.0.2.2/web/sites/process.php";
+    private static final String TAG_LOGIN = "login";
 
     /**
      * The default email to populate the email field with.
@@ -134,7 +134,7 @@ public class LoginActivity extends Activity {
             mPasswordView.setError(getString(R.string.error_field_required));
             focusView = mPasswordView;
             cancel = true;
-        } else if (mPassword.length() < 4) {
+        } else if (mPassword.length() < 3) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -161,10 +161,7 @@ public class LoginActivity extends Activity {
             mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
             showProgress(true);
             mAuthTask = new UserLoginTask();
-            mAuthTask.execute((Void) null);
-
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            mAuthTask.execute();
         }
     }
 
@@ -215,25 +212,27 @@ public class LoginActivity extends Activity {
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+
+            Organization org = new Organization(mEmail, mPassword);
+            JSONParser jParser = new JSONParser();
+            JSONObject json = new JSONObject();
 
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+                json.accumulate("email", org.getEmail());
+                json.accumulate("password", org.getPassword());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            String response = jParser.sendJSONtoUrl(URL, TAG_LOGIN, json);
+
+            if ("success".equals(response)) {
+                return true;
+            } else if ("failed".equals(response)) {
                 return false;
             }
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            return true;
+            return false;
         }
 
         @Override
@@ -242,6 +241,7 @@ public class LoginActivity extends Activity {
             showProgress(false);
 
             if (success) {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));

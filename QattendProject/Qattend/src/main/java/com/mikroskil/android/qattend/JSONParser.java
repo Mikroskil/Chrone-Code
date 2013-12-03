@@ -2,11 +2,14 @@ package com.mikroskil.android.qattend;
 
 import android.util.Log;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,28 +18,29 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 
 public class JSONParser {
     static InputStream is = null;
     static JSONObject jObj = null;
     static String json = "";
 
-    // constructor
     public JSONParser() {
 
     }
 
-    public JSONObject getJSONFromUrl(String url) {
+    public JSONObject getJSONFromUrl(String url, String request) {
 
-        // Making HTTP request
         try {
-            // defaultHttpClient
             DefaultHttpClient httpClient = new DefaultHttpClient();
             HttpPost httpPost = new HttpPost(url);
 
+            ArrayList<NameValuePair> param = new ArrayList<NameValuePair>(1);
+            param.add(new BasicNameValuePair("request", request));
+            httpPost.setEntity(new UrlEncodedFormEntity(param, "UTF-8"));
+
             HttpResponse httpResponse = httpClient.execute(httpPost);
-            HttpEntity httpEntity = httpResponse.getEntity();
-            is = httpEntity.getContent();
+            is = httpResponse.getEntity().getContent();
 
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -70,4 +74,54 @@ public class JSONParser {
         // return JSON String
         return jObj;
     }
+
+    public String sendJSONtoUrl(String url, String request, JSONObject json) {
+
+        String result = "";
+
+        try {
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost(url);
+
+            ArrayList<NameValuePair> param = new ArrayList<NameValuePair>(1);
+            param.add(new BasicNameValuePair("request", request));
+            param.add(new BasicNameValuePair("json", json.toString()));
+            httpPost.setEntity(new UrlEncodedFormEntity(param, "UTF-8"));
+
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+            result  = EntityUtils.toString(httpResponse.getEntity());
+
+//            is = httpResponse.getEntity().getContent();
+
+//            if (is != null)
+//                result  = convertInputStreamToString();
+//            else
+//                result = "Error";
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+//    private static String convertInputStreamToString() {
+//
+//        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+//        String line = "";
+//        String result = "";
+//
+//        try {
+//            while((line = reader.readLine()) != null)
+//                result += line;
+//            is.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return result;
+//    }
 }

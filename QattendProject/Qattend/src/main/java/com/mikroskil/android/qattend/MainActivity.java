@@ -1,21 +1,20 @@
 package com.mikroskil.android.qattend;
 
-import android.app.Activity;
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -28,11 +27,18 @@ import java.util.HashMap;
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
-    // private static String url = "http://qattend.herokuapp.com/web/sites/process.php";
-    private static String url = "http://10.0.2.2/web/sites/process.php";
+    // private static String URL = "http://qattend.herokuapp.com/web/sites/process.php";
+    private static final String URL = "http://10.0.2.2/web/sites/process.php";
+    private static final String HOST = "http://10.0.2.2/";
     private static final String TAG_MEMBERS = "members";
     private static final String TAG_NAME = "name";
+    private static final String TAG_EVENTS = "events";
+    private static final String TAG_TITLE = "title";
+    private static final String TAG_PHOTO = "photo";
     private static ArrayList<HashMap<String, String>> memberList = new ArrayList<HashMap<String, String>>();
+    private static ArrayList<HashMap<String, String>> eventList = new ArrayList<HashMap<String, String>>();
+
+    private static JSONParser jsonParser;
 
     private String[] sectionMenus;
 
@@ -50,6 +56,8 @@ public class MainActivity extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        jsonParser = new JSONParser();
 
         sectionMenus = getResources().getStringArray(R.array.section_menus);
 
@@ -171,44 +179,42 @@ public class MainActivity extends Activity
                 pDialog = new ProgressDialog(getActivity());
                 pDialog.setMessage("Getting Data ...");
                 pDialog.setIndeterminate(false);
-                pDialog.setCancelable(false);
+                pDialog.setCancelable(true);
                 pDialog.show();
             }
 
             @Override
             protected JSONObject doInBackground(String... strings) {
-                JSONParser jParser = new JSONParser();
-
-                // Getting JSON from URL
-                JSONObject json = jParser.getJSONFromUrl(url);
-                return json;
+                return jsonParser.getJSONFromUrl(URL, TAG_EVENTS);
             }
 
             @Override
             protected void onPostExecute(JSONObject json) {
                 pDialog.dismiss();
-                JSONArray members = null;
+                JSONArray events = null;
 
                 try {
-                    members = json.getJSONArray(TAG_MEMBERS);
+                    events = json.getJSONArray(TAG_EVENTS);
 
-                    for (int i = 0; i < members.length(); i++) {
-                        JSONObject m = members.getJSONObject(i);
-                        String name = m.getString(TAG_NAME);
+                    for (int i = 0; i < events.length(); i++) {
+                        JSONObject m = events.getJSONObject(i);
+                        String title = m.getString(TAG_TITLE);
+                        // String photo = HOST + m.getString(TAG_PHOTO);
 
                         HashMap<String, String> map = new HashMap<String, String>();
 
-                        map.put(TAG_NAME, name);
+                        map.put(TAG_TITLE, title);
+                        // map.put(TAG_PHOTO, photo);
 
-                        memberList.add(map);
+                        eventList.add(map);
                     }
                 }
                 catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-                SimpleAdapter adapter = new SimpleAdapter(getActivity(), memberList,
-                        android.R.layout.simple_list_item_1, new String[] { TAG_NAME }, new int[] { android.R.id.text1 });
+                CardSimpleAdapter adapter = new CardSimpleAdapter(getActivity(), eventList,
+                        R.layout.card, new String[] { TAG_TITLE }, new int[] { R.id.title });
                 listView.setAdapter(adapter);
                 // listView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
             }
