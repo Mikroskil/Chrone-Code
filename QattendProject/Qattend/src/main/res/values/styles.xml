@@ -6,6 +6,10 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="AppThemeNoActionBar" parent="android:Theme.Holo.NoActionBar">
+
+    </style>
+
     <style name="FormContainer">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

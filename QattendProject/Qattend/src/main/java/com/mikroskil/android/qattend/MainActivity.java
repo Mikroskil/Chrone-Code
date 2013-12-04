@@ -27,9 +27,10 @@ import java.util.HashMap;
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
-    // private static String URL = "http://qattend.herokuapp.com/web/sites/process.php";
-    private static final String URL = "http://10.0.2.2/web/sites/process.php";
-    private static final String HOST = "http://10.0.2.2/";
+    private static String URL = "http://qattend.herokuapp.com/web/sites/process.php";
+//    private static final String URL = "http://10.0.2.2/web/sites/process.php";
+    private static final String HOST = "http://qattend.herokuapp.com/";
+//    private static final String HOST = "http://10.0.2.2/";
     private static final String TAG_MEMBERS = "members";
     private static final String TAG_NAME = "name";
     private static final String TAG_EVENTS = "events";
@@ -90,7 +91,6 @@ public class MainActivity extends Activity
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
