@@ -102,8 +102,11 @@ public class LoginActivity extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
-            case R.id.action_forgot_password:
-                Toast.makeText(this, R.string.action_forgot_password, Toast.LENGTH_SHORT).show();
+            case R.id.action_register:
+                Toast.makeText(this, R.string.action_register, Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_recover_password:
+                Toast.makeText(this, R.string.action_recover_password, Toast.LENGTH_SHORT).show();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -159,7 +162,7 @@ public class LoginActivity extends Activity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
+            mLoginStatusMessageView.setText(R.string.progress_signing_in);
             showProgress(true);
             mAuthTask = new UserLoginTask();
             mAuthTask.execute();

@@ -25,22 +25,22 @@
         <string name="email_summary_preference">Email</string>
         <string name="email_dialog_preference">Change Your Email</string>
 
-        <string name="orgname_title_preference">Organization Name</string>
-        <string name="orgname_summary_preference">Organization Name</string>
-        <string name="orgname_dialog_preference">Change Your Organization Name</string>
+        <string name="org_name_title_preference">Organization Name</string>
+        <string name="org_name_summary_preference">Organization Name</string>
+        <string name="org_name_dialog_preference">Change Your Organization Name</string>
 
-        <string name="changepass_title_preference">Change Password</string>
+        <string name="change_password_title_preference">Change Password</string>
         <string name="prompt_new_password">New Password</string>
         <string name="prompt_confirm_password">Confirm Password</string>
         <string name="prompt_current_password">Current Password</string>
         <string name="action_change_password">Change Password</string>
 
-        <string name="logout_title_preference">Logout</string>
-        <string name="dialog_logout">Are you sure to <b>Logout</b>?</string>
+        <string name="sign_out_title_preference">Sign out</string>
+        <string name="dialog_sign_out">Are you sure to <b>Sign out</b>?</string>
 
     <string name="about">About</string>
 
         <string name="website_title_preference">Website</string>
-        <string name="website_summary_preference">qattend.herokuapp.com</string>
+        <string name="website_summary_preference">https://qattend.herokuapp.com/</string>
 
 </resources>

@@ -4,7 +4,7 @@
         android:title="@string/general_settings">
 
         <ListPreference
-            android:key="language_preference"
+            android:key="@string/language_key"
             android:title="@string/language_title_preference"
             android:summary="@string/language_summary_preference"
             android:entries="@array/language_entries_preference"
@@ -13,7 +13,7 @@
             android:dialogTitle="@string/language_dialog_title_preference" />
 
         <ListPreference
-            android:key="theme_preference"
+            android:key="@string/theme_key"
             android:title="@string/theme_title_preference"
             android:summary="@string/theme_summary_preference"
             android:entries="@array/theme_entries_preference"
@@ -27,7 +27,7 @@
         android:title="@string/account_settings">
 
         <EditTextPreference
-            android:key="username_preference"
+            android:key="@string/username_key"
             android:title="@string/username_title_preference"
             android:summary="@string/username_summary_preference"
             android:singleLine="true"
@@ -35,7 +35,7 @@
             android:dialogTitle="@string/username_dialog_preference" />
 
         <EditTextPreference
-            android:key="email_preference"
+            android:key="@string/email_key"
             android:title="@string/email_title_preference"
             android:summary="@string/email_summary_preference"
             android:singleLine="true"
@@ -44,21 +44,21 @@
             android:dialogTitle="@string/email_dialog_preference" />
 
         <EditTextPreference
-            android:key="orgname_preference"
-            android:title="@string/orgname_title_preference"
-            android:summary="@string/orgname_summary_preference"
+            android:key="@string/org_name_key"
+            android:title="@string/org_name_title_preference"
+            android:summary="@string/org_name_summary_preference"
             android:singleLine="true"
             android:inputType="textCapWords"
             android:selectAllOnFocus="true"
-            android:dialogTitle="@string/orgname_dialog_preference" />
+            android:dialogTitle="@string/org_name_dialog_preference" />
 
         <Preference
-            android:key="changepass_preference"
-            android:title="@string/changepass_title_preference" />
+            android:key="@string/change_password_key"
+            android:title="@string/change_password_title_preference" />
 
         <Preference
-            android:key="logout_preference"
-            android:title="@string/logout_title_preference" />
+            android:key="@string/sign_out_key"
+            android:title="@string/sign_out_title_preference" />
 
     </PreferenceCategory>
 
@@ -69,7 +69,7 @@
             android:title="@string/website_title_preference"
             android:summary="@string/website_summary_preference">
             <intent android:action="android.intent.action.VIEW"
-                    android:data="https://qattend.herokuapp.com" />
+                    android:data="@string/website_summary_preference" />
         </PreferenceScreen>
 
     </PreferenceCategory>

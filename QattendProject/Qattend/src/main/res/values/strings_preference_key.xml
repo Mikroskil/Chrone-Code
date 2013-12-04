@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- don't translate this -->
+    <string name="language_key">language_key</string>
+    <string name="theme_key">theme_key</string>
+    <string name="username_key">username_key</string>
+    <string name="email_key">email_key</string>
+    <string name="org_name_key">org_name_key</string>
+    <string name="change_password_key">change_password_key</string>
+    <string name="sign_out_key">sign_out_key</string>
+
+</resources>

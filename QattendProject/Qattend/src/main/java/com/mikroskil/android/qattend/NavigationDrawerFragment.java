@@ -239,7 +239,7 @@ public class NavigationDrawerFragment extends Fragment {
         }
 
         switch (item.getItemId()) {
-            case R.id.action_example:
+            case R.id.action_create_event:
                 Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT).show();
                 return true;
         }

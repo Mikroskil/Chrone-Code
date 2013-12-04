@@ -1,5 +1,6 @@
 package com.mikroskil.android.qattend;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -69,11 +70,11 @@ public class SettingsActivity extends PreferenceActivity {
 
         @Override
         public boolean onPreferenceTreeClick (PreferenceScreen prefScreen, Preference pref) {
-            if("changepass_preference".equals(pref.getKey())) {
+            if(getString(R.string.change_password_key).equals(pref.getKey())) {
                 Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
                 startActivity(intent);
             }
-            else if ("logout_preference".equals(pref.getKey())) {
+            else if (getString(R.string.sign_out_key).equals(pref.getKey())) {
                 new LogoutDialogFragment().show(getFragmentManager(), "LogoutDialogFragment");
             }
 
@@ -85,10 +86,12 @@ public class SettingsActivity extends PreferenceActivity {
             public Dialog onCreateDialog(Bundle savedInstanceState) {
                 // Use the Builder class for convenient dialog construction
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage(R.string.dialog_logout)
+                builder.setMessage(R.string.dialog_sign_out)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                Toast.makeText(getActivity(), android.R.string.yes, Toast.LENGTH_SHORT).show();
+                                Activity activity = getActivity();
+                                startActivity(new Intent(activity, LoginActivity.class));
+                                activity.finish();
                             }
                         })
                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

@@ -111,8 +111,8 @@ public class MainActivity extends Activity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
-            case R.id.action_example:
-                Toast.makeText(this, R.string.action_example, Toast.LENGTH_SHORT).show();
+            case R.id.action_create_event:
+                Toast.makeText(this, R.string.action_create_event, Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.action_settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
