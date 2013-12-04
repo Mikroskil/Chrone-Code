@@ -9,11 +9,13 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -216,6 +218,15 @@ public class MainActivity extends Activity
                 CardSimpleAdapter adapter = new CardSimpleAdapter(getActivity(), eventList,
                         R.layout.card, new String[] { TAG_TITLE }, new int[] { R.id.title });
                 listView.setAdapter(adapter);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        Log.d("LIST", "list"+i);
+                        Intent intent = new Intent(getActivity(), DetailActivity.class);
+                        intent.putExtra("LIST_INDEX", i);
+                        startActivity(intent);
+                    }
+                });
                 // listView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
             }
         }

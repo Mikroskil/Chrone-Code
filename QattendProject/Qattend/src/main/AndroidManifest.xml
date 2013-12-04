@@ -34,6 +34,7 @@
 
         <activity
             android:name=".LoginActivity"
+            android:uiOptions="splitActionBarWhenNarrow"
             android:label="@string/action_sign_in" />
 
         <activity
@@ -43,6 +44,10 @@
         <activity
             android:name=".ChangePasswordActivity"
             android:label="@string/action_change_password" />
+
+        <activity
+            android:name=".DetailActivity"
+            android:uiOptions="splitActionBarWhenNarrow" />
     </application>
 
 </manifest>
