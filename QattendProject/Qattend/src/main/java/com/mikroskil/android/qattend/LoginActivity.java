@@ -29,7 +29,7 @@ import org.json.JSONObject;
  */
 public class LoginActivity extends Activity {
 
-    private static final String URL = "http://qattend.herokuapp.com/web/sites/process.php";
+    private static final String URL = "http://qattend.herokuapp.com/sites/process.php";
 //    private static final String URL = "http://10.0.2.2/web/sites/process.php";
     private static final String TAG_LOGIN = "login";
 

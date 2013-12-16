@@ -13,7 +13,6 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 public class SettingsActivity extends PreferenceActivity {
 

@@ -29,17 +29,22 @@ import java.util.HashMap;
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
-    private static String URL = "http://qattend.herokuapp.com/web/sites/process.php";
+    private static String URL = "http://qattend.herokuapp.com/sites/process.php";
 //    private static final String URL = "http://10.0.2.2/web/sites/process.php";
     private static final String HOST = "http://qattend.herokuapp.com/";
-//    private static final String HOST = "http://10.0.2.2/";
+//    private static final String HOST = "http://10.0.2.2/web/";
     private static final String TAG_MEMBERS = "members";
     private static final String TAG_NAME = "name";
     private static final String TAG_EVENTS = "events";
     private static final String TAG_TITLE = "title";
     private static final String TAG_PHOTO = "photo";
+    private static final String TAG_LOCATION = "location";
+    private static final String TAG_START_TIME = "start_time";
+    private static final String TAG_END_TIME = "end_time";
+    private static final String TAG_TIME = "time";
     private static ArrayList<HashMap<String, String>> memberList = new ArrayList<HashMap<String, String>>();
     private static ArrayList<HashMap<String, String>> eventList = new ArrayList<HashMap<String, String>>();
+    private static View space;
 
     private static JSONParser jsonParser;
 
@@ -60,6 +65,7 @@ public class MainActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        space = new View(this);
         jsonParser = new JSONParser();
 
         sectionMenus = getResources().getStringArray(R.array.section_menus);
@@ -200,13 +206,19 @@ public class MainActivity extends Activity
 
                     for (int i = 0; i < events.length(); i++) {
                         JSONObject m = events.getJSONObject(i);
+                        String photo = HOST + m.getString(TAG_PHOTO);
                         String title = m.getString(TAG_TITLE);
-                        // String photo = HOST + m.getString(TAG_PHOTO);
+                        String location = m.getString(TAG_LOCATION);
+                        String time = m.getString(TAG_START_TIME);
+                        String tmp = m.getString(TAG_END_TIME);
+                        if (!tmp.isEmpty()) time += " - " + tmp;
 
                         HashMap<String, String> map = new HashMap<String, String>();
 
+                        map.put(TAG_PHOTO, photo);
                         map.put(TAG_TITLE, title);
-                        // map.put(TAG_PHOTO, photo);
+                        map.put(TAG_LOCATION, location);
+                        map.put(TAG_TIME, time);
 
                         eventList.add(map);
                     }
@@ -216,7 +228,10 @@ public class MainActivity extends Activity
                 }
 
                 CardSimpleAdapter adapter = new CardSimpleAdapter(getActivity(), eventList,
-                        R.layout.card, new String[] { TAG_TITLE }, new int[] { R.id.title });
+                        R.layout.card, new String[] { TAG_TITLE, TAG_LOCATION, TAG_TIME },
+                        new int[] { R.id.title, R.id.location, R.id.time });
+                listView.addFooterView(space, null, false);
+                listView.addHeaderView(space, null, false);
                 listView.setAdapter(adapter);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
