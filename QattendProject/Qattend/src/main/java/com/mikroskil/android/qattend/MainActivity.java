@@ -2,52 +2,21 @@ package com.mikroskil.android.qattend;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.mikroskil.android.qattend.fragment.EventFragment;
+import com.mikroskil.android.qattend.fragment.MemberFragment;
 
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
-    private static String URL = "http://qattend.herokuapp.com/sites/process.php";
-//    private static final String URL = "http://10.0.2.2/web/sites/process.php";
-    private static final String HOST = "http://qattend.herokuapp.com/";
-//    private static final String HOST = "http://10.0.2.2/web/";
-    private static final String TAG_MEMBERS = "members";
-    private static final String TAG_NAME = "name";
-    private static final String TAG_EVENTS = "events";
-    private static final String TAG_TITLE = "title";
-    private static final String TAG_PHOTO = "photo";
-    private static final String TAG_LOCATION = "location";
-    private static final String TAG_START_TIME = "start_time";
-    private static final String TAG_END_TIME = "end_time";
-    private static final String TAG_TIME = "time";
-    private static ArrayList<HashMap<String, String>> memberList = new ArrayList<HashMap<String, String>>();
-    private static ArrayList<HashMap<String, String>> eventList = new ArrayList<HashMap<String, String>>();
-    private static View space;
-
-    private static JSONParser jsonParser;
-
+    private static final String ARG_SECTION_NUMBER = "section_number";
     private String[] sectionMenus;
 
     /**
@@ -65,9 +34,6 @@ public class MainActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        space = new View(this);
-        jsonParser = new JSONParser();
-
         sectionMenus = getResources().getStringArray(R.array.section_menus);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -84,9 +50,27 @@ public class MainActivity extends Activity
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                .commit();
+        if (position >= 0 && position <=2) {
+            EventFragment fragment = new EventFragment(position + 1);
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, position + 1);
+            fragment.setArguments(args);
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, fragment)
+                    .commit();
+        }
+        else if (position >= 3 && position <= 5) {
+            MemberFragment fragment = new MemberFragment(position + 1);
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, position + 1);
+            fragment.setArguments(args);
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, fragment)
+                    .commit();
+        }
+        else {
+            Toast.makeText(this, "Organization Profile", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void onSectionAttached(int number) {
@@ -128,122 +112,5 @@ public class MainActivity extends Activity
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            ListView listView = (ListView) rootView.findViewById(R.id.listView);
-            new FetchJSON(listView).execute();
-            return rootView;
-        }
-
-        @Override
-        public void onAttach(Activity activity) {
-            super.onAttach(activity);
-            ((MainActivity) activity).onSectionAttached(
-                    getArguments().getInt(ARG_SECTION_NUMBER));
-        }
-
-        private class FetchJSON extends AsyncTask<String, String, JSONObject> {
-
-            private ProgressDialog pDialog;
-            private ListView listView;
-
-            public FetchJSON(ListView listView) {
-                this.listView = listView;
-            }
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-
-                pDialog = new ProgressDialog(getActivity());
-                pDialog.setMessage("Getting Data ...");
-                pDialog.setIndeterminate(false);
-                pDialog.setCancelable(true);
-                pDialog.show();
-            }
-
-            @Override
-            protected JSONObject doInBackground(String... strings) {
-                return jsonParser.getJSONFromUrl(URL, TAG_EVENTS);
-            }
-
-            @Override
-            protected void onPostExecute(JSONObject json) {
-                pDialog.dismiss();
-                JSONArray events = null;
-
-                try {
-                    events = json.getJSONArray(TAG_EVENTS);
-
-                    for (int i = 0; i < events.length(); i++) {
-                        JSONObject m = events.getJSONObject(i);
-                        String photo = HOST + m.getString(TAG_PHOTO);
-                        String title = m.getString(TAG_TITLE);
-                        String location = m.getString(TAG_LOCATION);
-                        String time = m.getString(TAG_START_TIME);
-                        String tmp = m.getString(TAG_END_TIME);
-                        if (!tmp.isEmpty()) time += " - " + tmp;
-
-                        HashMap<String, String> map = new HashMap<String, String>();
-
-                        map.put(TAG_PHOTO, photo);
-                        map.put(TAG_TITLE, title);
-                        map.put(TAG_LOCATION, location);
-                        map.put(TAG_TIME, time);
-
-                        eventList.add(map);
-                    }
-                }
-                catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                CardSimpleAdapter adapter = new CardSimpleAdapter(getActivity(), eventList,
-                        R.layout.card, new String[] { TAG_TITLE, TAG_LOCATION, TAG_TIME },
-                        new int[] { R.id.title, R.id.location, R.id.time });
-                listView.addFooterView(space, null, false);
-                listView.addHeaderView(space, null, false);
-                listView.setAdapter(adapter);
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        Log.d("LIST", "list"+i);
-                        Intent intent = new Intent(getActivity(), DetailActivity.class);
-                        intent.putExtra("LIST_INDEX", i);
-                        startActivity(intent);
-                    }
-                });
-                // listView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
-            }
-        }
     }
 }
