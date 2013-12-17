@@ -20,6 +20,13 @@ android {
         minSdkVersion 14
         targetSdkVersion 19
     }
+
+    buildTypes {
+        release {
+            runProguard true
+            proguardFile getDefaultProguardFile('proguard.txt')
+        }
+    }
 }
 
 dependencies {
