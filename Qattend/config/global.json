@@ -1,0 +1,11 @@
+{
+    "applications": {
+        "Qattend": {
+            "applicationId": "dqqiXSTmaYEa3pRpAUdUlROm1xJSHMhywXdzKNYy",
+            "masterKey": "qJthLSxlCZDAXtgIaThpyGCymcQAd1Un0rL6xFV5"
+        },
+        "_default": {
+            "link": "Qattend"
+        }
+    }
+}
