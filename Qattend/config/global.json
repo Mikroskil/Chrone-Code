@@ -4,8 +4,15 @@
             "applicationId": "dqqiXSTmaYEa3pRpAUdUlROm1xJSHMhywXdzKNYy",
             "masterKey": "qJthLSxlCZDAXtgIaThpyGCymcQAd1Un0rL6xFV5"
         },
+        "QattendDev": {
+            "applicationId": "eGmWE14H2rY6yOWHgwZnePrGystQYh7IjcSx2s3E",
+            "masterKey": "EUiIKmLDpdpo29cEsSyRjPWwTe4r0fNntOBvsSWm"
+        },
         "_default": {
             "link": "Qattend"
         }
+    },
+    "global": {
+        "parseVersion": "1.2.15"
     }
 }
