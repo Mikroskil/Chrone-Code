@@ -1,16 +1,32 @@
-
-// These two lines are required to initialize Express in Cloud Code.
 var express = require('express');
+var expressLayouts = require('cloud/express-layouts');
 var app = express();
 
 // Global app configuration section
 app.set('views', 'cloud/views');  // Specify the folder to find templates
 app.set('view engine', 'ejs');    // Set the template engine
+app.use(expressLayouts);          // Use the layout engine for express
 app.use(express.bodyParser());    // Middleware for reading request body
 
 // Register request handlers for each route
-app.get('/hello', function(req, res) {
+app.get('/', function(req, res) {
   res.render('hello', { message: 'Congrats, you just set up your app!' });
+});
+
+app.get('/users', function(req, res) {
+  var query = new Parse.Query(Parse.User);
+  query.select('name', 'username');
+  query.find().then(function(objs) {
+    res.render('users', { users: objs });
+  });
+});
+
+app.get('/organizations', function(req, res) {
+  var query = new Parse.Query(Parse.Object.extend('Organization'));
+  query.select('name', 'username');
+  query.find().then(function(objs) {
+    res.render('organizations', { orgs: objs });
+  });
 });
 
 // // Example reading from the request query string of an HTTP get request.

@@ -1,0 +1,13 @@
+<div id="organizations">
+  <% for (var i = 0; i < orgs.length; i++) { %>
+    <div class="media">
+      <div class="pull-left">
+        <img class="media-object" src="/img/placeholder_people.png" alt="<%= orgs[i].get('username') %>" width="48" height="48">
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><%= orgs[i].get('name') %></h3>
+        @<%= orgs[i].get('username') %>
+      </div>
+    </div>
+  <% }; %>
+</div>

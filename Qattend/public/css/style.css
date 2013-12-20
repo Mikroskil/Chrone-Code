@@ -1,0 +1,23 @@
+body {
+  padding-top: 50px;
+  padding-bottom: 20px;
+  font-family: 'Roboto', sans-serif;
+}
+
+h1, h2, h3 {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 100;
+}
+
+.panel-form {
+  max-width: 480px;
+  margin: 20px auto;
+}
+
+.media-heading {
+  margin: 0;
+}
+
+.media-object {
+  border: 1px solid #ccc;
+}
