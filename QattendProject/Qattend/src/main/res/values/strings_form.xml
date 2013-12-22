@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <!-- Strings related to sign_in -->
+    <string name="prompt_username">Username</string>
+    <string name="prompt_password">Password</string>
+    <string name="prompt_name">Name</string>
+    <string name="prompt_email">Email</string>
+
+    <string name="action_sign_in">Sign In</string>
+    <string name="action_sign_up">Sign Up</string>
+
+    <string name="action_recover_password">Recover Lost Password</string>
+
+    <string name="progress_signing_in">Signing In &#8230;</string>
+    <string name="progress_signing_up">Signing Up &#8230;</string>
+
+    <string name="error_invalid_username">This username is too short</string>
+    <string name="error_invalid_name">This name is too short</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_field_required">This field is required</string>
+
+</resources>

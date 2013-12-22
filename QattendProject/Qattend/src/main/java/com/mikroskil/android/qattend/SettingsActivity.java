@@ -1,6 +1,5 @@
 package com.mikroskil.android.qattend;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -13,6 +12,9 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.util.Log;
 import android.view.MenuItem;
+
+import com.parse.Parse;
+import com.parse.ParseUser;
 
 public class SettingsActivity extends PreferenceActivity {
 
@@ -88,9 +90,10 @@ public class SettingsActivity extends PreferenceActivity {
                 builder.setMessage(R.string.dialog_sign_out)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                Activity activity = getActivity();
-                                startActivity(new Intent(activity, LoginActivity.class));
-                                activity.finish();
+                                ParseUser.logOut();
+                                Intent intent = new Intent(getActivity(), DispatchActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
                             }
                         })
                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
