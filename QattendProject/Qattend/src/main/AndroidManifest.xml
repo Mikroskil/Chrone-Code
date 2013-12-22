@@ -50,6 +50,10 @@
             android:label="@string/action_sign_up" />
 
         <activity
+            android:name=".CreateOrganizationActivity"
+            android:label="@string/action_create_organization" />
+
+        <activity
             android:name=".SettingsActivity"
             android:label="@string/action_settings" />
 

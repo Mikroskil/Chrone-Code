@@ -164,6 +164,7 @@ public class SignUpActivity extends Activity {
             user.setPassword(mPassword);
             user.setEmail(mEmail);
             user.put("name", mName);
+            user.put("orgCount", 0);
 
             user.signUpInBackground(new SignUpCallback() {
                 @Override

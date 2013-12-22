@@ -12,12 +12,14 @@ import android.widget.Toast;
 
 import com.mikroskil.android.qattend.fragment.EventFragment;
 import com.mikroskil.android.qattend.fragment.MemberFragment;
+import com.mikroskil.android.qattend.fragment.ProfileFragment;
 
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     private String[] sectionMenus;
+    private int mPosition;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -48,9 +50,19 @@ public class MainActivity extends Activity
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
+        mPosition = position;
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getFragmentManager();
-        if (position >= 0 && position <=2) {
+        if (position == 0) {
+            ProfileFragment fragment = new ProfileFragment(position + 1);
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, position + 1);
+            fragment.setArguments(args);
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, fragment)
+                    .commit();
+        }
+        else if (position >= 1 && position <=3) {
             EventFragment fragment = new EventFragment(position + 1);
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, position + 1);
@@ -59,7 +71,7 @@ public class MainActivity extends Activity
                     .replace(R.id.container, fragment)
                     .commit();
         }
-        else if (position >= 3 && position <= 5) {
+        else if (position >= 4 && position <= 6) {
             MemberFragment fragment = new MemberFragment(position + 1);
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, position + 1);
@@ -67,9 +79,6 @@ public class MainActivity extends Activity
             fragmentManager.beginTransaction()
                     .replace(R.id.container, fragment)
                     .commit();
-        }
-        else {
-            Toast.makeText(this, "Organization Profile", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -90,7 +99,12 @@ public class MainActivity extends Activity
             // Only show items in the action bar relevant to this screen
             // if the drawer is not showing. Otherwise, let the drawer
             // decide what to show in the action bar.
-            getMenuInflater().inflate(R.menu.main, menu);
+            if (mPosition == 0) {
+                getMenuInflater().inflate(R.menu.profile, menu);
+            }
+            else {
+                getMenuInflater().inflate(R.menu.main, menu);
+            }
             restoreActionBar();
             return true;
         }
@@ -106,11 +120,14 @@ public class MainActivity extends Activity
             case R.id.action_create_event:
                 Toast.makeText(this, R.string.action_create_event, Toast.LENGTH_SHORT).show();
                 return true;
+            case R.id.action_create_organization:
+                startActivity(new Intent(this, CreateOrganizationActivity.class));
+                return true;
             case R.id.action_settings:
-                Intent intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

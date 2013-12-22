@@ -37,8 +37,7 @@ public class DetailActivity extends Activity {
                 Toast.makeText(this, R.string.action_verify_attendee, Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.action_settings:
-                Intent intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
         }
         return super.onOptionsItemSelected(item);
