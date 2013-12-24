@@ -50,7 +50,7 @@ public class EventFragment extends Fragment {
             @Override
             public View getItemView(ParseObject obj, View v, ViewGroup parent) {
                 if (null == v) {
-                    v = View.inflate(getContext(), R.layout.card, null);
+                    v = View.inflate(getContext(), R.layout.card_event, null);
                 }
 
                 super.getItemView(obj, v, parent);

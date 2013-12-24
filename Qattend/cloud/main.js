@@ -48,7 +48,7 @@ Parse.Cloud.beforeSave('Organization', function(req, res) {
 
 Parse.Cloud.define('createOrganization', function(req, res) {
   console.log(req.user.get('orgCount'));
-  if (req.user.get('orgCount') < 3) {
+  if (req.user.get('orgCount') <= 3) {
     var org = new Parse.Object('Organization');
     org.save({
       name: req.params.name,
