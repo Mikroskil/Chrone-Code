@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Qattend/Qattend.iml" filepath="$PROJECT_DIR$/Qattend/Qattend.iml" />
       <module fileurl="file://$PROJECT_DIR$/QattendProject.iml" filepath="$PROJECT_DIR$/QattendProject.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Zxing/Zxing.iml" filepath="$PROJECT_DIR$/Zxing/Zxing.iml" />
     </modules>
   </component>
 </project>

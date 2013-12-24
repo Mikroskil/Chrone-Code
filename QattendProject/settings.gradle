@@ -1,1 +1,1 @@
-include ':Qattend'
+include ':Qattend', ':Zxing'
