@@ -28,7 +28,6 @@ import java.util.Date;
  */
 public class SignInActivity extends Activity {
 
-    private Context mContext;
     private ProgressDialog mDialog;
 
     // Values for email and password at the time of the sign_in attempt.
@@ -43,7 +42,6 @@ public class SignInActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-        mContext = this;
 
         mUsernameView = (EditText) findViewById(R.id.username);
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -69,19 +67,15 @@ public class SignInActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.sign_in, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_sign_up:
-                startActivity(new Intent(mContext, SignUpActivity.class));
+                startActivity(new Intent(this, SignUpActivity.class));
                 return true;
             case R.id.action_recover_password:
                 Toast.makeText(this, R.string.action_recover_password, Toast.LENGTH_SHORT).show();
@@ -132,18 +126,19 @@ public class SignInActivity extends Activity {
             // form field with an error.
             focusView.requestFocus();
         } else {
-            mDialog = new ProgressDialog(mContext);
+            mDialog = new ProgressDialog(this);
             mDialog.setMessage(getString(R.string.progress_signing_in));
             mDialog.setIndeterminate(false);
             mDialog.setCancelable(false);
             mDialog.show();
 
+            final Activity context = this;
             ParseUser.logInInBackground(mUsername, mPassword, new LogInCallback() {
                 @Override
                 public void done(ParseUser user, ParseException e) {
                     if (null != e) {
                         mDialog.dismiss();
-                        Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
                     } else {
                         user.put("lastSignIn", new Date());
                         user.saveInBackground(new SaveCallback() {
@@ -151,9 +146,9 @@ public class SignInActivity extends Activity {
                             public void done(ParseException e) {
                                 mDialog.dismiss();
                                 if (null != e) {
-                                    Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
                                 } else {
-                                    Intent intent = new Intent(mContext, DispatchActivity.class);
+                                    Intent intent = new Intent(context, DispatchActivity.class);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(intent);
                                 }

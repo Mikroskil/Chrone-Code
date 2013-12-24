@@ -7,11 +7,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.zxing.client.android.CaptureActivity;
+
 public class DetailActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-
         getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -34,12 +35,30 @@ public class DetailActivity extends Activity {
                 Toast.makeText(this, R.string.action_manage_event, Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.action_verify_attendee:
-                Toast.makeText(this, R.string.action_verify_attendee, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, ScannerActivity.class);
+                intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
+                startActivityForResult(intent, 0);
                 return true;
             case R.id.action_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0) {
+            if (resultCode == 1) {
+                String qrCode = data.getStringExtra("RESULT");
+                Toast.makeText(this, "Scan Result: " + qrCode, Toast.LENGTH_LONG).show();
+            }
+            else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(this, "Canceled", Toast.LENGTH_LONG).show();
+            }
+            else {
+                Toast.makeText(this, "Error", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }

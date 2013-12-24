@@ -2,9 +2,9 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context=".MainActivity" >
 
-    <item android:id="@+id/action_create_organization"
-          android:icon="@drawable/ic_social_add_group"
-          android:title="@string/action_create_organization"
+    <item android:id="@+id/action_add_member"
+          android:icon="@drawable/ic_social_add_person"
+          android:title="@string/action_add_member"
           android:showAsAction="always|withText" />
 
 </menu>

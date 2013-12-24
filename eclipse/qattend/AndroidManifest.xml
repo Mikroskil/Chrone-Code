@@ -56,10 +56,12 @@
 
         <activity
             android:name=".SignUpActivity"
+            android:parentActivityName=".SignInActivity"
             android:label="@string/action_sign_up" />
 
         <activity
             android:name=".CreateOrganizationActivity"
+            android:parentActivityName=".MainActivity"
             android:label="@string/action_create_organization" />
 
         <activity
@@ -71,8 +73,14 @@
             android:label="@string/action_change_password" />
 
         <activity
-            android:name=".DetailActivity"
-            android:uiOptions="splitActionBarWhenNarrow" />
+            android:name=".DetailActivity" />
+
+        <activity
+            android:name=".ScannerActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/CaptureTheme"
+            android:label="@string/action_scanner" />
+
     </application>
 
 </manifest>

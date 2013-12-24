@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.Toast;
@@ -95,15 +96,11 @@ public class MainActivity extends Activity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            // Only show items in the action bar relevant to this screen
-            // if the drawer is not showing. Otherwise, let the drawer
-            // decide what to show in the action bar.
-            if (mPosition == 0) {
-                getMenuInflater().inflate(R.menu.profile, menu);
-            }
-            else {
-                getMenuInflater().inflate(R.menu.main, menu);
-            }
+            MenuInflater inflater = getMenuInflater();
+            if (mPosition == 0) inflater.inflate(R.menu.profile, menu);
+            else if (mPosition >= 1 && mPosition <= 3) inflater.inflate(R.menu.event, menu);
+            else if (mPosition >= 4 && mPosition <= 6) inflater.inflate(R.menu.member, menu);
+            inflater.inflate(R.menu.global, menu);
             restoreActionBar();
             return true;
         }
@@ -112,12 +109,12 @@ public class MainActivity extends Activity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_create_event:
                 Toast.makeText(this, R.string.action_create_event, Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_add_member:
+                Toast.makeText(this, R.string.action_add_member, Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.action_create_organization:
                 startActivity(new Intent(this, CreateOrganizationActivity.class));

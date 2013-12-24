@@ -3,13 +3,8 @@
       tools:context=".MainActivity" >
 
     <item android:id="@+id/action_create_event"
-          android:icon="@drawable/ic_content_new"
+          android:icon="@drawable/ic_content_new_event"
           android:title="@string/action_create_event"
           android:showAsAction="always|withText" />
 
-    <item android:id="@+id/action_settings"
-          android:icon="@drawable/ic_action_settings"
-          android:title="@string/action_settings"
-          android:orderInCategory="100"
-          android:showAsAction="never" />
 </menu>

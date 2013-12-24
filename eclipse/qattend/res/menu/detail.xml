@@ -2,19 +2,14 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context=".DetailActivity" >
 
-    <item android:id="@+id/action_manage_event"
-          android:icon="@drawable/ic_content_edit"
-          android:title="@string/action_manage_event"
-          android:showAsAction="always|withText" />
-
     <item android:id="@+id/action_verify_attendee"
           android:icon="@drawable/ic_device_access_camera"
           android:title="@string/action_verify_attendee"
           android:showAsAction="always|withText" />
 
-    <item android:id="@+id/action_settings"
-          android:icon="@drawable/ic_action_settings"
-          android:title="@string/action_settings"
-          android:orderInCategory="100"
-          android:showAsAction="never" />
+    <item android:id="@+id/action_manage_event"
+          android:icon="@drawable/ic_content_edit"
+          android:title="@string/action_manage_event"
+          android:showAsAction="ifRoom|withText" />
+
 </menu>
