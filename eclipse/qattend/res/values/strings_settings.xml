@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="general_settings">General Settings</string>
+
+        <string name="language_title_preference">Language</string>
+        <string name="language_summary_preference">Chosen Language</string>
+        <string name="language_dialog_title_preference">Choose a Language</string>
+        <string name="language_english_preference">English</string>
+        <string name="language_indonesian_preference">Indonesian</string>
+
+        <string name="theme_title_preference">Theme</string>
+        <string name="theme_summary_preference">Chosen Theme</string>
+        <string name="theme_dialog_title_preference">Choose a Theme</string>
+        <string name="theme_light_preference">Light</string>
+        <string name="theme_dark_preference">Dark</string>
+
+    <string name="account_settings">Account Settings</string>
+
+        <string name="username_title_preference">Username</string>
+        <string name="username_summary_preference">Username</string>
+        <string name="username_dialog_preference">Change Your Username</string>
+
+        <string name="email_title_preference">Email</string>
+        <string name="email_summary_preference">Email</string>
+        <string name="email_dialog_preference">Change Your Email</string>
+
+        <string name="org_name_title_preference">Organization Name</string>
+        <string name="org_name_summary_preference">Organization Name</string>
+        <string name="org_name_dialog_preference">Change Your Organization Name</string>
+
+        <string name="change_password_title_preference">Change Password</string>
+        <string name="prompt_new_password">New Password</string>
+        <string name="prompt_confirm_password">Confirm Password</string>
+        <string name="prompt_current_password">Current Password</string>
+        <string name="action_change_password">Change Password</string>
+
+        <string name="sign_out_title_preference">Sign out</string>
+        <string name="dialog_sign_out">Are you sure to <b>Sign out</b>?</string>
+
+    <string name="about">About</string>
+
+        <string name="website_title_preference">Website</string>
+        <string name="website_summary_preference">https://qattend.parseapp.com/</string>
+
+</resources>

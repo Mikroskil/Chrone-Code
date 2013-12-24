@@ -1,1 +1,69 @@
-/home/erwin/herokuapp/Chrone-Code/QattendProject/Qattend/src/main/AndroidManifest.xml
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.mikroskil.android.qattend"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="19" />
+    
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:name=".QattendApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+
+        <meta-data android:name="com.google.android.gms.version"
+                   android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name=".SplashActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoActionBar"
+            android:noHistory="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".DispatchActivity"
+            android:noHistory="true" />
+
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name" />
+
+        <activity
+            android:name=".SignInActivity"
+            android:label="@string/action_sign_in" />
+
+        <activity
+            android:name=".SignUpActivity"
+            android:label="@string/action_sign_up" />
+
+        <activity
+            android:name=".CreateOrganizationActivity"
+            android:label="@string/action_create_organization" />
+
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/action_settings" />
+
+        <activity
+            android:name=".ChangePasswordActivity"
+            android:label="@string/action_change_password" />
+
+        <activity
+            android:name=".DetailActivity"
+            android:uiOptions="splitActionBarWhenNarrow" />
+    </application>
+
+</manifest>
