@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The attributes below configure the Android search box appearance
+     and the search suggestions settings.
+     See the Developer Guide for more information
+     http://developer.android.com/guide/topics/search/
+ -->
+<searchable xmlns:android="http://schemas.android.com/apk/res/android"
+            android:label="@string/action_search_event"
+            android:hint="@string/action_search_event"
+            android:searchSettingsDescription="@string/action_search_event"
+            android:searchSuggestAuthority="com.mikroskil.android.qattend.provider.EventProvider"
+            android:searchSuggestIntentAction="android.intent.action.VIEW"
+            android:searchSuggestIntentData="content://com.mikroskil.android.qattend.provider.EventProvider/event"
+            android:searchSuggestSelection=" ?"
+            android:searchSuggestThreshold="1"
+            android:includeInGlobalSearch="true"
+            android:voiceSearchMode="showVoiceSearchButton|launchRecognizer"/>

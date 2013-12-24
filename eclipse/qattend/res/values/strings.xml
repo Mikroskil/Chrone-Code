@@ -11,6 +11,7 @@
     <string name="action_manage_event">Manage Event</string>
     <string name="action_verify_attendee">Verify Attendee</string>
     <string name="action_scanner">Scanner</string>
-    <string name="action_add_member">Add Member</string>
+    <string name="action_search_member">Search Member</string>
+    <string name="action_search_event">Search Event</string>
 
 </resources>

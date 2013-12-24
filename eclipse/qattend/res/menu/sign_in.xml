@@ -8,6 +8,6 @@
 
     <item android:id="@+id/action_recover_password"
           android:title="@string/action_recover_password"
-          android:showAsAction="always|withText" />
+          android:showAsAction="ifRoom|withText" />
 
 </menu>
