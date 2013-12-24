@@ -16,6 +16,7 @@
     <string name="progress_signing_in">Signing In &#8230;</string>
     <string name="progress_signing_up">Signing Up &#8230;</string>
     <string name="progress_creating">Creating &#8230;</string>
+    <string name="progress_loading">Loading &#8230;</string>
 
     <string name="error_invalid_username">This username is too short</string>
     <string name="error_invalid_name">This name is too short</string>

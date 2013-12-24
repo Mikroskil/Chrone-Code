@@ -2,118 +2,88 @@ package com.mikroskil.android.qattend.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.mikroskil.android.qattend.CardSimpleAdapter;
-import com.mikroskil.android.qattend.JSONParser;
 import com.mikroskil.android.qattend.MainActivity;
 import com.mikroskil.android.qattend.R;
+import com.parse.ParseQuery;
+import com.parse.ParseQueryAdapter;
+import com.parse.ParseUser;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.List;
 
 public class MemberFragment extends Fragment {
 
-    private static String URL = "http://qattend.herokuapp.com/sites/process.php";
-//    private static final String URL = "http://10.0.2.2/web/sites/process.php";
-    private static final String HOST = "http://qattend.herokuapp.com/";
-//    private static final String HOST = "http://10.0.2.2/web/";
-    private static final String TAG_MEMBERS = "members";
-    private static final String TAG_NAME = "name";
-    private static final String TAG_PHOTO = "photo";
-    private static ArrayList<HashMap<String, String>> memberList = new ArrayList<HashMap<String, String>>();
-    private int position;
-
-    private static JSONParser jsonParser;
-
     private static final String ARG_SECTION_NUMBER = "section_number";
+    private static ParseQueryAdapter<ParseUser> mAdapter;
 
-    public MemberFragment(int position) {
-        this.position = position;
-        jsonParser = new JSONParser();
-    }
+    private Activity mContext;
+    private int mPos;
+
+    public MemberFragment() {}
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mContext = getActivity();
         View rootView = inflater.inflate(R.layout.fragment_member, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.listView);
-        new FetchJSON(listView).execute();
+
+        mAdapter = new ParseQueryAdapter<ParseUser>(mContext, new ParseQueryAdapter.QueryFactory<ParseUser>() {
+            @Override
+            public ParseQuery<ParseUser> create() {
+                ParseQuery<ParseUser> query = ParseUser.getQuery();
+                query.selectKeys(Arrays.asList("name", "username"));
+                query.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
+                return query;
+            }
+        }) {
+            @Override
+            public View getItemView(ParseUser obj, View v, ViewGroup parent) {
+                if (null == v) {
+                    v = View.inflate(getContext(), android.R.layout.simple_list_item_2, null);
+                }
+
+                super.getItemView(obj, v, parent);
+                ((TextView) v.findViewById(android.R.id.text1)).setText(obj.getString("name"));
+                ((TextView) v.findViewById(android.R.id.text2)).setText("@" + obj.getString("username"));
+                return v;
+            }
+        };
+        mAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<ParseUser>() {
+            @Override
+            public void onLoading() {
+                mContext.setProgressBarIndeterminateVisibility(true);
+            }
+
+            @Override
+            public void onLoaded(List<ParseUser> parseObjects, Exception e) {
+                mContext.setProgressBarIndeterminateVisibility(false);
+            }
+        });
+
+        listView.setAdapter(mAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(mContext, "list " + i, Toast.LENGTH_SHORT).show();
+            }
+        });
         return rootView;
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((MainActivity) activity).onSectionAttached(
-                getArguments().getInt(ARG_SECTION_NUMBER));
+        mPos = getArguments().getInt(ARG_SECTION_NUMBER);
+        ((MainActivity) activity).onSectionAttached(mPos);
     }
 
-    private class FetchJSON extends AsyncTask<String, String, JSONObject> {
-
-        private ProgressDialog pDialog;
-        private ListView listView;
-
-        public FetchJSON(ListView listView) {
-            this.listView = listView;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            pDialog = new ProgressDialog(getActivity());
-            pDialog.setMessage("Getting Data ...");
-            pDialog.setIndeterminate(false);
-            pDialog.setCancelable(true);
-            pDialog.show();
-        }
-
-        @Override
-        protected JSONObject doInBackground(String... strings) {
-            return jsonParser.getJSONFromUrl(URL, TAG_MEMBERS);
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject json) {
-            pDialog.dismiss();
-            JSONArray events = null;
-
-            try {
-                events = json.getJSONArray(TAG_MEMBERS);
-
-                for (int i = 0; i < events.length(); i++) {
-                    JSONObject m = events.getJSONObject(i);
-                    String photo = HOST + m.getString(TAG_PHOTO);
-                    String title = m.getString(TAG_NAME);
-
-                    HashMap<String, String> map = new HashMap<String, String>();
-
-                    map.put(TAG_PHOTO, photo);
-                    map.put(TAG_NAME, title);
-
-                    memberList.add(map);
-                }
-            }
-            catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            CardSimpleAdapter adapter = new CardSimpleAdapter(getActivity(), memberList,
-                    android.R.layout.simple_list_item_1, new String[] { TAG_NAME },
-                    new int[] { android.R.id.text1 });
-            listView.setAdapter(adapter);
-        }
-    }
 }

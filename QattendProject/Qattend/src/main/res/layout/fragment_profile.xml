@@ -29,21 +29,13 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:textAppearanceLarge"
                 android:gravity="center_vertical"
-                android:layout_weight="2"/>
+                android:layout_weight="1"/>
 
             <TextView
                 android:id="@+id/username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:textAppearanceMedium"
-                android:gravity="center_vertical"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:id="@+id/email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:textAppearanceSmall"
                 android:gravity="center_vertical"
                 android:layout_weight="1"/>
 
@@ -76,10 +68,11 @@
             android:id="@+id/about"
             style="@style/ItemList"
             android:textAppearance="?android:textAppearanceSmall"/>
+
     </LinearLayout>
 
     <ListView
-        android:id="@+id/list_organization"
+        android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@color/transparent"

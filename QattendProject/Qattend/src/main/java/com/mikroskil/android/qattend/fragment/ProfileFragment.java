@@ -21,46 +21,49 @@ import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class ProfileFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private int position;
-    private static View space;
-    private View rootView;
-    private ParseQueryAdapter<ParseObject> mAdapter;
+    private static ParseQueryAdapter<ParseObject> mAdapter;
 
-    public ProfileFragment(int position) {
-        this.position = position;
-    }
+    private Activity mContext;
+    private static View rootView;
+
+    public ProfileFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mContext = getActivity();
         rootView = inflater.inflate(R.layout.fragment_profile, container, false);
         ParseUser user = ParseUser.getCurrentUser();
-
         ParseQuery<ParseUser> query = ParseUser.getQuery();
-        query.setCachePolicy(ParseQuery.CachePolicy.CACHE_THEN_NETWORK);
+        query.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
         query.getInBackground(user.getObjectId(), new GetCallback<ParseUser>() {
             @Override
             public void done(ParseUser user, ParseException e) {
-                ((TextView) rootView.findViewById(R.id.name)).setText(user.getString("name"));
-                ((TextView) rootView.findViewById(R.id.username)).setText("@" + user.getUsername());
-                ((TextView) rootView.findViewById(R.id.email)).setText(user.getEmail());
-                ((TextView) rootView.findViewById(R.id.gender)).setText((user.getBoolean("gender") ? "Male": "Female"));
-                ((TextView) rootView.findViewById(R.id.phone)).setText(user.getString("phone"));
-                ((TextView) rootView.findViewById(R.id.about)).setText(user.getString("about"));
+                try {
+                    ((TextView) rootView.findViewById(R.id.name)).setText(user.getString("name"));
+                    ((TextView) rootView.findViewById(R.id.username)).setText("@" + user.getUsername());
+                    ((TextView) rootView.findViewById(R.id.email)).setText(user.getEmail());
+                    ((TextView) rootView.findViewById(R.id.gender)).setText((user.getBoolean("gender") ? "Male": "Female"));
+                    ((TextView) rootView.findViewById(R.id.phone)).setText(user.getString("phone"));
+                    ((TextView) rootView.findViewById(R.id.about)).setText(user.getString("about"));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         });
 
-        ListView listView = (ListView) rootView.findViewById(R.id.list_organization);
-        mAdapter = new ParseQueryAdapter<ParseObject>(getActivity(), new ParseQueryAdapter.QueryFactory<ParseObject>() {
+        ListView listView = (ListView) rootView.findViewById(R.id.listView);
+        mAdapter = new ParseQueryAdapter<ParseObject>(mContext, new ParseQueryAdapter.QueryFactory<ParseObject>() {
             @Override
             public ParseQuery<ParseObject> create() {
                 ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Organization");
                 query.selectKeys(Arrays.asList("name", "username"));
                 query.whereEqualTo("ownBy", ParseUser.getCurrentUser());
-                query.setCachePolicy(ParseQuery.CachePolicy.CACHE_THEN_NETWORK);
+                query.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
                 return query;
             }
         }) {
@@ -76,15 +79,26 @@ public class ProfileFragment extends Fragment {
                 return v;
             }
         };
+        mAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<ParseObject>() {
+            @Override
+            public void onLoading() {
+                mContext.setProgressBarIndeterminateVisibility(true);
+            }
 
-        space = new View(getActivity());
+            @Override
+            public void onLoaded(List<ParseObject> parseObjects, Exception e) {
+                mContext.setProgressBarIndeterminateVisibility(false);
+            }
+        });
+
+        View space = new View(mContext);
         listView.addFooterView(space, null, false);
         listView.addHeaderView(space, null, false);
         listView.setAdapter(mAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getActivity(), "list " + i, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "list " + i, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -96,6 +110,10 @@ public class ProfileFragment extends Fragment {
         super.onAttach(activity);
         ((MainActivity) activity).onSectionAttached(
                 getArguments().getInt(ARG_SECTION_NUMBER));
+    }
+
+    public static void updateView() {
+        mAdapter.loadObjects();
     }
 
 }

@@ -2,12 +2,14 @@ package com.mikroskil.android.qattend;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.mikroskil.android.qattend.fragment.EventFragment;
@@ -18,7 +20,10 @@ public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private String[] sectionMenus;
+    private static final String ORG_POS_KEY = "org_pos_key";
+    private static String[] sectionMenus;
+
+    private int mOrgPos;
     private int mPosition;
 
     /**
@@ -34,56 +39,50 @@ public class MainActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_main);
 
+        mTitle = getTitle();
         sectionMenus = getResources().getStringArray(R.array.section_menus);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
-        mTitle = getTitle();
 
         // Set up the drawer.
-        mNavigationDrawerFragment.setUp(
-                R.id.navigation_drawer,
+        mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
     }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         mPosition = position;
+
         // update the main content by replacing fragments
-        FragmentManager fragmentManager = getFragmentManager();
         if (position == 0) {
-            ProfileFragment fragment = new ProfileFragment(position + 1);
             Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, position + 1);
+            args.putInt(ARG_SECTION_NUMBER, position);
+            ProfileFragment fragment = new ProfileFragment();
             fragment.setArguments(args);
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, fragment)
-                    .commit();
+            getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
         }
-        else if (position >= 1 && position <=3) {
-            EventFragment fragment = new EventFragment(position + 1);
+        else if (position >= 1 && position <= 3) {
             Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, position + 1);
+            args.putInt(ARG_SECTION_NUMBER, position);
+            EventFragment fragment = new EventFragment();
             fragment.setArguments(args);
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, fragment)
-                    .commit();
+            getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
         }
         else if (position >= 4 && position <= 6) {
-            MemberFragment fragment = new MemberFragment(position + 1);
             Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, position + 1);
+            args.putInt(ARG_SECTION_NUMBER, position);
+            MemberFragment fragment = new MemberFragment();
             fragment.setArguments(args);
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, fragment)
-                    .commit();
+            getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
         }
     }
 
     public void onSectionAttached(int number) {
-        mTitle = sectionMenus[number - 1];
+        mTitle = sectionMenus[number];
     }
 
     public void restoreActionBar() {
@@ -128,6 +127,34 @@ public class MainActivity extends Activity
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!writeInstanceState())
+            Toast.makeText(this, "Failed to write instance state!", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (readInstanceState() && mOrgPos != -1) {
+            NavigationDrawerFragment.setSpinnerState(mOrgPos);
+        }
+    }
+
+    public boolean writeInstanceState() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt(ORG_POS_KEY, NavigationDrawerFragment.getSpinnerState());
+        return editor.commit();
+    }
+
+    public boolean readInstanceState() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        mOrgPos = sp.getInt(ORG_POS_KEY, -1);
+        return sp.contains(ORG_POS_KEY);
     }
 
 }

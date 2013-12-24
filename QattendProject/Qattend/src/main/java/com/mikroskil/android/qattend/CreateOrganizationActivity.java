@@ -2,8 +2,9 @@ package com.mikroskil.android.qattend;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -13,15 +14,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mikroskil.android.qattend.fragment.ProfileFragment;
 import com.parse.FunctionCallback;
+import com.parse.GetCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseUser;
 
 import java.util.HashMap;
 
 public class CreateOrganizationActivity extends Activity {
+    private static final String ORG_KEY = "org";
 
-    private Context mContext;
     private ProgressDialog mDialog;
 
     // Values for email and password at the time of the sign_in attempt.
@@ -37,7 +42,6 @@ public class CreateOrganizationActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_organization);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        mContext = this;
 
         mNameView = (EditText) findViewById(R.id.name);
         mUsernameView = (EditText) findViewById(R.id.username);
@@ -111,7 +115,7 @@ public class CreateOrganizationActivity extends Activity {
             // form field with an error.
             focusView.requestFocus();
         } else {
-            mDialog = new ProgressDialog(mContext);
+            mDialog = new ProgressDialog(this);
             mDialog.setMessage(getString(R.string.progress_creating));
             mDialog.setIndeterminate(false);
             mDialog.setCancelable(false);
@@ -121,15 +125,35 @@ public class CreateOrganizationActivity extends Activity {
             params.put("name", mName);
             params.put("username", mUsername);
 
+            final Activity context = this;
             ParseCloud.callFunctionInBackground("createOrganization", params, new FunctionCallback<String>() {
                 @Override
                 public void done(String result, ParseException e) {
-                    mDialog.dismiss();
                     if (null == e) {
-                        Toast.makeText(mContext, result, Toast.LENGTH_LONG).show();
-                        finish();
+                        ParseUser.getCurrentUser().fetchInBackground(new GetCallback<ParseObject>() {
+                            @Override
+                            public void done(ParseObject parseObject, ParseException e) {
+                                mDialog.dismiss();
+                                if (null == e) {
+                                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+                                    SharedPreferences.Editor editor = sp.edit();
+                                    editor.putString(ORG_KEY + ParseUser.getCurrentUser().getInt("orgCount"), mName);
+                                    if(!editor.commit()) {
+                                        Toast.makeText(context, "Failed to write on disk", Toast.LENGTH_LONG).show();
+                                    }
+                                    NavigationDrawerFragment.updateSpinnerAdapter(mName);
+                                }
+                                else {
+                                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                                ProfileFragment.updateView();
+                                finish();
+                            }
+                        });
+                        Toast.makeText(context, result, Toast.LENGTH_LONG).show();
                     } else {
-                        Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
+                        mDialog.dismiss();
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             });

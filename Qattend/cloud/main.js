@@ -55,9 +55,9 @@ Parse.Cloud.define('createOrganization', function(req, res) {
       username: req.params.username,
       ownBy: req.user
     }).then(function(objs) {
-      console.log(objs);
       req.user.increment('orgCount');
       req.user.save();
+      console.log(objs);
       res.success("Organization created successfully");
     }, function(error) {
       console.log(error.message);

@@ -1,15 +1,15 @@
 package com.mikroskil.android.qattend;
 
-import android.app.Activity;
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Fragment;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,7 +19,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.parse.ParseUser;
+
+import java.util.ArrayList;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -27,6 +32,12 @@ import android.widget.Toast;
  * design guidelines</a> for a complete explanation of the behaviors implemented here.
  */
 public class NavigationDrawerFragment extends Fragment {
+    private static final String ORG_KEY = "org";
+
+    private static Spinner mSpinnerView;
+    private static ArrayAdapter<String> mAdapter;
+    private static ArrayList<String> mStates;
+    private static int mState;
 
     /**
      * Remember the position of the selected item.
@@ -52,6 +63,8 @@ public class NavigationDrawerFragment extends Fragment {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerListView;
     private View mFragmentContainerView;
+    private View mRootView;
+    private Activity mContext;
 
     private int mCurrentSelectedPosition = 0;
     private boolean mFromSavedInstanceState;
@@ -63,10 +76,11 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = getActivity();
 
         // Read in the flag indicating whether or not the user has demonstrated awareness of the
         // drawer. See PREF_USER_LEARNED_DRAWER for details.
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
         mUserLearnedDrawer = sp.getBoolean(PREF_USER_LEARNED_DRAWER, false);
 
         if (savedInstanceState != null) {
@@ -79,13 +93,38 @@ public class NavigationDrawerFragment extends Fragment {
 
         // Indicate that this fragment would like to influence the set of actions in the action bar.
         setHasOptionsMenu(true);
+
+        mStates = new ArrayList<String>();
+        for (int i = 1; i <= ParseUser.getCurrentUser().getInt("orgCount"); i++) {
+            mStates.add(sp.getString(ORG_KEY + i, "No Name Organization"));
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        mDrawerListView = (ListView) inflater.inflate(
-                R.layout.fragment_navigation_drawer, container, false);
+        mRootView = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
+        mSpinnerView = (Spinner) mRootView.findViewById(R.id.spinner);
+        mDrawerListView = (ListView) mRootView.findViewById(R.id.listView);
+        mAdapter = new ArrayAdapter<String>(mContext,
+                android.R.layout.simple_spinner_dropdown_item, mStates);
+
+        if (mStates.size() == 0) mSpinnerView.setVisibility(View.GONE);
+        else mSpinnerView.setSelection(0);
+
+        mSpinnerView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long l) {
+                mState = pos;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        mSpinnerView.setAdapter(mAdapter);
+
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -98,7 +137,7 @@ public class NavigationDrawerFragment extends Fragment {
                 android.R.id.text1,
                 getResources().getStringArray(R.array.section_menus)));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
-        return mDrawerListView;
+        return mRootView;
     }
 
     public boolean isDrawerOpen() {
@@ -112,7 +151,7 @@ public class NavigationDrawerFragment extends Fragment {
      * @param drawerLayout The DrawerLayout containing this fragment's UI.
      */
     public void setUp(int fragmentId, DrawerLayout drawerLayout) {
-        mFragmentContainerView = getActivity().findViewById(fragmentId);
+        mFragmentContainerView = mContext.findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
 
         // set a custom shadow that overlays the main content when the drawer opens
@@ -126,7 +165,7 @@ public class NavigationDrawerFragment extends Fragment {
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the navigation drawer and the action bar app icon.
         mDrawerToggle = new ActionBarDrawerToggle(
-                getActivity(),                    /* host Activity */
+                mContext,                    /* host Activity */
                 mDrawerLayout,                    /* DrawerLayout object */
                 R.drawable.ic_drawer,             /* nav drawer image to replace 'Up' caret */
                 R.string.navigation_drawer_open,  /* "open drawer" description for accessibility */
@@ -139,7 +178,7 @@ public class NavigationDrawerFragment extends Fragment {
                     return;
                 }
 
-                getActivity().invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
+                mContext.invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
             }
 
             @Override
@@ -154,11 +193,11 @@ public class NavigationDrawerFragment extends Fragment {
                     // the navigation drawer automatically in the future.
                     mUserLearnedDrawer = true;
                     SharedPreferences sp = PreferenceManager
-                            .getDefaultSharedPreferences(getActivity());
+                            .getDefaultSharedPreferences(mContext);
                     sp.edit().putBoolean(PREF_USER_LEARNED_DRAWER, true).apply();
                 }
 
-                getActivity().invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
+                mContext.invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
             }
         };
 
@@ -240,7 +279,7 @@ public class NavigationDrawerFragment extends Fragment {
 
         switch (item.getItemId()) {
             case R.id.action_create_event:
-                Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Example action.", Toast.LENGTH_SHORT).show();
                 return true;
         }
 
@@ -259,7 +298,7 @@ public class NavigationDrawerFragment extends Fragment {
     }
 
     private ActionBar getActionBar() {
-        return getActivity().getActionBar();
+        return mContext.getActionBar();
     }
 
     /**
@@ -271,4 +310,19 @@ public class NavigationDrawerFragment extends Fragment {
          */
         void onNavigationDrawerItemSelected(int position);
     }
+
+    public static void updateSpinnerAdapter(String state) {
+        mStates.add(state);
+        mSpinnerView.setVisibility(View.VISIBLE);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    public static int getSpinnerState() {
+        return mState;
+    }
+
+    public static void setSpinnerState(int pos) {
+        mSpinnerView.setSelection(pos);
+    }
+
 }
