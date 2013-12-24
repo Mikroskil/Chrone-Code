@@ -81,7 +81,10 @@ public class SettingsActivity extends PreferenceActivity {
             return false;
         }
 
-        public class LogoutDialogFragment extends DialogFragment {
+        public static class LogoutDialogFragment extends DialogFragment {
+
+            public LogoutDialogFragment() {}
+
             @Override
             public Dialog onCreateDialog(Bundle savedInstanceState) {
                 // Use the Builder class for convenient dialog construction

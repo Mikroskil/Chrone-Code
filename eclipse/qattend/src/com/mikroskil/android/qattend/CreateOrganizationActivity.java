@@ -84,7 +84,7 @@ public class CreateOrganizationActivity extends Activity {
         mNameView.setError(null);
 
         // Store values at the time of the sign_in attempt.
-        mUsername = mUsernameView.getText().toString().toLowerCase();
+        mUsername = mUsernameView.getText().toString();
         mName = mNameView.getText().toString();
 
         boolean cancel = false;
