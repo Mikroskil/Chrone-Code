@@ -70,10 +70,10 @@
 
         <activity
             android:name=".ChangePasswordActivity"
+            android:parentActivityName=".SettingsActivity"
             android:label="@string/action_change_password" />
 
-        <activity
-            android:name=".DetailActivity" />
+        <activity android:name=".DetailActivity" />
 
         <activity
             android:name=".ScannerActivity"

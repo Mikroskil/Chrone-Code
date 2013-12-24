@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -79,7 +77,7 @@ public class SignUpActivity extends Activity {
         mNameView.setError(null);
 
         // Store values at the time of the sign_in attempt.
-        mUsername = mUsernameView.getText().toString().toLowerCase();
+        mUsername = mUsernameView.getText().toString();
         mPassword = mPasswordView.getText().toString();
         mEmail = mEmailView.getText().toString();
         mName = mNameView.getText().toString();

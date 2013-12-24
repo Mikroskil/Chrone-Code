@@ -2,7 +2,6 @@ package com.mikroskil.android.qattend;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -95,7 +94,7 @@ public class SignInActivity extends Activity {
         mPasswordView.setError(null);
 
         // Store values at the time of the sign_in attempt.
-        mUsername = mUsernameView.getText().toString().toLowerCase();
+        mUsername = mUsernameView.getText().toString();
         mPassword = mPasswordView.getText().toString();
 
         boolean cancel = false;
