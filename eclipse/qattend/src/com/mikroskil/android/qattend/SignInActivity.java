@@ -2,6 +2,7 @@ package com.mikroskil.android.qattend;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -10,6 +11,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +30,7 @@ import java.util.Date;
  */
 public class SignInActivity extends Activity {
 
+    private InputMethodManager mKeyboard;
     private ProgressDialog mDialog;
 
     // Values for email and password at the time of the sign_in attempt.
@@ -36,6 +40,7 @@ public class SignInActivity extends Activity {
     // UI references.
     private EditText mUsernameView;
     private EditText mPasswordView;
+    private Button mSubmitView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +49,7 @@ public class SignInActivity extends Activity {
 
         mUsernameView = (EditText) findViewById(R.id.username);
         mPasswordView = (EditText) findViewById(R.id.password);
+        mSubmitView = (Button) findViewById(R.id.button_sign_in);
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -56,12 +62,15 @@ public class SignInActivity extends Activity {
             }
         });
 
-        findViewById(R.id.button_sign_in).setOnClickListener(new View.OnClickListener() {
+        mSubmitView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptSignIn();
             }
         });
+
+        mKeyboard = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     @Override
@@ -77,7 +86,7 @@ public class SignInActivity extends Activity {
                 startActivity(new Intent(this, SignUpActivity.class));
                 return true;
             case R.id.action_recover_password:
-                Toast.makeText(this, R.string.action_recover_password, Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, RecoverPasswordActivity.class));
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -125,19 +134,19 @@ public class SignInActivity extends Activity {
             // form field with an error.
             focusView.requestFocus();
         } else {
+            mKeyboard.hideSoftInputFromWindow(mSubmitView.getWindowToken(), 0);
             mDialog = new ProgressDialog(this);
             mDialog.setMessage(getString(R.string.progress_signing_in));
             mDialog.setIndeterminate(false);
             mDialog.setCancelable(false);
             mDialog.show();
 
-            final Activity context = this;
             ParseUser.logInInBackground(mUsername, mPassword, new LogInCallback() {
                 @Override
                 public void done(ParseUser user, ParseException e) {
                     if (null != e) {
                         mDialog.dismiss();
-                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(SignInActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                     } else {
                         user.put("lastSignIn", new Date());
                         user.saveInBackground(new SaveCallback() {
@@ -145,9 +154,9 @@ public class SignInActivity extends Activity {
                             public void done(ParseException e) {
                                 mDialog.dismiss();
                                 if (null != e) {
-                                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(SignInActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                                 } else {
-                                    Intent intent = new Intent(context, DispatchActivity.class);
+                                    Intent intent = new Intent(SignInActivity.this, DispatchActivity.class);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(intent);
                                 }

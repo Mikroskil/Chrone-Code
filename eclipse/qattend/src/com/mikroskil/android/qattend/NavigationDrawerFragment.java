@@ -32,6 +32,7 @@ import java.util.ArrayList;
  * design guidelines</a> for a complete explanation of the behaviors implemented here.
  */
 public class NavigationDrawerFragment extends Fragment {
+
     private static final String ORG_KEY = "org";
 
     private static Spinner mSpinnerView;
@@ -70,8 +71,7 @@ public class NavigationDrawerFragment extends Fragment {
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
-    public NavigationDrawerFragment() {
-    }
+    public NavigationDrawerFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

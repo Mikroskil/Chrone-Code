@@ -124,7 +124,9 @@ public class MainActivity extends Activity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_create_event:
-                Toast.makeText(this, R.string.action_create_event, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, ManageEventActivity.class);
+                intent.putExtra("EVENT_MODE", true);
+                startActivity(intent);
                 return true;
             case R.id.action_create_organization:
                 startActivity(new Intent(this, CreateOrganizationActivity.class));

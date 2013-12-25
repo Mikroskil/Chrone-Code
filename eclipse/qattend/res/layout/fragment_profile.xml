@@ -56,14 +56,17 @@
             android:id="@+id/email"
             style="@style/ItemList"
             android:textAppearance="?android:textAppearanceSmall"/>
+
         <TextView
             android:id="@+id/gender"
             style="@style/ItemList"
             android:textAppearance="?android:textAppearanceSmall"/>
+
         <TextView
             android:id="@+id/phone"
             style="@style/ItemList"
             android:textAppearance="?android:textAppearanceSmall"/>
+
         <TextView
             android:id="@+id/about"
             style="@style/ItemList"

@@ -1,94 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mikroskil.android.qattend"
-    android:versionCode="1"
-    android:versionName="1.0" >
+          package="com.mikroskil.android.qattend"
+          android:versionCode="1"
+          android:versionName="1.0" >
 
-    <uses-sdk
-        android:minSdkVersion="15"
-        android:targetSdkVersion="19" />
-    
+    <uses-sdk android:minSdkVersion="15"
+              android:targetSdkVersion="19" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.FLASHLIGHT"/>
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
-    <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-
-    <application
-        android:name=".QattendApplication"
-        android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+    <application android:name=".QattendApplication"
+                 android:allowBackup="true"
+                 android:icon="@drawable/ic_launcher"
+                 android:label="@string/app_name"
+                 android:theme="@style/AppTheme" >
 
         <meta-data android:name="com.google.android.gms.version"
                    android:value="@integer/google_play_services_version" />
 
-        <activity
-            android:name=".SplashActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoActionBar"
-            android:noHistory="true" >
+        <activity android:name=".SplashActivity"
+                  android:noHistory="true"
+                  android:theme="@style/AppThemeNoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".DispatchActivity"
-            android:noHistory="true" />
+        <activity android:name=".DispatchActivity"
+                  android:noHistory="true" />
 
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name" >
+        <activity android:name=".SignInActivity"
+                  android:label="@string/action_sign_in" />
 
+        <activity android:name=".SignUpActivity"
+                  android:label="@string/action_sign_up"
+                  android:parentActivityName=".SignInActivity" />
+
+        <activity android:name=".RecoverPasswordActivity"
+                  android:label="@string/action_recover_password"
+                  android:parentActivityName=".SignInActivity" />
+
+        <activity android:name=".MainActivity"
+                  android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
-
             <meta-data android:name="android.app.searchable"
                        android:resource="@xml/searchable" />
-
         </activity>
 
-        <activity
-            android:name=".SignInActivity"
-            android:label="@string/action_sign_in" />
+        <activity android:name=".CreateOrganizationActivity"
+                  android:label="@string/action_create_organization"
+                  android:parentActivityName=".MainActivity" />
 
-        <activity
-            android:name=".SignUpActivity"
-            android:parentActivityName=".SignInActivity"
-            android:label="@string/action_sign_up" />
+        <activity android:name=".DetailActivity"
+                  android:parentActivityName=".MainActivity" />
 
-        <activity
-            android:name=".CreateOrganizationActivity"
-            android:parentActivityName=".MainActivity"
-            android:label="@string/action_create_organization" />
+        <activity android:name=".SettingsActivity"
+                  android:label="@string/action_settings" />
 
-        <activity
-            android:name=".SettingsActivity"
-            android:label="@string/action_settings" />
+        <activity android:name=".ChangePasswordActivity"
+                  android:label="@string/action_change_password"
+                  android:parentActivityName=".SettingsActivity" />
 
-        <activity
-            android:name=".ChangePasswordActivity"
-            android:parentActivityName=".SettingsActivity"
-            android:label="@string/action_change_password" />
+        <activity android:name=".ManageEventActivity"
+                  android:label="@string/action_create_event" />
 
-        <activity android:name=".DetailActivity" />
-
-        <activity
-            android:name=".ScannerActivity"
-            android:screenOrientation="landscape"
-            android:theme="@style/CaptureTheme"
-            android:label="@string/action_scanner" />
+        <activity android:name=".ScannerActivity"
+                  android:label="@string/action_scanner"
+                  android:screenOrientation="landscape"
+                  android:theme="@style/CaptureTheme" />
 
     </application>
 

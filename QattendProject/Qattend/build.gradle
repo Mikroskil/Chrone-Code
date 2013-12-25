@@ -14,7 +14,7 @@ repositories {
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.0.0"
+    buildToolsVersion '19.0.0'
 
     defaultConfig {
         minSdkVersion 15
@@ -30,9 +30,9 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:+'
+    compile 'com.android.support:support-v4:19.0.0'
     compile 'com.google.android.gms:play-services:4.0.30'
     compile 'com.google.zxing:core:2.3.0'
     compile files('libs/Parse-1.3.9.jar')
-    compile project(":Zxing")
+    compile project(':Zxing')
 }

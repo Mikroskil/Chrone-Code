@@ -6,12 +6,13 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_create_event">Create Event</string>
     <string name="action_settings">Settings</string>
-    <string name="action_manage_event">Manage Event</string>
+
+    <string name="action_create_event">Create Event</string>
+    <string name="action_search_event">Search Event</string>
+    <string name="action_edit_event">Edit Event</string>
     <string name="action_verify_attendee">Verify Attendee</string>
     <string name="action_scanner">Scanner</string>
     <string name="action_search_member">Search Member</string>
-    <string name="action_search_event">Search Event</string>
 
 </resources>

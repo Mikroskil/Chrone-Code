@@ -7,9 +7,9 @@
           android:title="@string/action_verify_attendee"
           android:showAsAction="always|withText" />
 
-    <item android:id="@+id/action_manage_event"
+    <item android:id="@+id/action_edit_event"
           android:icon="@drawable/ic_content_edit"
-          android:title="@string/action_manage_event"
+          android:title="@string/action_edit_event"
           android:showAsAction="ifRoom|withText" />
 
 </menu>

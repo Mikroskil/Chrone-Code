@@ -2,6 +2,7 @@ package com.mikroskil.android.qattend;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -9,6 +10,8 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +27,9 @@ import com.parse.ParseUser;
 import java.util.HashMap;
 
 public class CreateOrganizationActivity extends Activity {
+
     private static final String ORG_KEY = "org";
+    private InputMethodManager mKeyboard;
 
     private ProgressDialog mDialog;
 
@@ -35,15 +40,16 @@ public class CreateOrganizationActivity extends Activity {
     // UI references.
     private EditText mUsernameView;
     private EditText mNameView;
+    private Button mSubmitView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_organization);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
 
         mNameView = (EditText) findViewById(R.id.name);
         mUsernameView = (EditText) findViewById(R.id.username);
+        mSubmitView = (Button) findViewById(R.id.button_create_organization);
 
         mUsernameView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -56,12 +62,15 @@ public class CreateOrganizationActivity extends Activity {
             }
         });
 
-        findViewById(R.id.button_create_organization).setOnClickListener(new View.OnClickListener() {
+        mSubmitView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptCreateOrganization();
             }
         });
+
+        mKeyboard = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     private void attemptCreateOrganization() {
@@ -101,6 +110,7 @@ public class CreateOrganizationActivity extends Activity {
             // form field with an error.
             focusView.requestFocus();
         } else {
+            mKeyboard.hideSoftInputFromWindow(mSubmitView.getWindowToken(), 0);
             mDialog = new ProgressDialog(this);
             mDialog.setMessage(getString(R.string.progress_creating));
             mDialog.setIndeterminate(false);
@@ -111,7 +121,6 @@ public class CreateOrganizationActivity extends Activity {
             params.put("name", mName);
             params.put("username", mUsername);
 
-            final Activity context = this;
             ParseCloud.callFunctionInBackground("createOrganization", params, new FunctionCallback<String>() {
                 @Override
                 public void done(String result, ParseException e) {
@@ -121,25 +130,25 @@ public class CreateOrganizationActivity extends Activity {
                             public void done(ParseObject parseObject, ParseException e) {
                                 mDialog.dismiss();
                                 if (null == e) {
-                                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+                                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(CreateOrganizationActivity.this);
                                     SharedPreferences.Editor editor = sp.edit();
                                     editor.putString(ORG_KEY + ParseUser.getCurrentUser().getInt("orgCount"), mName);
                                     if(!editor.commit()) {
-                                        Toast.makeText(context, "Failed to write on disk", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(CreateOrganizationActivity.this, "Failed to write on disk", Toast.LENGTH_LONG).show();
                                     }
                                     NavigationDrawerFragment.updateSpinnerAdapter(mName);
                                 }
                                 else {
-                                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(CreateOrganizationActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                                 }
                                 ProfileFragment.updateView();
                                 finish();
                             }
                         });
-                        Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+                        Toast.makeText(CreateOrganizationActivity.this, result, Toast.LENGTH_LONG).show();
                     } else {
                         mDialog.dismiss();
-                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(CreateOrganizationActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             });

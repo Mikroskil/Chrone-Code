@@ -45,12 +45,12 @@
 
         <EditTextPreference
             android:key="@string/org_name_key"
-            android:title="@string/org_name_title_preference"
-            android:summary="@string/org_name_summary_preference"
+            android:title="@string/orgs_title_preference"
+            android:summary="@string/orgs_summary_preference"
             android:singleLine="true"
             android:inputType="textCapWords"
             android:selectAllOnFocus="true"
-            android:dialogTitle="@string/org_name_dialog_preference" />
+            android:dialogTitle="@string/orgs_dialog_preference" />
 
         <Preference
             android:key="@string/change_password_key"

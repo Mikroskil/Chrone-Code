@@ -1,34 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:layout_margin="@dimen/activity_horizontal_margin"
-              tools:context=".CreateOrganizationActivity">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".CreateOrganizationActivity">
 
-    <EditText
-        android:id="@+id/name"
-        android:singleLine="true"
-        android:maxLines="1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textCapWords"
-        android:hint="@string/prompt_name" />
+    <LinearLayout
+        style="@style/FormContainer">
 
-    <EditText
-        android:id="@+id/username"
-        android:singleLine="true"
-        android:maxLines="1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:hint="@string/prompt_username"
-        android:imeActionLabel="@string/action_create_organization"
-        android:imeActionId="@+id/ime_create_organization"
-        android:imeOptions="actionUnspecified"/>
+        <EditText
+            android:id="@+id/name"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapWords"
+            android:hint="@string/prompt_name" />
 
-    <Button android:id="@+id/button_create_organization"
+        <EditText
+            android:id="@+id/username"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:hint="@string/prompt_username"
+            android:imeActionLabel="@string/action_create_organization"
+            android:imeActionId="@+id/ime_create_organization"
+            android:imeOptions="actionUnspecified"/>
+
+        <Button
+            android:id="@+id/button_create_organization"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -37,4 +39,6 @@
             android:paddingRight="32dp"
             android:layout_gravity="right" />
 
-</LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

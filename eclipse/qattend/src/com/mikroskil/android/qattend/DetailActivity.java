@@ -8,10 +8,10 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 public class DetailActivity extends Activity {
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -22,18 +22,14 @@ public class DetailActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-            case R.id.action_manage_event:
-                Toast.makeText(this, R.string.action_manage_event, Toast.LENGTH_SHORT).show();
+            case R.id.action_edit_event:
+                Intent intent = new Intent(this, ManageEventActivity.class);
+                intent.putExtra("EVENT_MODE", false);
+                startActivity(intent);
                 return true;
             case R.id.action_verify_attendee:
-                Intent intent = new Intent(this, ScannerActivity.class);
+                intent = new Intent(this, ScannerActivity.class);
                 intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
                 startActivityForResult(intent, 0);
                 return true;
@@ -59,4 +55,5 @@ public class DetailActivity extends Activity {
             }
         }
     }
+
 }

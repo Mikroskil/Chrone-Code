@@ -25,9 +25,9 @@
         <string name="email_summary_preference">Email</string>
         <string name="email_dialog_preference">Change Your Email</string>
 
-        <string name="org_name_title_preference">Organization Name</string>
-        <string name="org_name_summary_preference">Organization Name</string>
-        <string name="org_name_dialog_preference">Change Your Organization Name</string>
+        <string name="orgs_title_preference">Organizations</string>
+        <string name="orgs_summary_preference">Organizations</string>
+        <string name="orgs_dialog_preference">Organizations</string>
 
         <string name="change_password_title_preference">Change Password</string>
         <string name="prompt_new_password">New Password</string>

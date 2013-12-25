@@ -9,6 +9,8 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,7 +21,7 @@ import com.parse.SignUpCallback;
 
 public class SignUpActivity extends Activity {
 
-    private Context mContext;
+    private InputMethodManager mKeyboard;
     private ProgressDialog mDialog;
 
     // Values for email and password at the time of the sign_in attempt.
@@ -33,17 +35,18 @@ public class SignUpActivity extends Activity {
     private EditText mPasswordView;
     private EditText mNameView;
     private EditText mEmailView;
+    private Button mSubmitView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        mContext = this;
 
         mUsernameView = (EditText) findViewById(R.id.username);
         mPasswordView = (EditText) findViewById(R.id.password);
         mNameView = (EditText) findViewById(R.id.name);
         mEmailView = (EditText) findViewById(R.id.email);
+        mSubmitView = (Button) findViewById(R.id.button_sign_up);
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -56,12 +59,15 @@ public class SignUpActivity extends Activity {
             }
         });
 
-        findViewById(R.id.button_sign_up).setOnClickListener(new View.OnClickListener() {
+        mSubmitView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptSignUp();
             }
         });
+
+        mKeyboard = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     /**
@@ -130,7 +136,8 @@ public class SignUpActivity extends Activity {
             // form field with an error.
             focusView.requestFocus();
         } else {
-            mDialog = new ProgressDialog(mContext);
+            mKeyboard.hideSoftInputFromWindow(mSubmitView.getWindowToken(), 0);
+            mDialog = new ProgressDialog(this);
             mDialog.setMessage(getString(R.string.progress_signing_up));
             mDialog.setIndeterminate(false);
             mDialog.setCancelable(false);
@@ -149,9 +156,9 @@ public class SignUpActivity extends Activity {
                     mDialog.dismiss();
 
                     if (null != e) {
-                        Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                     } else {
-                        Intent intent = new Intent(mContext, DispatchActivity.class);
+                        Intent intent = new Intent(SignUpActivity.this, DispatchActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                     }
