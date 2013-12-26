@@ -2,18 +2,25 @@ package com.mikroskil.android.qattend.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.mikroskil.android.qattend.DetailActivity;
 import com.mikroskil.android.qattend.MainActivity;
+import com.mikroskil.android.qattend.ManageEventActivity;
 import com.mikroskil.android.qattend.R;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -33,8 +40,21 @@ public class EventFragment extends Fragment {
     public EventFragment() {}
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mPos = getArguments().getInt(ARG_SECTION_NUMBER);
+        mContext = activity;
+        ((MainActivity) activity).onSectionAttached(mPos);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mContext = getActivity();
         View rootView = inflater.inflate(R.layout.fragment_event, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.listView);
 
@@ -91,10 +111,27 @@ public class EventFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mPos = getArguments().getInt(ARG_SECTION_NUMBER);
-        ((MainActivity) activity).onSectionAttached(mPos);
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.event, menu);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search_event).getActionView();
+        searchView.setSearchableInfo(((SearchManager) mContext.getSystemService(Context.SEARCH_SERVICE))
+                .getSearchableInfo(mContext.getComponentName()));
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_create_event:
+                Intent intent = new Intent(mContext, ManageEventActivity.class);
+                intent.putExtra("EVENT_MODE", true);
+                startActivity(intent);
+                return true;
+            case R.id.action_search_event:
+                mContext.onSearchRequested();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

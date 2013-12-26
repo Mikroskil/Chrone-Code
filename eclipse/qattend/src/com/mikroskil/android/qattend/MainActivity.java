@@ -2,18 +2,14 @@ package com.mikroskil.android.qattend;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Window;
-import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.mikroskil.android.qattend.fragment.EventFragment;
@@ -99,21 +95,7 @@ public class MainActivity extends Activity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            MenuInflater inflater = getMenuInflater();
-            if (mPosition == 0) inflater.inflate(R.menu.profile, menu);
-            else if (mPosition >= 1 && mPosition <= 3) {
-                inflater.inflate(R.menu.event, menu);
-                SearchView searchView = (SearchView) menu.findItem(R.id.action_search_event).getActionView();
-                searchView.setSearchableInfo(((SearchManager) getSystemService(Context.SEARCH_SERVICE))
-                        .getSearchableInfo(getComponentName()));
-            }
-            else if (mPosition >= 4 && mPosition <= 6) {
-                inflater.inflate(R.menu.member, menu);
-                SearchView searchView = (SearchView) menu.findItem(R.id.action_search_member).getActionView();
-                searchView.setSearchableInfo(((SearchManager) getSystemService(Context.SEARCH_SERVICE))
-                        .getSearchableInfo(getComponentName()));
-            }
-            inflater.inflate(R.menu.global, menu);
+            getMenuInflater().inflate(R.menu.global, menu);
             restoreActionBar();
             return true;
         }
@@ -123,20 +105,6 @@ public class MainActivity extends Activity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_create_event:
-                Intent intent = new Intent(this, ManageEventActivity.class);
-                intent.putExtra("EVENT_MODE", true);
-                startActivity(intent);
-                return true;
-            case R.id.action_create_organization:
-                startActivity(new Intent(this, CreateOrganizationActivity.class));
-                return true;
-            case R.id.action_search_event:
-                onSearchRequested();
-                return true;
-            case R.id.action_search_member:
-                onSearchRequested();
-                return true;
             case R.id.action_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;

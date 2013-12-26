@@ -2,12 +2,18 @@ package com.mikroskil.android.qattend.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,8 +37,21 @@ public class MemberFragment extends Fragment {
     public MemberFragment() {}
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mPos = getArguments().getInt(ARG_SECTION_NUMBER);
+        mContext = activity;
+        ((MainActivity) activity).onSectionAttached(mPos);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mContext = getActivity();
         View rootView = inflater.inflate(R.layout.fragment_member, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.listView);
 
@@ -80,10 +99,22 @@ public class MemberFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mPos = getArguments().getInt(ARG_SECTION_NUMBER);
-        ((MainActivity) activity).onSectionAttached(mPos);
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.member, menu);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search_member).getActionView();
+        searchView.setSearchableInfo(((SearchManager) mContext.getSystemService(Context.SEARCH_SERVICE))
+                .getSearchableInfo(mContext.getComponentName()));
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_search_member:
+                mContext.onSearchRequested();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }
