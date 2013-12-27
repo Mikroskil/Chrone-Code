@@ -22,3 +22,10 @@ local.properties
 # Sublime Text project files
 *.sublime-project
 *.sublime-workspace
+
+# Android Studio project files
+*.iml
+.idea/
+build/
+.gradle/
+.DS_Store
