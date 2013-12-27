@@ -1,7 +1,7 @@
 package com.mikroskil.android.qattend.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
+import android.app.ListFragment;
 import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
@@ -11,7 +11,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -26,7 +25,7 @@ import com.parse.ParseUser;
 import java.util.Arrays;
 import java.util.List;
 
-public class MemberFragment extends Fragment {
+public class MemberFragment extends ListFragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static ParseQueryAdapter<ParseUser> mAdapter;
@@ -52,8 +51,12 @@ public class MemberFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_member, container, false);
-        ListView listView = (ListView) rootView.findViewById(R.id.listView);
+        return inflater.inflate(R.layout.fragment_member, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         mAdapter = new ParseQueryAdapter<ParseUser>(mContext, new ParseQueryAdapter.QueryFactory<ParseUser>() {
             @Override
@@ -87,24 +90,22 @@ public class MemberFragment extends Fragment {
                 mContext.setProgressBarIndeterminateVisibility(false);
             }
         });
+        setListAdapter(mAdapter);
+    }
 
-        listView.setAdapter(mAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(mContext, "list " + i, Toast.LENGTH_SHORT).show();
-            }
-        });
-        return rootView;
+    @Override
+    public void onListItemClick(ListView list, View view, int pos, long id) {
+        super.onListItemClick(list, view, pos, id);
+        Toast.makeText(mContext, "list " + pos, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.member, menu);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search_member).getActionView();
         searchView.setSearchableInfo(((SearchManager) mContext.getSystemService(Context.SEARCH_SERVICE))
                 .getSearchableInfo(mContext.getComponentName()));
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override

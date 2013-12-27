@@ -4,8 +4,9 @@ import android.app.Application;
 
 import com.parse.Parse;
 
-public class QattendApplication extends Application {
+public class QattendApp extends Application {
 
+    public static final String TAG = "QATTEND";
     public static final boolean APPDEBUG = true;
 
     @Override

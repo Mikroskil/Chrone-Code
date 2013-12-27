@@ -59,7 +59,7 @@ public class SettingsActivity extends PreferenceActivity {
             //         R.xml.advanced_preferences, false);
 
             // Can retrieve arguments from preference XML.
-            Log.i("args", "Arguments: " + getArguments());
+            Log.d(QattendApp.TAG, "Arguments: " + getArguments());
 
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.fragmented_preferences);

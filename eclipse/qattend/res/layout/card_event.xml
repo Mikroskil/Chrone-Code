@@ -21,9 +21,8 @@
             android:background="@color/gray_lighter"/>
 
         <LinearLayout
-            android:layout_toRightOf="@id/photo"
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginLeft="100dp"
             android:paddingLeft="4dp">
@@ -31,7 +30,7 @@
             <TextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:textAppearance="?android:textAppearanceMedium"
                 android:ellipsize="end"
                 android:maxLines="2"
