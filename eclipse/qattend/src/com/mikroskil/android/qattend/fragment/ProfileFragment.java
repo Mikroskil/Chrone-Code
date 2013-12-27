@@ -2,12 +2,8 @@ package com.mikroskil.android.qattend.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -15,7 +11,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mikroskil.android.qattend.CreateOrganizationActivity;
 import com.mikroskil.android.qattend.MainActivity;
 import com.mikroskil.android.qattend.R;
 import com.parse.GetCallback;
@@ -48,7 +43,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
     }
 
     @Override
@@ -120,22 +114,6 @@ public class ProfileFragment extends Fragment {
         });
 
         return rootView;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.profile, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_create_organization:
-                startActivity(new Intent(mContext, CreateOrganizationActivity.class));
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     public static void updateView() {

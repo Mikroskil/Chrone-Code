@@ -2,17 +2,11 @@ package com.mikroskil.android.qattend.fragment;
 
 import android.app.Activity;
 import android.app.ListFragment;
-import android.app.SearchManager;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,7 +40,6 @@ public class MemberFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
     }
 
     @Override
@@ -97,25 +90,6 @@ public class MemberFragment extends ListFragment {
     public void onListItemClick(ListView list, View view, int pos, long id) {
         super.onListItemClick(list, view, pos, id);
         Toast.makeText(mContext, "list " + pos, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.member, menu);
-        SearchView searchView = (SearchView) menu.findItem(R.id.action_search_member).getActionView();
-        searchView.setSearchableInfo(((SearchManager) mContext.getSystemService(Context.SEARCH_SERVICE))
-                .getSearchableInfo(mContext.getComponentName()));
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_search_member:
-                mContext.onSearchRequested();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
 }
