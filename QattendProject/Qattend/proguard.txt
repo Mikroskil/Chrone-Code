@@ -1,1 +1,1 @@
-/home/erwin/herokuapp/Chrone-Code/eclipse/qattend/proguard.txt
+../../eclipse/qattend/proguard.txt
