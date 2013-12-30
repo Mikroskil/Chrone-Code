@@ -26,10 +26,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/ic_navigation_refresh"
-        android:drawablePadding="8dp"
+        android:drawablePadding="4dp"
+        android:paddingLeft="4dp"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:gravity="center_vertical"
-        android:clickable="true"/>
+        android:background="?android:selectableItemBackground"
+        android:clickable="true"
+        android:text="Sync Now!"/>
 
 </LinearLayout>

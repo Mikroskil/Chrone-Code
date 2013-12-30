@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
@@ -20,11 +21,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.ParseUser;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -64,7 +68,7 @@ public class NavigationDrawerFragment extends Fragment {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerListView;
     private View mFragmentContainerView;
-    private View mRootView;
+    private TextView mSyncView;
     private Activity mContext;
 
     private int mCurrentSelectedPosition = 0;
@@ -103,9 +107,10 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        mRootView = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
-        mSpinnerView = (Spinner) mRootView.findViewById(R.id.spinner);
-        mDrawerListView = (ListView) mRootView.findViewById(R.id.listView);
+        View rootView = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
+        mSpinnerView = (Spinner) rootView.findViewById(R.id.spinner);
+        mDrawerListView = (ListView) rootView.findViewById(R.id.listView);
+        mSyncView = (TextView) rootView.findViewById(R.id.sync);
 
         mAdapter = new ArrayAdapter<String>(mContext,
                 android.R.layout.simple_spinner_dropdown_item, mStates);
@@ -139,14 +144,20 @@ public class NavigationDrawerFragment extends Fragment {
                 getResources().getStringArray(R.array.section_menus)));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
 
-        mRootView.findViewById(R.id.sync).setOnClickListener(new View.OnClickListener() {
+        mSyncView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(mContext, "Syncing", Toast.LENGTH_SHORT).show();
+                mSyncView.setText("Syncing...");
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSyncView.setText("Last sync: " + new SimpleDateFormat("MMM dd HH:mm").format(new Date()));
+                    }
+                }, 1000);
             }
         });
 
-        return mRootView;
+        return rootView;
     }
 
     public boolean isDrawerOpen() {
