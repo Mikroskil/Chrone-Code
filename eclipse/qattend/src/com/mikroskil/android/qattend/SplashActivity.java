@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.parse.ParseAnalytics;
+import com.parse.ParseUser;
 
 public class SplashActivity extends Activity {
 
@@ -13,12 +14,15 @@ public class SplashActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        // ParseAnalytics.trackAppOpened(getIntent());
+        ParseAnalytics.trackAppOpened(getIntent());
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(getApplicationContext(), DispatchActivity.class));
+                if (ParseUser.getCurrentUser() != null)
+                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                else
+                    startActivity(new Intent(SplashActivity.this, SignInActivity.class));
                 finish();
             }
         }, 1000);

@@ -23,8 +23,8 @@ import com.mikroskil.android.qattend.fragment.ProfileFragment;
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
-    private static final String ARG_SECTION_NUMBER = "section_number";
-    private static final String ORG_POS_KEY = "org_pos_key";
+    private static final String ARG_SECTION_NUMBER = "sectionNumber";
+    private static final String KEY_ORG_POS = "organizationPosition";
     private static String[] sectionMenus;
 
     private int mOrgPos;
@@ -166,14 +166,14 @@ public class MainActivity extends Activity
     public boolean writeInstanceState() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sp.edit();
-        editor.putInt(ORG_POS_KEY, NavigationDrawerFragment.getSpinnerState());
+        editor.putInt(KEY_ORG_POS, NavigationDrawerFragment.getSpinnerState());
         return editor.commit();
     }
 
     public boolean readInstanceState() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        mOrgPos = sp.getInt(ORG_POS_KEY, -1);
-        return sp.contains(ORG_POS_KEY);
+        mOrgPos = sp.getInt(KEY_ORG_POS, -1);
+        return sp.contains(KEY_ORG_POS);
     }
 
 }

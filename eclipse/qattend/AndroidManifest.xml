@@ -36,9 +36,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".DispatchActivity"
-                  android:noHistory="true" />
-
         <activity android:name=".SignInActivity"
                   android:label="@string/action_sign_in" />
 

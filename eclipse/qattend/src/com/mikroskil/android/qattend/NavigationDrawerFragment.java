@@ -106,6 +106,7 @@ public class NavigationDrawerFragment extends Fragment {
         mRootView = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
         mSpinnerView = (Spinner) mRootView.findViewById(R.id.spinner);
         mDrawerListView = (ListView) mRootView.findViewById(R.id.listView);
+
         mAdapter = new ArrayAdapter<String>(mContext,
                 android.R.layout.simple_spinner_dropdown_item, mStates);
 
@@ -137,6 +138,14 @@ public class NavigationDrawerFragment extends Fragment {
                 android.R.id.text1,
                 getResources().getStringArray(R.array.section_menus)));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
+
+        mRootView.findViewById(R.id.sync).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(mContext, "Syncing", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         return mRootView;
     }
 

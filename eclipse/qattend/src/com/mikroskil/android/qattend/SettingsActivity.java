@@ -90,7 +90,7 @@ public class SettingsActivity extends PreferenceActivity {
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 ParseUser.logOut();
-                                Intent intent = new Intent(getActivity(), DispatchActivity.class);
+                                Intent intent = new Intent(getActivity(), SplashActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                             }

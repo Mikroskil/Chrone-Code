@@ -1,11 +1,14 @@
 package com.mikroskil.android.qattend;
 
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
+import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -21,20 +24,14 @@ import com.parse.SignUpCallback;
 
 public class SignUpActivity extends Activity {
 
-    private InputMethodManager mKeyboard;
-    private ProgressDialog mDialog;
-
-    // Values for email and password at the time of the sign_in attempt.
-    private String mUsername;
-    private String mPassword;
     private String mName;
+    private String mUsername;
     private String mEmail;
-
-    // UI references.
-    private EditText mUsernameView;
-    private EditText mPasswordView;
+    private String mPassword;
     private EditText mNameView;
+    private EditText mUsernameView;
     private EditText mEmailView;
+    private EditText mPasswordView;
     private Button mSubmitView;
 
     @Override
@@ -42,10 +39,10 @@ public class SignUpActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        mUsernameView = (EditText) findViewById(R.id.username);
-        mPasswordView = (EditText) findViewById(R.id.password);
         mNameView = (EditText) findViewById(R.id.name);
+        mUsernameView = (EditText) findViewById(R.id.username);
         mEmailView = (EditText) findViewById(R.id.email);
+        mPasswordView = (EditText) findViewById(R.id.password);
         mSubmitView = (Button) findViewById(R.id.button_sign_up);
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -65,28 +62,20 @@ public class SignUpActivity extends Activity {
                 attemptSignUp();
             }
         });
-
-        mKeyboard = (InputMethodManager)
-                getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
-    /**
-     * Attempts to sign in or register the account specified by the sign_in form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual sign_in attempt is made.
-     */
-    public void attemptSignUp() {
-        // Reset errors.
+    private void attemptSignUp() {
+        Log.d(QattendApp.TAG, "attempt sign up");
+
         mUsernameView.setError(null);
         mPasswordView.setError(null);
         mEmailView.setError(null);
         mNameView.setError(null);
 
-        // Store values at the time of the sign_in attempt.
-        mUsername = mUsernameView.getText().toString();
-        mPassword = mPasswordView.getText().toString();
-        mEmail = mEmailView.getText().toString();
-        mName = mNameView.getText().toString();
+        mUsername = mUsernameView.getText().toString().trim();
+        mPassword = mPasswordView.getText().toString().trim();
+        mEmail = mEmailView.getText().toString().trim();
+        mName = mNameView.getText().toString().trim();
 
         boolean cancel = false;
         View focusView = null;
@@ -105,7 +94,7 @@ public class SignUpActivity extends Activity {
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
-        } else if (!mEmail.contains("@")) {
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(mEmail).matches()) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
@@ -131,40 +120,48 @@ public class SignUpActivity extends Activity {
             cancel = true;
         }
 
-        if (cancel) {
-            // There was an error; don't attempt sign_in and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
-            mKeyboard.hideSoftInputFromWindow(mSubmitView.getWindowToken(), 0);
-            mDialog = new ProgressDialog(this);
-            mDialog.setMessage(getString(R.string.progress_signing_up));
-            mDialog.setIndeterminate(false);
-            mDialog.setCancelable(false);
-            mDialog.show();
-
-            ParseUser user = new ParseUser();
-            user.setUsername(mUsername);
-            user.setPassword(mPassword);
-            user.setEmail(mEmail);
-            user.put("name", mName);
-            user.put("orgCount", 0);
-
-            user.signUpInBackground(new SignUpCallback() {
-                @Override
-                public void done(ParseException e) {
-                    mDialog.dismiss();
-
-                    if (null != e) {
-                        Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                    } else {
-                        Intent intent = new Intent(SignUpActivity.this, DispatchActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                    }
-                }
-            });
+        if (cancel) focusView.requestFocus();
+        else {
+            ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+                    .hideSoftInputFromWindow(mSubmitView.getWindowToken(), 0);
+            signUp();
         }
+    }
+
+    private void signUp() {
+        Log.d(QattendApp.TAG, "sign up");
+
+        final ProgressDialog progress = new ProgressDialog(this);
+        progress.setMessage(getString(R.string.progress_signing_up));
+        progress.setIndeterminate(false);
+        progress.setCancelable(false);
+        progress.show();
+
+        ParseUser user = new ParseUser();
+        user.setUsername(mUsername);
+        user.setPassword(mPassword);
+        user.setEmail(mEmail);
+        user.put("name", mName);
+        user.put("orgCount", 0);
+
+        user.signUpInBackground(new SignUpCallback() {
+            @Override
+            public void done(ParseException e) {
+                Log.d(QattendApp.TAG, "sign up callback");
+                progress.dismiss();
+
+                if (e == null) {
+                    Intent data = new Intent();
+                    data.putExtra(AccountManager.KEY_ACCOUNT_NAME, mUsername);
+                    data.putExtra(AccountManager.KEY_PASSWORD, mPassword);
+                    setResult(RESULT_OK, data);
+                    finish();
+                } else {
+                    Log.e(QattendApp.TAG, e.getMessage());
+                    Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
 }

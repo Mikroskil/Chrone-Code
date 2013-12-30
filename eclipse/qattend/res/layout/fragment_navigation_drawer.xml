@@ -15,9 +15,21 @@
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:choiceMode="singleChoice"
         android:divider="@color/transparent"
         android:dividerHeight="0dp"/>
+
+    <TextView
+        android:id="@+id/sync"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_navigation_refresh"
+        android:drawablePadding="8dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:gravity="center_vertical"
+        android:clickable="true"/>
 
 </LinearLayout>

@@ -1,11 +1,13 @@
 package com.mikroskil.android.qattend;
 
-import android.app.Activity;
+import android.accounts.AccountAuthenticatorActivity;
+import android.accounts.AccountManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,7 +22,6 @@ import android.widget.Toast;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
 import java.util.Date;
 
@@ -28,16 +29,12 @@ import java.util.Date;
  * Activity which displays a sign_in screen to the user, offering registration as
  * well.
  */
-public class SignInActivity extends Activity {
+public class SignInActivity extends AccountAuthenticatorActivity {
 
-    private InputMethodManager mKeyboard;
-    private ProgressDialog mDialog;
+    public static final int REQ_SIGN_UP = 1;
 
-    // Values for email and password at the time of the sign_in attempt.
     private String mUsername;
     private String mPassword;
-
-    // UI references.
     private EditText mUsernameView;
     private EditText mPasswordView;
     private Button mSubmitView;
@@ -68,9 +65,6 @@ public class SignInActivity extends Activity {
                 attemptSignIn();
             }
         });
-
-        mKeyboard = (InputMethodManager)
-                getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     @Override
@@ -83,7 +77,7 @@ public class SignInActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_sign_up:
-                startActivity(new Intent(this, SignUpActivity.class));
+                startActivityForResult(new Intent(this, SignUpActivity.class), REQ_SIGN_UP);
                 return true;
             case R.id.action_recover_password:
                 startActivity(new Intent(this, RecoverPasswordActivity.class));
@@ -92,19 +86,25 @@ public class SignInActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Attempts to sign in or register the account specified by the sign_in form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual sign_in attempt is made.
-     */
-    public void attemptSignIn() {
-        // Reset errors.
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(QattendApp.TAG, String.format("Data sent: req=%s res=%s data=%s", requestCode, resultCode, data));
+        if (requestCode == REQ_SIGN_UP && resultCode == RESULT_OK) {
+            mUsername = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+            mPassword = data.getStringExtra(AccountManager.KEY_PASSWORD);
+            signIn();
+        }
+        else super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void attemptSignIn() {
+        Log.d(QattendApp.TAG, "attempt sign in");
+
         mUsernameView.setError(null);
         mPasswordView.setError(null);
 
-        // Store values at the time of the sign_in attempt.
-        mUsername = mUsernameView.getText().toString();
-        mPassword = mPasswordView.getText().toString();
+        mUsername = mUsernameView.getText().toString().trim();
+        mPassword = mPasswordView.getText().toString().trim();
 
         boolean cancel = false;
         View focusView = null;
@@ -129,43 +129,41 @@ public class SignInActivity extends Activity {
             cancel = true;
         }
 
-        if (cancel) {
-            // There was an error; don't attempt sign_in and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
-            mKeyboard.hideSoftInputFromWindow(mSubmitView.getWindowToken(), 0);
-            mDialog = new ProgressDialog(this);
-            mDialog.setMessage(getString(R.string.progress_signing_in));
-            mDialog.setIndeterminate(false);
-            mDialog.setCancelable(false);
-            mDialog.show();
-
-            ParseUser.logInInBackground(mUsername, mPassword, new LogInCallback() {
-                @Override
-                public void done(ParseUser user, ParseException e) {
-                    if (null != e) {
-                        mDialog.dismiss();
-                        Toast.makeText(SignInActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                    } else {
-                        user.put("lastSignIn", new Date());
-                        user.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                mDialog.dismiss();
-                                if (null != e) {
-                                    Toast.makeText(SignInActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                                } else {
-                                    Intent intent = new Intent(SignInActivity.this, DispatchActivity.class);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    startActivity(intent);
-                                }
-                            }
-                        });
-                    }
-                }
-            });
+        if (cancel) focusView.requestFocus();
+        else {
+            ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+                    .hideSoftInputFromWindow(mSubmitView.getWindowToken(), 0);
+            signIn();
         }
+    }
+
+    private void signIn() {
+        Log.d(QattendApp.TAG, "sign in");
+
+        final ProgressDialog progress = new ProgressDialog(this);
+        progress.setMessage(getString(R.string.progress_signing_in));
+        progress.setIndeterminate(false);
+        progress.setCancelable(false);
+        progress.show();
+
+        ParseUser.logInInBackground(mUsername, mPassword, new LogInCallback() {
+            @Override
+            public void done(ParseUser user, ParseException e) {
+                Log.d(QattendApp.TAG, "sign in callback");
+                progress.dismiss();
+
+                if (e == null) {
+                    user.put("lastSignIn", new Date());
+                    user.saveEventually();
+                    Intent intent = new Intent(SignInActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                } else {
+                    Log.e(QattendApp.TAG, e.getMessage());
+                    Toast.makeText(SignInActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
 }
