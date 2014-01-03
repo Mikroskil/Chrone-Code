@@ -3,10 +3,9 @@ package com.mikroskil.android.qattend;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -18,26 +17,18 @@ import android.widget.Toast;
 
 import com.mikroskil.android.qattend.fragment.ProfileFragment;
 import com.parse.FunctionCallback;
-import com.parse.GetCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseUser;
 
 import java.util.HashMap;
 
 public class CreateOrganizationActivity extends Activity {
 
-    private static final String ORG_KEY = "org";
-    private InputMethodManager mKeyboard;
+    private ProgressDialog mProgress;
 
-    private ProgressDialog mDialog;
-
-    // Values for email and password at the time of the sign_in attempt.
     private String mUsername;
     private String mName;
 
-    // UI references.
     private EditText mUsernameView;
     private EditText mNameView;
     private Button mSubmitView;
@@ -68,19 +59,14 @@ public class CreateOrganizationActivity extends Activity {
                 attemptCreateOrganization();
             }
         });
-
-        mKeyboard = (InputMethodManager)
-                getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     private void attemptCreateOrganization() {
-        // Reset errors.
         mUsernameView.setError(null);
         mNameView.setError(null);
 
-        // Store values at the time of the sign_in attempt.
-        mUsername = mUsernameView.getText().toString();
-        mName = mNameView.getText().toString();
+        mUsername = mUsernameView.getText().toString().trim();
+        mName = mNameView.getText().toString().trim();
 
         boolean cancel = false;
         View focusView = null;
@@ -105,17 +91,15 @@ public class CreateOrganizationActivity extends Activity {
             cancel = true;
         }
 
-        if (cancel) {
-            // There was an error; don't attempt sign_in and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
-            mKeyboard.hideSoftInputFromWindow(mSubmitView.getWindowToken(), 0);
-            mDialog = new ProgressDialog(this);
-            mDialog.setMessage(getString(R.string.progress_creating));
-            mDialog.setIndeterminate(false);
-            mDialog.setCancelable(false);
-            mDialog.show();
+        if (cancel) focusView.requestFocus();
+        else {
+            ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+                    .hideSoftInputFromWindow(mSubmitView.getWindowToken(), 0);
+            mProgress = new ProgressDialog(this);
+            mProgress.setMessage(getString(R.string.progress_creating));
+            mProgress.setIndeterminate(false);
+            mProgress.setCancelable(false);
+            mProgress.show();
 
             HashMap<String, Object> params = new HashMap<String, Object>();
             params.put("name", mName);
@@ -124,30 +108,14 @@ public class CreateOrganizationActivity extends Activity {
             ParseCloud.callFunctionInBackground("createOrganization", params, new FunctionCallback<String>() {
                 @Override
                 public void done(String result, ParseException e) {
+                    mProgress.dismiss();
                     if (null == e) {
-                        ParseUser.getCurrentUser().fetchInBackground(new GetCallback<ParseObject>() {
-                            @Override
-                            public void done(ParseObject parseObject, ParseException e) {
-                                mDialog.dismiss();
-                                if (null == e) {
-                                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(CreateOrganizationActivity.this);
-                                    SharedPreferences.Editor editor = sp.edit();
-                                    editor.putString(ORG_KEY + ParseUser.getCurrentUser().getInt("orgCount"), mName);
-                                    if(!editor.commit()) {
-                                        Toast.makeText(CreateOrganizationActivity.this, "Failed to write on disk", Toast.LENGTH_LONG).show();
-                                    }
-                                    NavigationDrawerFragment.updateSpinnerAdapter(mName);
-                                }
-                                else {
-                                    Toast.makeText(CreateOrganizationActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                                }
-                                ProfileFragment.updateView();
-                                finish();
-                            }
-                        });
+                        NavigationDrawerFragment.updateSpinnerAdapter();
+                        ProfileFragment.updateAdapter();
                         Toast.makeText(CreateOrganizationActivity.this, result, Toast.LENGTH_LONG).show();
+                        finish();
                     } else {
-                        mDialog.dismiss();
+                        Log.e(QattendApp.TAG, "create organization: " + e.getMessage());
                         Toast.makeText(CreateOrganizationActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }

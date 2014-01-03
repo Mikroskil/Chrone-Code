@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -20,14 +22,15 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.parse.ParseUser;
+import com.mikroskil.android.qattend.db.Contract;
+import com.mikroskil.android.qattend.db.QattendDatabase;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -37,11 +40,8 @@ import java.util.Date;
  */
 public class NavigationDrawerFragment extends Fragment {
 
-    private static final String ORG_KEY = "org";
-
     private static Spinner mSpinnerView;
-    private static ArrayAdapter<String> mAdapter;
-    private static ArrayList<String> mStates;
+    private static SimpleCursorAdapter mAdapter;
     private static int mState;
 
     /**
@@ -97,11 +97,6 @@ public class NavigationDrawerFragment extends Fragment {
 
         // Indicate that this fragment would like to influence the set of actions in the action bar.
         setHasOptionsMenu(true);
-
-        mStates = new ArrayList<String>();
-        for (int i = 1; i <= ParseUser.getCurrentUser().getInt("orgCount"); i++) {
-            mStates.add(sp.getString(ORG_KEY + i, "No Name Organization"));
-        }
     }
 
     @Override
@@ -112,11 +107,19 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerListView = (ListView) rootView.findViewById(R.id.listView);
         mSyncView = (TextView) rootView.findViewById(R.id.sync);
 
-        mAdapter = new ArrayAdapter<String>(mContext,
-                android.R.layout.simple_spinner_dropdown_item, mStates);
+        QattendDatabase dbHelper = new QattendDatabase(mContext);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + Contract.Organization.TABLE, null);
 
-        if (mStates.size() == 0) mSpinnerView.setVisibility(View.GONE);
-        else mSpinnerView.setSelection(0);
+//        if (cursor.getCount() == 0) mSpinnerView.setVisibility(View.GONE);
+//        else mSpinnerView.setSelection(0);
+
+        mAdapter = new SimpleCursorAdapter(mContext,
+                    android.R.layout.simple_spinner_dropdown_item,
+                    cursor,
+                    new String[] { Contract.Organization.COL_NAME },
+                    new int[] { android.R.id.text1 },
+                    0);
 
         mSpinnerView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -151,7 +154,7 @@ public class NavigationDrawerFragment extends Fragment {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mSyncView.setText("Last sync: " + new SimpleDateFormat("MMM dd HH:mm").format(new Date()));
+                        mSyncView.setText("Last sync: " + new SimpleDateFormat("MMM dd, HH:mm").format(new Date()));
                     }
                 }, 1000);
             }
@@ -331,10 +334,14 @@ public class NavigationDrawerFragment extends Fragment {
         void onNavigationDrawerItemSelected(int position);
     }
 
-    public static void updateSpinnerAdapter(String state) {
-        mStates.add(state);
+    public static void updateSpinnerAdapter() {
         mSpinnerView.setVisibility(View.VISIBLE);
         mAdapter.notifyDataSetChanged();
+    }
+
+    public static String getActiveOrgId () {
+        Cursor cursor = (Cursor) mAdapter.getItem(mState);
+        return cursor.getString(cursor.getColumnIndex(Contract.Organization._ID));
     }
 
     public static int getSpinnerState() {

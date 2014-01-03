@@ -23,8 +23,8 @@ import com.mikroskil.android.qattend.fragment.ProfileFragment;
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
-    private static final String ARG_SECTION_NUMBER = "sectionNumber";
-    private static final String KEY_ORG_POS = "organizationPosition";
+    public static final String ARG_SECTION_NUMBER = "sectionNumber";
+    public static final String KEY_ORG_POS = "organizationPosition";
     private static String[] sectionMenus;
 
     private int mOrgPos;
@@ -76,7 +76,7 @@ public class MainActivity extends Activity
             fragment.setArguments(args);
             getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
         }
-        else if (position >= 4 && position <= 6) {
+        else if (position >= 4 && position <= 5) {
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, position);
             MemberFragment fragment = new MemberFragment();
@@ -109,7 +109,7 @@ public class MainActivity extends Activity
                 searchView.setSearchableInfo(((SearchManager) this.getSystemService(Context.SEARCH_SERVICE))
                         .getSearchableInfo(this.getComponentName()));
             }
-            else if (mPos >= 4 && mPos <= 6) {
+            else if (mPos >= 4 && mPos <= 5) {
                 inflater.inflate(R.menu.member, menu);
                 SearchView searchView = (SearchView) menu.findItem(R.id.action_search_member).getActionView();
                 searchView.setSearchableInfo(((SearchManager) this.getSystemService(Context.SEARCH_SERVICE))

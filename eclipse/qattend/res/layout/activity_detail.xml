@@ -39,13 +39,12 @@
             android:layout_margin="12dp">
 
             <TextView
-                android:id="@+id/description"
+                android:id="@+id/desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:paddingBottom="8dp"
-                android:paddingTop="8dp"
-                android:text="Description goes here"/>
+                android:paddingTop="8dp"/>
 
             <TextView
                 android:id="@+id/time"
@@ -56,7 +55,6 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:paddingBottom="8dp"
                 android:paddingTop="8dp"
-                android:text="24 June 2013 at 02:00 pm"
                 android:gravity="center_vertical"/>
 
             <TextView
@@ -68,7 +66,6 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:paddingBottom="8dp"
                 android:paddingTop="8dp"
-                android:text="Thamrin Plaza, Medan"
                 android:gravity="center_vertical"/>
 
             <TextView
@@ -78,7 +75,6 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:paddingBottom="8dp"
                 android:paddingTop="8dp"
-                android:text="Public"
                 android:gravity="center_vertical"/>
 
             <TextView
@@ -88,7 +84,6 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:paddingBottom="8dp"
                 android:paddingTop="8dp"
-                android:text="5 Ticket Left"
                 android:gravity="center_vertical"/>
 
         </LinearLayout>

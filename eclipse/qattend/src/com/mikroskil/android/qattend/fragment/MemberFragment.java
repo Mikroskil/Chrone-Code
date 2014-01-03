@@ -2,27 +2,27 @@ package com.mikroskil.android.qattend.fragment;
 
 import android.app.Activity;
 import android.app.ListFragment;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
 import com.mikroskil.android.qattend.MainActivity;
+import com.mikroskil.android.qattend.NavigationDrawerFragment;
+import com.mikroskil.android.qattend.QattendApp;
 import com.mikroskil.android.qattend.R;
-import com.parse.ParseQuery;
-import com.parse.ParseQueryAdapter;
-import com.parse.ParseUser;
-
-import java.util.Arrays;
-import java.util.List;
+import com.mikroskil.android.qattend.db.Contract;
+import com.mikroskil.android.qattend.db.QattendDatabase;
 
 public class MemberFragment extends ListFragment {
 
-    private static final String ARG_SECTION_NUMBER = "section_number";
-    private static ParseQueryAdapter<ParseUser> mAdapter;
+    private static SimpleCursorAdapter mAdapter;
 
     private Activity mContext;
     private int mPos;
@@ -32,7 +32,7 @@ public class MemberFragment extends ListFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mPos = getArguments().getInt(ARG_SECTION_NUMBER);
+        mPos = getArguments().getInt(MainActivity.ARG_SECTION_NUMBER);
         mContext = activity;
         ((MainActivity) activity).onSectionAttached(mPos);
     }
@@ -50,39 +50,14 @@ public class MemberFragment extends ListFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d(QattendApp.TAG, "query member data");
 
-        mAdapter = new ParseQueryAdapter<ParseUser>(mContext, new ParseQueryAdapter.QueryFactory<ParseUser>() {
-            @Override
-            public ParseQuery<ParseUser> create() {
-                ParseQuery<ParseUser> query = ParseUser.getQuery();
-                query.selectKeys(Arrays.asList("name", "username"));
-                query.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
-                return query;
-            }
-        }) {
-            @Override
-            public View getItemView(ParseUser obj, View v, ViewGroup parent) {
-                if (null == v) {
-                    v = View.inflate(getContext(), android.R.layout.simple_list_item_2, null);
-                }
-
-                super.getItemView(obj, v, parent);
-                ((TextView) v.findViewById(android.R.id.text1)).setText(obj.getString("name"));
-                ((TextView) v.findViewById(android.R.id.text2)).setText("@" + obj.getString("username"));
-                return v;
-            }
-        };
-        mAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<ParseUser>() {
-            @Override
-            public void onLoading() {
-                mContext.setProgressBarIndeterminateVisibility(true);
-            }
-
-            @Override
-            public void onLoaded(List<ParseUser> parseObjects, Exception e) {
-                mContext.setProgressBarIndeterminateVisibility(false);
-            }
-        });
+        mAdapter = new SimpleCursorAdapter(mContext,
+                android.R.layout.simple_list_item_2,
+                getCursor(),
+                new String[] { Contract.Member.COL_NAME, Contract.Member.COL_USERNAME },
+                new int[] { android.R.id.text1, android.R.id.text2 },
+                0);
         setListAdapter(mAdapter);
     }
 
@@ -90,6 +65,28 @@ public class MemberFragment extends ListFragment {
     public void onListItemClick(ListView list, View view, int pos, long id) {
         super.onListItemClick(list, view, pos, id);
         Toast.makeText(mContext, "list " + pos, Toast.LENGTH_SHORT).show();
+    }
+
+    private Cursor getCursor() {
+        QattendDatabase dbHelper = new QattendDatabase(mContext);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        if (mPos == 4) {
+            return db.rawQuery(String.format("SELECT A.%s, B.%s, B.%s FROM %s AS A INNER JOIN %s AS B ON A.%s = B.%s WHERE A.%s = 1 AND A.%s = '%s' ORDER BY A.%s DESC",
+                    Contract.Membership._ID, Contract.Member.COL_NAME, Contract.Member.COL_USERNAME,
+                    Contract.Membership.TABLE, Contract.Member.TABLE,
+                    Contract.Membership.COL_APPLICANT_FROM, Contract.Member._ID, Contract.Membership.COL_APPROVED,
+                    Contract.Membership.COL_APPLY_TO, NavigationDrawerFragment.getActiveOrgId(),
+                    Contract.Membership.COL_CREATED_AT), null);
+        } else if (mPos == 5) {
+            return db.rawQuery(String.format("SELECT A.%s, B.%s, B.%s FROM %s AS A INNER JOIN %s AS B ON A.%s = B.%s WHERE A.%s = 0 AND A.%s = '%s' ORDER BY A.%s DESC",
+                    Contract.Membership._ID, Contract.Member.COL_NAME, Contract.Member.COL_USERNAME,
+                    Contract.Membership.TABLE, Contract.Member.TABLE,
+                    Contract.Membership.COL_APPLICANT_FROM, Contract.Member._ID, Contract.Membership.COL_APPROVED,
+                    Contract.Membership.COL_APPLY_TO, NavigationDrawerFragment.getActiveOrgId(),
+                    Contract.Membership.COL_CREATED_AT), null);
+        }
+        return null;
     }
 
 }

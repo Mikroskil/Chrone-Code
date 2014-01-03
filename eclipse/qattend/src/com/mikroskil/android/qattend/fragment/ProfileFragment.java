@@ -2,31 +2,30 @@ package com.mikroskil.android.qattend.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mikroskil.android.qattend.MainActivity;
+import com.mikroskil.android.qattend.QattendApp;
 import com.mikroskil.android.qattend.R;
-import com.parse.GetCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.ParseQueryAdapter;
+import com.mikroskil.android.qattend.db.Contract;
+import com.mikroskil.android.qattend.db.QattendDatabase;
 import com.parse.ParseUser;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class ProfileFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private static ParseQueryAdapter<ParseObject> mAdapter;
+    private static SimpleCursorAdapter mAdapter;
 
     private Activity mContext;
     private static View rootView;
@@ -48,59 +47,29 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_profile, container, false);
+        Log.d(QattendApp.TAG, "query profile data");
+
         ParseUser user = ParseUser.getCurrentUser();
-        ParseQuery<ParseUser> query = ParseUser.getQuery();
-        query.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
-        query.getInBackground(user.getObjectId(), new GetCallback<ParseUser>() {
-            @Override
-            public void done(ParseUser user, ParseException e) {
-                try {
-                    ((TextView) rootView.findViewById(R.id.name)).setText(user.getString("name"));
-                    ((TextView) rootView.findViewById(R.id.username)).setText("@" + user.getUsername());
-                    ((TextView) rootView.findViewById(R.id.email)).setText(user.getEmail());
-                    ((TextView) rootView.findViewById(R.id.gender)).setText((user.getBoolean("gender") ? "Male": "Female"));
-                    ((TextView) rootView.findViewById(R.id.phone)).setText(user.getString("phone"));
-                    ((TextView) rootView.findViewById(R.id.about)).setText(user.getString("about"));
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
+        ((TextView) rootView.findViewById(R.id.name)).setText(user.getString("name"));
+        ((TextView) rootView.findViewById(R.id.username)).setText("@" + user.getUsername());
+        ((TextView) rootView.findViewById(R.id.email)).setText(user.getEmail());
+        ((TextView) rootView.findViewById(R.id.gender)).setText((user.getBoolean("gender") ? "Male": "Female"));
+        ((TextView) rootView.findViewById(R.id.phone)).setText(user.getString("phone"));
+        ((TextView) rootView.findViewById(R.id.about)).setText(user.getString("about"));
+
+        QattendDatabase dbHelper = new QattendDatabase(mContext);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(String.format("SELECT %s, %s, %s FROM %s ORDER BY %s",
+                Contract.Organization._ID, Contract.Organization.COL_NAME, Contract.Organization.COL_USERNAME,
+                Contract.Organization.TABLE, Contract.Organization.COL_CREATED_AT), null);
 
         ListView listView = (ListView) rootView.findViewById(R.id.listView);
-        mAdapter = new ParseQueryAdapter<ParseObject>(mContext, new ParseQueryAdapter.QueryFactory<ParseObject>() {
-            @Override
-            public ParseQuery<ParseObject> create() {
-                ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Organization");
-                query.selectKeys(Arrays.asList("name", "username"));
-                query.whereEqualTo("ownBy", ParseUser.getCurrentUser());
-                query.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
-                return query;
-            }
-        }) {
-            @Override
-            public View getItemView(ParseObject obj, View v, ViewGroup parent) {
-                if (null == v) {
-                    v = View.inflate(getContext(), R.layout.card_organization, null);
-                }
-
-                super.getItemView(obj, v, parent);
-                ((TextView) v.findViewById(R.id.name)).setText(obj.getString("name"));
-                ((TextView) v.findViewById(R.id.username)).setText("@" + obj.getString("username"));
-                return v;
-            }
-        };
-        mAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<ParseObject>() {
-            @Override
-            public void onLoading() {
-                mContext.setProgressBarIndeterminateVisibility(true);
-            }
-
-            @Override
-            public void onLoaded(List<ParseObject> parseObjects, Exception e) {
-                mContext.setProgressBarIndeterminateVisibility(false);
-            }
-        });
+        mAdapter = new SimpleCursorAdapter(mContext,
+                R.layout.card_organization,
+                cursor,
+                new String[] { Contract.Organization.COL_NAME, Contract.Organization.COL_USERNAME },
+                new int[] { R.id.name, R.id.username },
+                0);
 
         View space = new View(mContext);
         listView.addFooterView(space, null, false);
@@ -116,8 +85,8 @@ public class ProfileFragment extends Fragment {
         return rootView;
     }
 
-    public static void updateView() {
-        mAdapter.loadObjects();
+    public static void updateAdapter() {
+        mAdapter.notifyDataSetChanged();
     }
 
 }
