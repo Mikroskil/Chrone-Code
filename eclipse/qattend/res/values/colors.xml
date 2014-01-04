@@ -7,8 +7,6 @@
     <color name="gray_light">#FFCCCCCC</color>
     <color name="gray_light_border">#33CCCCCC</color>
     <color name="dark_overlay">#CC000000</color>
-    <color name="highlight_overlay">#8833B5E5</color>
-    <color name="highlight_border">#CC33B5E5</color>
     <color name="drawer_bg">#CCCCCCCC</color>
     <color name="body_bg">#FFE5E5E5</color>
     <color name="primary_accent">#FFBB0000</color>
