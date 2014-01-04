@@ -18,57 +18,53 @@ public class QattendDatabase extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String TYPE_TEXT = " TEXT";
-        String TYPE_INTEGER = " INTEGER";
-        String COMMA_SEP = ", ";
-
-        db.execSQL(
-            "CREATE TABLE " + Contract.Event.TABLE + " (" +
-                Contract.Event._ID + TYPE_TEXT + " PRIMARY KEY" + COMMA_SEP +
-                Contract.Event.COL_TITLE + TYPE_TEXT + COMMA_SEP +
-                Contract.Event.COL_START_DATE + TYPE_TEXT + COMMA_SEP +
-                Contract.Event.COL_END_DATE + TYPE_TEXT + COMMA_SEP +
-                Contract.Event.COL_DESC + TYPE_TEXT + COMMA_SEP +
-                Contract.Event.COL_PRIVACY + TYPE_INTEGER + COMMA_SEP +
-                Contract.Event.COL_LOCATION + TYPE_TEXT + COMMA_SEP +
-                Contract.Event.COL_HOST_BY + TYPE_TEXT + COMMA_SEP +
-                Contract.Event.COL_CREATED_AT + TYPE_TEXT + COMMA_SEP +
-                Contract.Event.COL_UPDATED_AT + TYPE_TEXT +
-            ")"
-        );
         db.execSQL(
             "CREATE TABLE " + Contract.Organization.TABLE + " (" +
-                Contract.Organization._ID + TYPE_TEXT + " PRIMARY KEY" + COMMA_SEP +
-                Contract.Organization.COL_NAME + TYPE_TEXT + COMMA_SEP +
-                Contract.Organization.COL_USERNAME + TYPE_TEXT + COMMA_SEP +
-                Contract.Organization.COL_EMAIL + TYPE_TEXT + COMMA_SEP +
-                Contract.Organization.COL_ABOUT + TYPE_TEXT + COMMA_SEP +
-                Contract.Organization.COL_MEMBER_COUNT + TYPE_INTEGER + COMMA_SEP +
-                Contract.Organization.COL_CREATED_AT + TYPE_TEXT + COMMA_SEP +
-                Contract.Organization.COL_UPDATED_AT + TYPE_TEXT +
+                Contract.Organization._ID + " TEXT PRIMARY KEY," +
+                Contract.Organization.COL_NAME + " TEXT NOT NULL," +
+                Contract.Organization.COL_USERNAME + " TEXT NOT NULL UNIQUE," +
+                Contract.Organization.COL_EMAIL + " TEXT," +
+                Contract.Organization.COL_ABOUT + " TEXT," +
+                Contract.Organization.COL_MEMBER_COUNT + " INTEGER DEFAULT 0," +
+                Contract.Organization.COL_CREATED_AT + " TEXT NOT NULL," +
+                Contract.Organization.COL_UPDATED_AT + " TEXT NOT NULL" +
             ")"
         );
         db.execSQL(
-            "CREATE TABLE " + Contract.Membership.TABLE + " (" +
-                Contract.Membership._ID + TYPE_TEXT + " PRIMARY KEY" + COMMA_SEP +
-                Contract.Membership.COL_APPLICANT_FROM + TYPE_TEXT + COMMA_SEP +
-                Contract.Membership.COL_APPLY_TO + TYPE_TEXT + COMMA_SEP +
-                Contract.Membership.COL_APPROVED + TYPE_INTEGER + COMMA_SEP +
-                Contract.Membership.COL_CREATED_AT + TYPE_TEXT + COMMA_SEP +
-                Contract.Membership.COL_UPDATED_AT + TYPE_TEXT +
+            "CREATE TABLE " + Contract.Event.TABLE + " (" +
+                Contract.Event._ID + " TEXT PRIMARY KEY," +
+                Contract.Event.COL_TITLE + " TEXT NOT NULL," +
+                Contract.Event.COL_START_DATE  + " TEXT NOT NULL," +
+                Contract.Event.COL_END_DATE + " TEXT NOT NULL," +
+                Contract.Event.COL_LOCATION + " TEXT NOT NULL," +
+                Contract.Event.COL_PRIVACY + " INTEGER CHECK(" + Contract.Event.COL_PRIVACY + "=0 OR " + Contract.Event.COL_PRIVACY + "=1) DEFAULT 0," +
+                Contract.Event.COL_DESC + " TEXT," +
+                Contract.Event.COL_HOST_BY + " TEXT NOT NULL," +
+                Contract.Event.COL_CREATED_AT + " TEXT NOT NULL," +
+                Contract.Event.COL_UPDATED_AT + " TEXT NOT NULL" +
             ")"
         );
         db.execSQL(
             "CREATE TABLE " + Contract.Member.TABLE + " (" +
-                Contract.Member._ID + TYPE_TEXT + " PRIMARY KEY" + COMMA_SEP +
-                Contract.Member.COL_NAME + TYPE_TEXT + COMMA_SEP +
-                Contract.Member.COL_USERNAME + TYPE_TEXT + COMMA_SEP +
-                Contract.Member.COL_EMAIL + TYPE_TEXT + COMMA_SEP +
-                Contract.Member.COL_GENDER + TYPE_INTEGER + COMMA_SEP +
-                Contract.Member.COL_PHONE + TYPE_TEXT + COMMA_SEP +
-                Contract.Member.COL_ABOUT + TYPE_TEXT + COMMA_SEP +
-                Contract.Member.COL_CREATED_AT + TYPE_TEXT + COMMA_SEP +
-                Contract.Member.COL_UPDATED_AT + TYPE_TEXT +
+                Contract.Member._ID + " TEXT PRIMARY KEY," +
+                Contract.Member.COL_NAME + " TEXT NOT NULL," +
+                Contract.Member.COL_USERNAME + " TEXT NOT NULL UNIQUE," +
+                Contract.Member.COL_EMAIL + " TEXT NOT NULL," +
+                Contract.Member.COL_GENDER + " INTEGER CHECK(" + Contract.Member.COL_GENDER + "=0 OR " + Contract.Member.COL_GENDER + "=1) NOT NULL," +
+                Contract.Member.COL_PHONE + " TEXT," +
+                Contract.Member.COL_ABOUT + " TEXT," +
+                Contract.Member.COL_CREATED_AT + " TEXT NOT NULL," +
+                Contract.Member.COL_UPDATED_AT + " TEXT NOT NULL" +
+            ")"
+        );
+        db.execSQL(
+            "CREATE TABLE " + Contract.Membership.TABLE + " (" +
+                Contract.Membership._ID + " TEXT PRIMARY KEY," +
+                Contract.Membership.COL_APPLICANT_FROM + " TEXT NOT NULL," +
+                Contract.Membership.COL_APPLY_TO + " TEXT NOT NULL," +
+                Contract.Membership.COL_APPROVED + " INTEGER CHECK(" + Contract.Membership.COL_APPROVED + "=0 OR " + Contract.Membership.COL_APPROVED + "=1) DEFAULT 0," +
+                Contract.Membership.COL_CREATED_AT + " TEXT NOT NULL," +
+                Contract.Membership.COL_UPDATED_AT + " TEXT NOT NULL" +
             ")"
         );
     }
@@ -76,10 +72,10 @@ public class QattendDatabase extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d(QattendApp.TAG, String.format("Upgrading database from version %s to %s", oldVersion, newVersion));
-        db.execSQL("DROP TABLE IF EXISTS " + Contract.Event.TABLE);
-        db.execSQL("DROP TABLE IF EXISTS " + Contract.Organization.TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + Contract.Membership.TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + Contract.Member.TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + Contract.Event.TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + Contract.Organization.TABLE);
         onCreate(db);
     }
 
