@@ -2,9 +2,11 @@ package com.mikroskil.android.qattend.fragment;
 
 import android.app.Activity;
 import android.app.ListFragment;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,13 +22,13 @@ import com.mikroskil.android.qattend.NavigationDrawerFragment;
 import com.mikroskil.android.qattend.QattendApp;
 import com.mikroskil.android.qattend.R;
 import com.mikroskil.android.qattend.db.Contract;
-import com.mikroskil.android.qattend.db.QattendDatabase;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class EventFragment extends ListFragment {
+public class EventFragment extends ListFragment
+    implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private SimpleCursorAdapter mAdapter;
     private Activity mContext;
@@ -43,23 +45,12 @@ public class EventFragment extends ListFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_event, container, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Log.d(QattendApp.TAG, "query event data");
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
         mAdapter = new SimpleCursorAdapter(mContext,
                 R.layout.card_event,
-                getCursor(),
+                null,
                 new String[] { Contract.Event.COL_TITLE, Contract.Event.COL_START_DATE, Contract.Event.COL_LOCATION },
                 new int[] { R.id.title, R.id.time, R.id.location },
                 0);
@@ -84,51 +75,73 @@ public class EventFragment extends ListFragment {
                 return false;
             }
         });
-        View space = new View(mContext);
-        getListView().addFooterView(space, null, false);
-        getListView().addHeaderView(space, null, false);
+
+        // List view not shown properly when add these.
+//        Space space = new Space(mContext);
+//        getListView().addFooterView(space, null, false);
+//        getListView().addHeaderView(space, null, false);
         setListAdapter(mAdapter);
+
+        getLoaderManager().initLoader(0, null, this);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_event, container, false);
     }
 
     @Override
     public void onListItemClick(ListView list, View view, int pos, long id) {
         super.onListItemClick(list, view, pos, id);
-        Cursor cursor = (Cursor) mAdapter.getItem(pos - 1);
+        Log.d(QattendApp.TAG, String.format("Event clicked: pos=%s, id=%s", pos, id));
+        Cursor cursor = (Cursor) mAdapter.getItem(pos);
         Intent intent = new Intent(mContext, DetailActivity.class);
-        intent.putExtra(Contract.Event._ID, cursor.getString(cursor.getColumnIndex(Contract.Event._ID)));
+        intent.putExtra(Contract.Event._ID, cursor.getString(cursor.getColumnIndexOrThrow(Contract.Event._ID)));
         startActivity(intent);
-        Log.d(QattendApp.TAG, String.format("pos=%s, id=%s, objid=%s", pos, id, cursor.getString(cursor.getColumnIndex(Contract.Event._ID))));
     }
 
-    private Cursor getCursor() {
-        QattendDatabase dbHelper = new QattendDatabase(mContext);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        String[] projection = {
+                Contract.Event._ID,
+                Contract.Event.COL_TITLE,
+                Contract.Event.COL_START_DATE,
+                Contract.Event.COL_END_DATE,
+                Contract.Event.COL_LOCATION
+        };
+        String selection = null;
 
         if (mPos == 1) {
-            return db.rawQuery(String.format("SELECT %s, %s, %s, %s, %s FROM %s WHERE %s = '%s' AND DATETIME('NOW') BETWEEN %s AND %s ORDER BY %s DESC",
-                    Contract.Event._ID, Contract.Event.COL_TITLE, Contract.Event.COL_START_DATE,
-                    Contract.Event.COL_END_DATE, Contract.Event.COL_LOCATION, Contract.Event.TABLE,
-                    Contract.Event.COL_HOST_BY, NavigationDrawerFragment.getActiveOrgId(),
-                    Contract.Event.COL_START_DATE, Contract.Event.COL_END_DATE,
-                    Contract.Event.COL_CREATED_AT), null);
+            selection = String.format("%s=? AND DATETIME('NOW') BETWEEN %s AND %s",
+                    Contract.Event.COL_HOST_BY,
+                    Contract.Event.COL_START_DATE,
+                    Contract.Event.COL_END_DATE);
         }
         else if (mPos == 2) {
-            return db.rawQuery(String.format("SELECT %s, %s, %s, %s, %s FROM %s WHERE %s = '%s' AND DATETIME('NOW') < %s ORDER BY %s DESC",
-                    Contract.Event._ID, Contract.Event.COL_TITLE, Contract.Event.COL_START_DATE,
-                    Contract.Event.COL_END_DATE, Contract.Event.COL_LOCATION, Contract.Event.TABLE,
-                    Contract.Event.COL_HOST_BY, NavigationDrawerFragment.getActiveOrgId(),
-                    Contract.Event.COL_START_DATE,
-                    Contract.Event.COL_CREATED_AT), null);
+            selection = String.format("%s=? AND DATETIME('NOW') < %s",
+                    Contract.Event.COL_HOST_BY,
+                    Contract.Event.COL_START_DATE);
         }
         else if (mPos == 3) {
-            return db.rawQuery(String.format("SELECT %s, %s, %s, %s, %s FROM %s WHERE %s = '%s' AND DATETIME('NOW') > %s ORDER BY %s DESC",
-                    Contract.Event._ID, Contract.Event.COL_TITLE, Contract.Event.COL_START_DATE,
-                    Contract.Event.COL_END_DATE, Contract.Event.COL_LOCATION, Contract.Event.TABLE,
-                    Contract.Event.COL_HOST_BY, NavigationDrawerFragment.getActiveOrgId(),
-                    Contract.Event.COL_END_DATE,
-                    Contract.Event.COL_CREATED_AT), null);
+            selection = String.format("%s=? AND DATETIME('NOW') > %s",
+                    Contract.Event.COL_HOST_BY,
+                    Contract.Event.COL_END_DATE);
         }
-        return null;
+
+        return new CursorLoader(mContext, Contract.Event.CONTENT_URI,
+                projection, selection,
+                new String[] { NavigationDrawerFragment.getActiveOrgId() },
+                Contract.Event.COL_CREATED_AT + " DESC");
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        mAdapter.changeCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mAdapter.changeCursor(null);
     }
 
 }

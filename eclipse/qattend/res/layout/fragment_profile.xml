@@ -81,7 +81,6 @@
         android:divider="@color/transparent"
         android:dividerHeight="@dimen/card_spacing"
         android:listSelector="@color/transparent"
-        android:layout_centerHorizontal="true"
         android:layout_below="@id/user_detail"/>
 
 </RelativeLayout>

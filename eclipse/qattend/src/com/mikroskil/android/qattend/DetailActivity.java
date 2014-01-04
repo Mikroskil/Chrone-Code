@@ -3,7 +3,7 @@ package com.mikroskil.android.qattend;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mikroskil.android.qattend.db.Contract;
-import com.mikroskil.android.qattend.db.QattendDatabase;
 import com.mikroskil.android.qattend.db.model.ParseEvent;
 
 import java.text.SimpleDateFormat;
@@ -23,11 +22,9 @@ public class DetailActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        QattendDatabase mDbHelper = new QattendDatabase(this);
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery(String.format("SELECT * FROM %s WHERE %s=?",
-                Contract.Event.TABLE, Contract.Event._ID),
-                new String[] { getIntent().getStringExtra(Contract.Event._ID) });
+        Uri uri = Uri.parse(Contract.Event.CONTENT_URI + "/" + getIntent().getStringExtra(Contract.Event._ID));
+
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
 
         if (cursor != null) {
             if (cursor.moveToNext()) {
