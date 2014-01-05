@@ -54,20 +54,21 @@ import java.util.Map;
  *
  * @author dswitkin@google.com (Daniel Switkin)
  */
-final class QRCodeEncoder {
+public final class QRCodeEncoder {
 
   private static final String TAG = QRCodeEncoder.class.getSimpleName();
 
   private static final int WHITE = 0xFFFFFFFF;
   private static final int BLACK = 0xFF000000;
 
-  private final Context activity;
+  private Context activity;
   private String contents;
   private String displayContents;
   private String title;
   private BarcodeFormat format;
   private final int dimension;
-  private final boolean useVCard;
+  private boolean useVCard;
+    private boolean encoded = false;
 
   QRCodeEncoder(Context activity, Intent intent, int dimension, boolean useVCard) throws WriterException {
     this.activity = activity;
@@ -79,6 +80,11 @@ final class QRCodeEncoder {
     } else if (action.equals(Intent.ACTION_SEND)) {
       encodeContentsFromShareIntent(intent);
     }
+  }
+
+  public QRCodeEncoder(String data, String type, String format, int dimension) {
+      this.dimension = dimension;
+      encoded = encodeContents(data, type, format);
   }
 
   String getContents() {
@@ -96,6 +102,32 @@ final class QRCodeEncoder {
   boolean isUseVCard() {
     return useVCard;
   }
+
+    private boolean encodeContents(String data, String type, String formatString) {
+        // Default to QR_CODE if no format given.
+        format = null;
+        if (formatString != null) {
+            try {
+                format = BarcodeFormat.valueOf(formatString);
+            } catch (IllegalArgumentException iae) {
+                // Ignore it then
+            }
+        }
+        if (format == null || format == BarcodeFormat.QR_CODE) {
+            if (type == null || type.isEmpty()) {
+                return false;
+            }
+            this.format = BarcodeFormat.QR_CODE;
+            encodeQRCodeContents(data, type);
+        } else {
+            if (data != null && !data.isEmpty()) {
+                contents = data;
+                displayContents = data;
+                title = activity.getString(R.string.contents_text);
+            }
+        }
+        return contents != null && !contents.isEmpty();
+    }
 
   // It would be nice if the string encoding lived in the core ZXing library,
   // but we use platform specific code like PhoneNumberUtils, so it can't.
@@ -213,6 +245,16 @@ final class QRCodeEncoder {
     }
   }
 
+    private void encodeQRCodeContents(String data, String type) {
+        if (type.equals(Contents.Type.TEXT)) {
+            if (data != null && !data.isEmpty()) {
+                contents = data;
+                displayContents = data;
+//                title = activity.getString(R.string.contents_text);
+            }
+        }
+    }
+
   private void encodeQRCodeContents(Intent intent, String type) {
     if (type.equals(Contents.Type.TEXT)) {
       String data = intent.getStringExtra(Intents.Encode.DATA);
@@ -315,7 +357,7 @@ final class QRCodeEncoder {
     return values == null ? null : Arrays.asList(values);
   }
 
-  Bitmap encodeAsBitmap() throws WriterException {
+  public Bitmap encodeAsBitmap() throws WriterException {
     String contentsToEncode = contents;
     if (contentsToEncode == null) {
       return null;

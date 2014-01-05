@@ -3,13 +3,19 @@ package com.mikroskil.android.qattend;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.android.Contents;
+import com.google.zxing.client.android.encode.QRCodeEncoder;
 import com.mikroskil.android.qattend.db.Contract;
 import com.mikroskil.android.qattend.db.model.ParseOrganization;
 
@@ -19,7 +25,8 @@ public class OrganizationDetailActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.organization_activity_detail);
 
-        Uri uri = Uri.parse(Contract.Organization.CONTENT_URI + "/" + getIntent().getStringExtra(Contract.Organization._ID));
+        String id = getIntent().getStringExtra(Contract.Organization._ID);
+        Uri uri = Uri.parse(Contract.Organization.CONTENT_URI + "/" + id);
 
         Cursor cursor = getContentResolver().query(uri, null, null, null, null);
 
@@ -39,6 +46,16 @@ public class OrganizationDetailActivity extends Activity {
                 TextView aboutView = (TextView) findViewById(R.id.about);
                 if (org.about != null) aboutView.setText(org.about);
                 else aboutView.setVisibility(View.GONE);
+
+                ImageView qrView = (ImageView) findViewById(R.id.qr_code);
+                QRCodeEncoder encoder = new QRCodeEncoder(id, Contents.Type.TEXT, BarcodeFormat.QR_CODE.toString(), 500);
+
+                try {
+                    Bitmap bitmap = encoder.encodeAsBitmap();
+                    qrView.setImageBitmap(bitmap);
+                } catch (WriterException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
