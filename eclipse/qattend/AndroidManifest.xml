@@ -70,7 +70,13 @@
                   android:label="@string/action_create_organization"
                   android:parentActivityName=".MainActivity" />
 
-        <activity android:name=".DetailActivity"
+        <activity android:name=".EventDetailActivity"
+                  android:parentActivityName=".MainActivity" />
+
+        <activity android:name=".OrganizationDetailActivity"
+                  android:parentActivityName=".MainActivity" />
+
+        <activity android:name=".MemberDetailActivity"
                   android:parentActivityName=".MainActivity" />
 
         <activity android:name=".SettingsActivity"

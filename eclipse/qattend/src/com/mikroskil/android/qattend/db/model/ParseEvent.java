@@ -91,16 +91,16 @@ public class ParseEvent extends ParseObject {
     }
 
     public static Event fromCursor(Cursor cursor) {
-        String id = cursor.getString(cursor.getColumnIndex(Contract.Event._ID));
-        String title = cursor.getString(cursor.getColumnIndex(Contract.Event.COL_TITLE));
-        String startDate = cursor.getString(cursor.getColumnIndex(Contract.Event.COL_START_DATE));
-        String endDate = cursor.getString(cursor.getColumnIndex(Contract.Event.COL_END_DATE));
-        String location = cursor.getString(cursor.getColumnIndex(Contract.Event.COL_LOCATION));
-        String desc = cursor.getString(cursor.getColumnIndex(Contract.Event.COL_DESC));
-        String hostBy = cursor.getString(cursor.getColumnIndex(Contract.Event.COL_HOST_BY));
-        String createdAt = cursor.getString(cursor.getColumnIndex(Contract.Event.COL_CREATED_AT));
-        String updatedAt = cursor.getString(cursor.getColumnIndex(Contract.Event.COL_UPDATED_AT));
-        int privacy = cursor.getInt(cursor.getColumnIndex(Contract.Event.COL_PRIVACY));
+        String id = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Event._ID));
+        String title = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Event.COL_TITLE));
+        String startDate = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Event.COL_START_DATE));
+        String endDate = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Event.COL_END_DATE));
+        String location = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Event.COL_LOCATION));
+        String desc = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Event.COL_DESC));
+        String hostBy = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Event.COL_HOST_BY));
+        String createdAt = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Event.COL_CREATED_AT));
+        String updatedAt = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Event.COL_UPDATED_AT));
+        int privacy = cursor.getInt(cursor.getColumnIndexOrThrow(Contract.Event.COL_PRIVACY));
         return new Event(id, title, startDate, endDate, location, desc, privacy, hostBy, createdAt, updatedAt);
     }
 

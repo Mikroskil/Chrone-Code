@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -13,9 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
 
 import com.mikroskil.android.qattend.MainActivity;
+import com.mikroskil.android.qattend.MemberDetailActivity;
 import com.mikroskil.android.qattend.QattendApp;
 import com.mikroskil.android.qattend.R;
 import com.mikroskil.android.qattend.db.Contract;
@@ -61,7 +62,10 @@ public class MemberFragment extends ListFragment
     public void onListItemClick(ListView list, View view, int pos, long id) {
         super.onListItemClick(list, view, pos, id);
         Log.d(QattendApp.TAG, String.format("Member clicked: pos=%s, id=%s", pos, id));
-        Toast.makeText(mContext, "pos=" + pos + " id=" + id, Toast.LENGTH_LONG).show();
+        Cursor cursor = (Cursor) mAdapter.getItem(pos);
+        Intent intent = new Intent(mContext, MemberDetailActivity.class);
+        intent.putExtra(Contract.Member._ID, cursor.getString(cursor.getColumnIndexOrThrow(Contract.Member._ID)));
+        startActivity(intent);
     }
 
     @Override

@@ -16,7 +16,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import com.mikroskil.android.qattend.DetailActivity;
+import com.mikroskil.android.qattend.EventDetailActivity;
 import com.mikroskil.android.qattend.MainActivity;
 import com.mikroskil.android.qattend.NavigationDrawerFragment;
 import com.mikroskil.android.qattend.QattendApp;
@@ -58,7 +58,7 @@ public class EventFragment extends ListFragment
         mAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             @Override
             public boolean setViewValue(View view, Cursor cursor, int i) {
-                if (i == cursor.getColumnIndex(Contract.Event.COL_START_DATE)) {
+                if (i == cursor.getColumnIndexOrThrow(Contract.Event.COL_START_DATE)) {
                     Date startDate = null;
                     Date endDate = null;
                     SimpleDateFormat parser = new SimpleDateFormat(Contract.DATE_FORMAT);
@@ -95,7 +95,7 @@ public class EventFragment extends ListFragment
         super.onListItemClick(list, view, pos, id);
         Log.d(QattendApp.TAG, String.format("Event clicked: pos=%s, id=%s", pos, id));
         Cursor cursor = (Cursor) mAdapter.getItem(pos);
-        Intent intent = new Intent(mContext, DetailActivity.class);
+        Intent intent = new Intent(mContext, EventDetailActivity.class);
         intent.putExtra(Contract.Event._ID, cursor.getString(cursor.getColumnIndexOrThrow(Contract.Event._ID)));
         startActivity(intent);
     }

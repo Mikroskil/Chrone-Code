@@ -2,6 +2,7 @@ package com.mikroskil.android.qattend.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,9 +14,9 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Space;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.mikroskil.android.qattend.MainActivity;
+import com.mikroskil.android.qattend.OrganizationDetailActivity;
 import com.mikroskil.android.qattend.QattendApp;
 import com.mikroskil.android.qattend.R;
 import com.mikroskil.android.qattend.db.Contract;
@@ -73,7 +74,11 @@ public class ProfileFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
-                Toast.makeText(mContext, "pos=" + pos + " id=" + id, Toast.LENGTH_SHORT).show();
+                Log.d(QattendApp.TAG, "pos=" + pos + " id=" + id);
+                Intent intent = new Intent(mContext, OrganizationDetailActivity.class);
+                Cursor cursor = (Cursor) mAdapter.getItem(pos - 1);
+                intent.putExtra(Contract.Organization._ID, cursor.getString(cursor.getColumnIndexOrThrow(Contract.Organization._ID)));
+                startActivity(intent);
             }
         });
 

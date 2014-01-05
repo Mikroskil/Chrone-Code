@@ -91,7 +91,9 @@ public class QattendProvider extends ContentProvider {
 
         switch (uriMatch) {
             case ROUTE_ORGS_ID:
-                // unimplemented
+                cursor = db.rawQuery(String.format("SELECT * FROM %s WHERE %s=?",
+                        Contract.Organization.TABLE, Contract.Organization._ID),
+                        new String[] { uri.getLastPathSegment() });
                 break;
             case ROUTE_ORGS:
                 cursor = db.query(Contract.Organization.TABLE, projection, null, null, null, null, sortOrder);
@@ -105,11 +107,13 @@ public class QattendProvider extends ContentProvider {
                 cursor = db.query(Contract.Event.TABLE, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             case ROUTE_MEMBERS_ID:
-                // unimplemented
+                cursor = db.rawQuery(String.format("SELECT * FROM %s WHERE %s=?",
+                        Contract.Member.TABLE, Contract.Member._ID),
+                        new String[] { uri.getLastPathSegment() });
                 break;
             case ROUTE_MEMBERS:
-                cursor = db.rawQuery(String.format("SELECT A.%s, B.%s, B.%s FROM %s AS A INNER JOIN %s AS B ON A.%s = B.%s " + selection + " AND A.%s = ? ORDER BY A.%s DESC",
-                        Contract.Membership._ID, Contract.Member.COL_NAME, Contract.Member.COL_USERNAME,
+                cursor = db.rawQuery(String.format("SELECT B.%s, B.%s, B.%s FROM %s AS A INNER JOIN %s AS B ON A.%s = B.%s " + selection + " AND A.%s = ? ORDER BY A.%s DESC",
+                        Contract.Member._ID, Contract.Member.COL_NAME, Contract.Member.COL_USERNAME,
                         Contract.Membership.TABLE, Contract.Member.TABLE,
                         Contract.Membership.COL_APPLICANT_FROM, Contract.Member._ID, Contract.Membership.COL_APPROVED,
                         Contract.Membership.COL_APPLY_TO,

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".MemberDetailActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:divider="?android:dividerVertical"
+        android:showDividers="middle"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_margin="12dp">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"/>
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"/>
+
+        <TextView
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"/>
+
+        <TextView
+            android:id="@+id/gender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"/>
+
+        <TextView
+            android:id="@+id/phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"/>
+
+        <TextView
+            android:id="@+id/about"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"/>
+
+    </LinearLayout>
+
+</ScrollView>

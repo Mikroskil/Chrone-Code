@@ -16,11 +16,11 @@ import com.mikroskil.android.qattend.db.model.ParseEvent;
 
 import java.text.SimpleDateFormat;
 
-public class DetailActivity extends Activity {
+public class EventDetailActivity extends Activity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
+        setContentView(R.layout.event_activity_detail);
 
         Uri uri = Uri.parse(Contract.Event.CONTENT_URI + "/" + getIntent().getStringExtra(Contract.Event._ID));
 
