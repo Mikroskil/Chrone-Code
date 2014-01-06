@@ -25,6 +25,8 @@ public class MainActivity extends Activity
 
     public static final String ARG_SECTION_NUMBER = "sectionNumber";
     public static final String KEY_ORG_POS = "organizationPosition";
+    public static final String EVENT_MODE = "event_mode";
+
     private static String[] sectionMenus;
 
     private int mOrgPos;
@@ -132,7 +134,7 @@ public class MainActivity extends Activity
                 return true;
             case R.id.action_create_event:
                 Intent intent = new Intent(this, ManageEventActivity.class);
-                intent.putExtra("EVENT_MODE", true);
+                intent.putExtra(EVENT_MODE, true);
                 startActivity(intent);
                 return true;
             case R.id.action_search_event:

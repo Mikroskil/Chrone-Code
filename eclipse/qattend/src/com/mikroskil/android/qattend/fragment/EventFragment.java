@@ -61,7 +61,7 @@ public class EventFragment extends ListFragment
                 if (i == cursor.getColumnIndexOrThrow(Contract.Event.COL_START_DATE)) {
                     Date startDate = null;
                     Date endDate = null;
-                    SimpleDateFormat parser = new SimpleDateFormat(Contract.DATE_FORMAT);
+                    SimpleDateFormat parser = new SimpleDateFormat(Contract.DATE_TIME_FORMAT);
                     SimpleDateFormat formatter = new SimpleDateFormat("dd MMM, HH:mm");
                     try {
                         startDate = parser.parse(cursor.getString(i));
@@ -94,9 +94,8 @@ public class EventFragment extends ListFragment
     public void onListItemClick(ListView list, View view, int pos, long id) {
         super.onListItemClick(list, view, pos, id);
         Log.d(QattendApp.TAG, String.format("Event clicked: pos=%s, id=%s", pos, id));
-        Cursor cursor = (Cursor) mAdapter.getItem(pos);
         Intent intent = new Intent(mContext, EventDetailActivity.class);
-        intent.putExtra(Contract.Event._ID, cursor.getString(cursor.getColumnIndexOrThrow(Contract.Event._ID)));
+        intent.putExtra(Contract.Event._ID, id);
         startActivity(intent);
     }
 

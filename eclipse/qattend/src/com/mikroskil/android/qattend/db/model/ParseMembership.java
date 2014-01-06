@@ -39,9 +39,9 @@ public class ParseMembership extends ParseObject {
     }
 
     public ContentValues getContentValues() {
-        SimpleDateFormat formatter = new SimpleDateFormat(Contract.DATE_FORMAT);
+        SimpleDateFormat formatter = new SimpleDateFormat(Contract.DATE_TIME_FORMAT);
         ContentValues values = new ContentValues();
-        values.put(Contract.Membership._ID, getObjectId());
+        values.put(Contract.Membership.COL_OBJ_ID, getObjectId());
         values.put(Contract.Membership.COL_APPLICANT_FROM, getApplicantFrom());
         values.put(Contract.Membership.COL_APPLY_TO, getApplyTo());
         values.put(Contract.Membership.COL_APPROVED, getApproved());

@@ -341,7 +341,7 @@ public class NavigationDrawerFragment extends Fragment {
 
     public static String getActiveOrgId () {
         Cursor cursor = (Cursor) mAdapter.getItem(mState);
-        return cursor.getString(cursor.getColumnIndex(Contract.Organization._ID));
+        return cursor.getString(cursor.getColumnIndexOrThrow(Contract.Organization.COL_OBJ_ID));
     }
 
     public static int getSpinnerState() {

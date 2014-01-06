@@ -59,9 +59,9 @@ public class ParseOrganization extends ParseObject {
     }
 
     public ContentValues getContentValues() {
-        SimpleDateFormat formatter = new SimpleDateFormat(Contract.DATE_FORMAT);
+        SimpleDateFormat formatter = new SimpleDateFormat(Contract.DATE_TIME_FORMAT);
         ContentValues values = new ContentValues();
-        values.put(Contract.Organization._ID, getObjectId());
+        values.put(Contract.Organization.COL_OBJ_ID, getObjectId());
         values.put(Contract.Organization.COL_NAME, getName());
         values.put(Contract.Organization.COL_USERNAME, getUsername());
         values.put(Contract.Organization.COL_EMAIL, getEmail());
@@ -73,7 +73,7 @@ public class ParseOrganization extends ParseObject {
     }
 
     public static Organization fromCursor(Cursor cursor) {
-        String id = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Organization._ID));
+        String objId = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Organization.COL_OBJ_ID));
         String name = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Organization.COL_NAME));
         String username = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Organization.COL_USERNAME));
         String email = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Organization.COL_EMAIL));
@@ -81,12 +81,12 @@ public class ParseOrganization extends ParseObject {
         int memberCount = cursor.getInt(cursor.getColumnIndexOrThrow(Contract.Organization.COL_MEMBER_COUNT));
         String createdAt = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Event.COL_CREATED_AT));
         String updatedAt = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Event.COL_UPDATED_AT));
-        return new Organization(id, name, username, email, about, memberCount, createdAt, updatedAt);
+        return new Organization(objId, name, username, email, about, memberCount, createdAt, updatedAt);
     }
 
     public static class Organization
     {
-        public final String id;
+        public final String objId;
         public final String name;
         public final String username;
         public final String email;
@@ -95,10 +95,10 @@ public class ParseOrganization extends ParseObject {
         public final Date createdAt;
         public final Date updatedAt;
 
-        public Organization(String id, String name, String username, String email, String about,
+        public Organization(String objId, String name, String username, String email, String about,
                             int memberCount, String createdAt, String updatedAt) {
-            SimpleDateFormat parser = new SimpleDateFormat(Contract.DATE_FORMAT);
-            this.id = id;
+            SimpleDateFormat parser = new SimpleDateFormat(Contract.DATE_TIME_FORMAT);
+            this.objId = objId;
             this.name = name;
             this.username = username;
             this.email = email;

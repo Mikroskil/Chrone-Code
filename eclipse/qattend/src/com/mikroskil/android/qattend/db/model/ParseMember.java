@@ -51,9 +51,9 @@ public class ParseMember extends ParseUser {
     }
 
     public ContentValues getContentValues() {
-        SimpleDateFormat formatter = new SimpleDateFormat(Contract.DATE_FORMAT);
+        SimpleDateFormat formatter = new SimpleDateFormat(Contract.DATE_TIME_FORMAT);
         ContentValues values = new ContentValues();
-        values.put(Contract.Member._ID, getObjectId());
+        values.put(Contract.Member.COL_OBJ_ID, getObjectId());
         values.put(Contract.Member.COL_NAME, getName());
         values.put(Contract.Member.COL_USERNAME, getUsername());
         values.put(Contract.Member.COL_EMAIL, getEmail());
@@ -66,7 +66,7 @@ public class ParseMember extends ParseUser {
     }
 
     public static Member fromCursor(Cursor cursor) {
-        String id = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Member._ID));
+        String objId = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Member.COL_OBJ_ID));
         String name = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Member.COL_NAME));
         String username = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Member.COL_USERNAME));
         String email = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Member.COL_EMAIL));
@@ -75,12 +75,12 @@ public class ParseMember extends ParseUser {
         String about = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Member.COL_ABOUT));
         String createdAt = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Member.COL_CREATED_AT));
         String updatedAt = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Member.COL_UPDATED_AT));
-        return new Member(id, name, username, email, gender, phone, about, createdAt, updatedAt);
+        return new Member(objId, name, username, email, gender, phone, about, createdAt, updatedAt);
     }
 
     public static class Member
     {
-        public final String id;
+        public final String objId;
         public final String name;
         public final String username;
         public final String email;
@@ -90,10 +90,10 @@ public class ParseMember extends ParseUser {
         public final Date createdAt;
         public final Date updatedAt;
 
-        public Member(String id, String name, String username, String email, int gender, String phone,
+        public Member(String objId, String name, String username, String email, int gender, String phone,
                       String about, String createdAt, String updatedAt) {
-            SimpleDateFormat parser = new SimpleDateFormat(Contract.DATE_FORMAT);
-            this.id = id;
+            SimpleDateFormat parser = new SimpleDateFormat(Contract.DATE_TIME_FORMAT);
+            this.objId = objId;
             this.name = name;
             this.username = username;
             this.email = email;

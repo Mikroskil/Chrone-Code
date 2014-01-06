@@ -22,7 +22,7 @@ public class EventDetailActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_activity_detail);
 
-        Uri uri = Uri.parse(Contract.Event.CONTENT_URI + "/" + getIntent().getStringExtra(Contract.Event._ID));
+        Uri uri = Uri.parse(Contract.Event.CONTENT_URI + "/" + getIntent().getLongExtra(Contract.Event._ID, 0));
 
         Cursor cursor = getContentResolver().query(uri, null, null, null, null);
 

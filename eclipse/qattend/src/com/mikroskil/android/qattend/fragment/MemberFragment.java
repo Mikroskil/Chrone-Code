@@ -62,9 +62,8 @@ public class MemberFragment extends ListFragment
     public void onListItemClick(ListView list, View view, int pos, long id) {
         super.onListItemClick(list, view, pos, id);
         Log.d(QattendApp.TAG, String.format("Member clicked: pos=%s, id=%s", pos, id));
-        Cursor cursor = (Cursor) mAdapter.getItem(pos);
         Intent intent = new Intent(mContext, MemberDetailActivity.class);
-        intent.putExtra(Contract.Member._ID, cursor.getString(cursor.getColumnIndexOrThrow(Contract.Member._ID)));
+        intent.putExtra(Contract.Member._ID, id);
         startActivity(intent);
     }
 

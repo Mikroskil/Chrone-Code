@@ -19,7 +19,7 @@ public class MemberDetailActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.member_activity_detail);
 
-        Uri uri = Uri.parse(Contract.Member.CONTENT_URI + "/" + getIntent().getStringExtra(Contract.Member._ID));
+        Uri uri = Uri.parse(Contract.Member.CONTENT_URI + "/" + getIntent().getLongExtra(Contract.Member._ID, 0));
 
         Cursor cursor = getContentResolver().query(uri, null, null, null, null);
 

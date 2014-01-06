@@ -25,8 +25,7 @@ public class OrganizationDetailActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.organization_activity_detail);
 
-        String id = getIntent().getStringExtra(Contract.Organization._ID);
-        Uri uri = Uri.parse(Contract.Organization.CONTENT_URI + "/" + id);
+        Uri uri = Uri.parse(Contract.Organization.CONTENT_URI + "/" + getIntent().getLongExtra(Contract.Organization._ID, 0));
 
         Cursor cursor = getContentResolver().query(uri, null, null, null, null);
 
@@ -48,7 +47,7 @@ public class OrganizationDetailActivity extends Activity {
                 else aboutView.setVisibility(View.GONE);
 
                 ImageView qrView = (ImageView) findViewById(R.id.qr_code);
-                QRCodeEncoder encoder = new QRCodeEncoder(id, Contents.Type.TEXT, BarcodeFormat.QR_CODE.toString(), 500);
+                QRCodeEncoder encoder = new QRCodeEncoder(org.objId, Contents.Type.TEXT, BarcodeFormat.QR_CODE.toString(), 500);
 
                 try {
                     Bitmap bitmap = encoder.encodeAsBitmap();
@@ -57,6 +56,7 @@ public class OrganizationDetailActivity extends Activity {
                     e.printStackTrace();
                 }
             }
+            cursor.close();
         }
     }
 

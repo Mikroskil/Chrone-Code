@@ -8,7 +8,9 @@ public final class Contract {
 
     public static final String CONTENT_AUTHORITY = "com.mikroskil.android.qattend.provider";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
-    public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_FORMAT = "yyyy-MM-dd";
+    public static final String TIME_FORMAT = "HH:mm:ss";
 
     public Contract() {}
 
@@ -21,6 +23,7 @@ public final class Contract {
                 BASE_CONTENT_URI.buildUpon().appendPath("events").build();
 
         public static final String TABLE = "Event";
+        public static final String COL_OBJ_ID = "objectId";
         public static final String COL_TITLE = "title";
         public static final String COL_START_DATE = "startDate";
         public static final String COL_END_DATE = "endDate";
@@ -41,6 +44,7 @@ public final class Contract {
                 BASE_CONTENT_URI.buildUpon().appendPath("organizations").build();
 
         public static final String TABLE = "Organization";
+        public static final String COL_OBJ_ID = "objectId";
         public static final String COL_NAME = "name";
         public static final String COL_USERNAME = "username";
         public static final String COL_EMAIL = "email";
@@ -60,6 +64,7 @@ public final class Contract {
                 BASE_CONTENT_URI.buildUpon().appendPath("memberships").build();
 
         public static final String TABLE = "Membership";
+        public static final String COL_OBJ_ID = "objectId";
         public static final String COL_APPLICANT_FROM = "applicantFrom";
         public static final String COL_APPLY_TO = "applyTo";
         public static final String COL_APPROVED = "approved";
@@ -76,6 +81,7 @@ public final class Contract {
                 BASE_CONTENT_URI.buildUpon().appendPath("members").build();
 
         public static final String TABLE = "Member";
+        public static final String COL_OBJ_ID = "objectId";
         public static final String COL_NAME = "name";
         public static final String COL_USERNAME = "username";
         public static final String COL_EMAIL = "email";

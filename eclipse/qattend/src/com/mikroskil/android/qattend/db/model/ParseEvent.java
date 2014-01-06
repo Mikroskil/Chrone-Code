@@ -75,9 +75,9 @@ public class ParseEvent extends ParseObject {
     }
 
     public ContentValues getContentValues() {
-        SimpleDateFormat formatter = new SimpleDateFormat(Contract.DATE_FORMAT);
+        SimpleDateFormat formatter = new SimpleDateFormat(Contract.DATE_TIME_FORMAT);
         ContentValues values = new ContentValues();
-        values.put(Contract.Event._ID, getObjectId());
+        values.put(Contract.Event.COL_OBJ_ID, getObjectId());
         values.put(Contract.Event.COL_TITLE, getTitle());
         values.put(Contract.Event.COL_START_DATE, formatter.format(getStartDate()));
         values.put(Contract.Event.COL_END_DATE, formatter.format(getEndDate()));
@@ -91,7 +91,7 @@ public class ParseEvent extends ParseObject {
     }
 
     public static Event fromCursor(Cursor cursor) {
-        String id = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Event._ID));
+        String objId = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Event.COL_OBJ_ID));
         String title = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Event.COL_TITLE));
         String startDate = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Event.COL_START_DATE));
         String endDate = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Event.COL_END_DATE));
@@ -101,12 +101,12 @@ public class ParseEvent extends ParseObject {
         String createdAt = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Event.COL_CREATED_AT));
         String updatedAt = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Event.COL_UPDATED_AT));
         int privacy = cursor.getInt(cursor.getColumnIndexOrThrow(Contract.Event.COL_PRIVACY));
-        return new Event(id, title, startDate, endDate, location, desc, privacy, hostBy, createdAt, updatedAt);
+        return new Event(objId, title, startDate, endDate, location, desc, privacy, hostBy, createdAt, updatedAt);
     }
 
     public static class Event
     {
-        public final String id;
+        public final String objId;
         public final String title;
         public final Date startDate;
         public final Date endDate;
@@ -117,10 +117,10 @@ public class ParseEvent extends ParseObject {
         public final Date createdAt;
         public final Date updatedAt;
 
-        public Event(String id, String title, String startDate, String endDate, String location,
+        public Event(String objId, String title, String startDate, String endDate, String location,
                      String desc, int privacy, String hostBy, String createdAt, String updatedAt) {
-            SimpleDateFormat parser = new SimpleDateFormat(Contract.DATE_FORMAT);
-            this.id = id;
+            SimpleDateFormat parser = new SimpleDateFormat(Contract.DATE_TIME_FORMAT);
+            this.objId = objId;
             this.title = title;
             this.location = location;
             this.desc = desc;

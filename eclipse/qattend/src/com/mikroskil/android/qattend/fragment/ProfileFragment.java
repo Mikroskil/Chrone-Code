@@ -76,8 +76,7 @@ public class ProfileFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
                 Log.d(QattendApp.TAG, "pos=" + pos + " id=" + id);
                 Intent intent = new Intent(mContext, OrganizationDetailActivity.class);
-                Cursor cursor = (Cursor) mAdapter.getItem(pos - 1);
-                intent.putExtra(Contract.Organization._ID, cursor.getString(cursor.getColumnIndexOrThrow(Contract.Organization._ID)));
+                intent.putExtra(Contract.Organization._ID, id);
                 startActivity(intent);
             }
         });

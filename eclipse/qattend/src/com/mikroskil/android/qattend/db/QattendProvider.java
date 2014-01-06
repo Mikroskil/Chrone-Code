@@ -123,7 +123,7 @@ public class QattendProvider extends ContentProvider {
                 cursor = db.rawQuery(String.format("SELECT B.%s, B.%s, B.%s FROM %s AS A INNER JOIN %s AS B ON A.%s = B.%s " + selection + " AND A.%s = ? ORDER BY A.%s DESC",
                         Contract.Member._ID, Contract.Member.COL_NAME, Contract.Member.COL_USERNAME,
                         Contract.Membership.TABLE, Contract.Member.TABLE,
-                        Contract.Membership.COL_APPLICANT_FROM, Contract.Member._ID, Contract.Membership.COL_APPROVED,
+                        Contract.Membership.COL_APPLICANT_FROM, Contract.Member.COL_OBJ_ID, Contract.Membership.COL_APPROVED,
                         Contract.Membership.COL_APPLY_TO,
                         Contract.Membership.COL_CREATED_AT),
                         new String[] { NavigationDrawerFragment.getActiveOrgId() });
