@@ -6,8 +6,10 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.util.Log;
 
 import com.mikroskil.android.qattend.NavigationDrawerFragment;
+import com.mikroskil.android.qattend.QattendApp;
 
 public class QattendProvider extends ContentProvider {
 
@@ -44,6 +46,11 @@ public class QattendProvider extends ContentProvider {
     public static final int ROUTE_MEMBERS_ID = 6;
 
     /**
+     * URI ID for route: /memberships
+     */
+    public static final int ROUTE_MEMBERSHIPS = 7;
+
+    /**
      * UriMatcher, used to decode incoming URIs.
      */
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -54,6 +61,7 @@ public class QattendProvider extends ContentProvider {
         sUriMatcher.addURI(Contract.CONTENT_AUTHORITY, "events/*", ROUTE_EVENTS_ID);
         sUriMatcher.addURI(Contract.CONTENT_AUTHORITY, "members", ROUTE_MEMBERS);
         sUriMatcher.addURI(Contract.CONTENT_AUTHORITY, "members/*", ROUTE_MEMBERS_ID);
+        sUriMatcher.addURI(Contract.CONTENT_AUTHORITY, "memberships", ROUTE_MEMBERSHIPS);
     }
 
     @Override
@@ -87,7 +95,7 @@ public class QattendProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         int uriMatch = sUriMatcher.match(uri);
-        Cursor cursor = null;
+        Cursor cursor;
 
         switch (uriMatch) {
             case ROUTE_ORGS_ID:
@@ -123,13 +131,41 @@ public class QattendProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+        Log.d(QattendApp.TAG, String.format("uri=%s count=%s", uri, cursor.getCount()));
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
     }
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        return null;
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        int uriMatch = sUriMatcher.match(uri);
+        Uri result;
+        long id;
+
+        switch (uriMatch) {
+            case ROUTE_EVENTS:
+                id = db.insertOrThrow(Contract.Event.TABLE, null, values);
+                result = Uri.parse(Contract.Event.CONTENT_URI + "/" + id);
+                break;
+            case ROUTE_ORGS:
+                id = db.insertOrThrow(Contract.Organization.TABLE, null, values);
+                result = Uri.parse(Contract.Organization.CONTENT_URI + "/" + id);
+                break;
+            case ROUTE_MEMBERS:
+                id = db.insertOrThrow(Contract.Member.TABLE, null, values);
+                result = Uri.parse(Contract.Member.CONTENT_URI + "/" + id);
+                break;
+            case ROUTE_MEMBERSHIPS:
+                id = db.insertOrThrow(Contract.Membership.TABLE, null, values);
+                result = Uri.parse(Contract.Membership.CONTENT_URI + "/" + id);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        Log.d(QattendApp.TAG, String.format("id=%s uri=%s values=%s", id, uri, values));
+        if (id != -1) getContext().getContentResolver().notifyChange(uri, null, false);
+        return result;
     }
 
     @Override
