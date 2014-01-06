@@ -5,14 +5,19 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.mikroskil.android.qattend.db.QattendDatabase;
 import com.parse.ParseUser;
 
 public class SettingsActivity extends PreferenceActivity {
@@ -89,10 +94,17 @@ public class SettingsActivity extends PreferenceActivity {
                 builder.setMessage(R.string.dialog_sign_out)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                ParseUser.logOut();
-                                Intent intent = new Intent(getActivity(), SplashActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
+                                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                                if (sp.edit().clear().commit()) {
+                                    QattendDatabase dbHelper = new QattendDatabase(getActivity());
+                                    final SQLiteDatabase db = dbHelper.getWritableDatabase();
+                                    dbHelper.onUpgrade(db, QattendDatabase.DB_VERSION, QattendDatabase.DB_VERSION + 1);
+                                    ParseUser.logOut();
+                                    Intent intent = new Intent(getActivity(), SplashActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(intent);
+                                } else
+                                    Toast.makeText(getActivity(), "Failed to clear your preferences.", Toast.LENGTH_LONG).show();
                             }
                         })
                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
