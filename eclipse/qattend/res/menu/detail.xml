@@ -3,9 +3,14 @@
       tools:context=".DetailActivity" >
 
     <item android:id="@+id/action_verify_attendee"
-          android:icon="@drawable/ic_device_access_camera"
+          android:icon="@drawable/ic_social_forward"
           android:title="@string/action_verify_attendee"
           android:showAsAction="always|withText" />
+
+    <item android:id="@+id/action_add_attendee"
+          android:icon="@drawable/ic_social_add_person"
+          android:title="@string/action_add_attendee"
+          android:showAsAction="ifRoom|withText" />
 
     <item android:id="@+id/action_edit_event"
           android:icon="@drawable/ic_content_edit"

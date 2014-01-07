@@ -58,15 +58,21 @@ public class EventDetailActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 return true;
             case R.id.action_edit_event:
-                Intent intent = new Intent(this, ManageEventActivity.class);
+                intent = new Intent(this, ManageEventActivity.class);
                 intent.putExtra(MainActivity.EVENT_MODE, false);
                 intent.putExtra(Contract.Event._ID, mId);
                 startActivity(intent);
+                return true;
+            case R.id.action_add_attendee:
+                intent = new Intent(this, ScannerActivity.class);
+                intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
+                startActivityForResult(intent, 0);
                 return true;
             case R.id.action_verify_attendee:
                 intent = new Intent(this, ScannerActivity.class);

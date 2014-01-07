@@ -11,9 +11,11 @@
     <string name="action_create_event">Create Event</string>
     <string name="action_search_event">Search Event</string>
     <string name="action_edit_event">Edit Event</string>
+    <string name="action_add_attendee">Add Attendee</string>
     <string name="action_verify_attendee">Verify Attendee</string>
     <string name="action_scanner">Scanner</string>
     <string name="action_search_member">Search Member</string>
+
     <string name="no_data">No Data</string>
     <string name="prompt_title">Title</string>
     <string name="prompt_location">Location</string>

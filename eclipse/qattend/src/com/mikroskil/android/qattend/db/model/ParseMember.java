@@ -54,7 +54,7 @@ public class ParseMember extends ParseUser {
         put(Contract.Member.COL_ORG_COUNT, 0);
     }
 
-    public void incrementOrgCount() {
+    public void incOrgCount() {
         increment(Contract.Member.COL_ORG_COUNT);
     }
 

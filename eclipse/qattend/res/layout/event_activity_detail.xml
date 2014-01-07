@@ -77,14 +77,14 @@
                 android:paddingTop="8dp"
                 android:gravity="center_vertical"/>
 
-            <TextView
-                android:id="@+id/ticket"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp"
-                android:gravity="center_vertical"/>
+            <!--<TextView-->
+                <!--android:id="@+id/ticket"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textAppearance="?android:attr/textAppearanceSmall"-->
+                <!--android:paddingBottom="8dp"-->
+                <!--android:paddingTop="8dp"-->
+                <!--android:gravity="center_vertical"/>-->
 
         </LinearLayout>
 

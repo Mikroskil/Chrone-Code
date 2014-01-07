@@ -6,6 +6,7 @@ import com.mikroskil.android.qattend.db.model.ParseEvent;
 import com.mikroskil.android.qattend.db.model.ParseMember;
 import com.mikroskil.android.qattend.db.model.ParseMembership;
 import com.mikroskil.android.qattend.db.model.ParseOrganization;
+import com.mikroskil.android.qattend.db.model.ParseTicket;
 import com.parse.Parse;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -21,6 +22,7 @@ public class QattendApp extends Application {
         ParseObject.registerSubclass(ParseEvent.class);
         ParseObject.registerSubclass(ParseOrganization.class);
         ParseObject.registerSubclass(ParseMembership.class);
+        ParseObject.registerSubclass(ParseTicket.class);
         ParseUser.registerSubclass(ParseMember.class);
 
         if (DEBUG) {

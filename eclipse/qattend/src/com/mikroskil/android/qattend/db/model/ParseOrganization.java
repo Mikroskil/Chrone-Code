@@ -54,11 +54,11 @@ public class ParseOrganization extends ParseObject {
         return getInt(Contract.Organization.COL_MEMBER_COUNT);
     }
 
-    public void initializeMemberCount() {
+    public void initMemberCount() {
         put(Contract.Organization.COL_MEMBER_COUNT, 0);
     }
 
-    public void incrementMemberCount() {
+    public void incMemberCount() {
         increment(Contract.Organization.COL_MEMBER_COUNT);
     }
 

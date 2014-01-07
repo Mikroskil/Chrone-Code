@@ -31,6 +31,7 @@ public final class Contract {
         public static final String COL_DESC = "description";
         public static final String COL_PRIVACY = "privacy";
         public static final String COL_HOST_BY = "hostBy";
+        public static final String COL_TICKET_COUNT = "ticketCount";
         public static final String COL_CREATED_AT = "createdAt";
         public static final String COL_UPDATED_AT = "updatedAt";
     }
@@ -92,5 +93,22 @@ public final class Contract {
         public static final String COL_UPDATED_AT = "updatedAt";
         public static final String COL_LAST_SIGN_IN = "lastSignIn";
         public static final String COL_ORG_COUNT = "orgCount";
+    }
+
+    public static class Ticket implements BaseColumns {
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd.qattend.tickets";
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd.qattend.ticket";
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath("tickets").build();
+
+        public static final String TABLE = "Ticket";
+        public static final String COL_OBJ_ID = "objectId";
+        public static final String COL_PARTICIPANT = "participant";
+        public static final String COL_PARTICIPATE_TO = "participateTo";
+        public static final String COL_VERIFIED = "verified";
+        public static final String COL_CREATED_AT = "createdAt";
+        public static final String COL_UPDATED_AT = "updatedAt";
     }
 }

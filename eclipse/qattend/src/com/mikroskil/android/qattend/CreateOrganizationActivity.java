@@ -110,7 +110,7 @@ public class CreateOrganizationActivity extends Activity {
         ParseMember user = (ParseMember) ParseUser.getCurrentUser();
         org.setName(mName);
         org.setUsername(mUsername);
-        org.initializeMemberCount();
+        org.initMemberCount();
         user.increment(Contract.Member.COL_ORG_COUNT);
         org.setOwner(user);
 

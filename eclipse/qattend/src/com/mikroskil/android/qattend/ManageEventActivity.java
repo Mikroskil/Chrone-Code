@@ -225,6 +225,7 @@ public class ManageEventActivity extends Activity {
         event.setLocation(mLocation);
         event.setDesc(mDescView.getText().toString().trim());
         event.setPrivacy(mPrivacyView.isChecked());
+        event.initTicketCount();
         ParseOrganization org = ParseObject.createWithoutData(ParseOrganization.class, NavigationDrawerFragment.getActiveOrgId());
         event.setHostBy(org);
         event.saveEventually();

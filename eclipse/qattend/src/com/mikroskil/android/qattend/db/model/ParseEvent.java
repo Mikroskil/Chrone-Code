@@ -74,6 +74,18 @@ public class ParseEvent extends ParseObject {
         put(Contract.Event.COL_HOST_BY, org);
     }
 
+    public int getTicketCount() {
+        return getInt(Contract.Event.COL_TICKET_COUNT);
+    }
+
+    public void initTicketCount() {
+        put(Contract.Event.COL_TICKET_COUNT, 0);
+    }
+
+    public void incTicketCount() {
+        increment(Contract.Event.COL_TICKET_COUNT);
+    }
+
     public ContentValues getContentValues() {
         SimpleDateFormat formatter = new SimpleDateFormat(Contract.DATE_TIME_FORMAT);
         ContentValues values = new ContentValues();

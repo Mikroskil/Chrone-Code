@@ -42,6 +42,7 @@ public class QattendDatabase extends SQLiteOpenHelper {
                 Contract.Event.COL_PRIVACY + " INTEGER CHECK(" + Contract.Event.COL_PRIVACY + "=0 OR " + Contract.Event.COL_PRIVACY + "=1) DEFAULT 0," +
                 Contract.Event.COL_DESC + " TEXT," +
                 Contract.Event.COL_HOST_BY + " TEXT NOT NULL," +
+                Contract.Event.COL_TICKET_COUNT + " INTEGER DEFAULT 0," +
                 Contract.Event.COL_CREATED_AT + " TEXT DEFAULT (DATETIME('NOW'))," +
                 Contract.Event.COL_UPDATED_AT + " TEXT DEFAULT (DATETIME('NOW'))" +
             ")"
@@ -71,11 +72,23 @@ public class QattendDatabase extends SQLiteOpenHelper {
                 Contract.Membership.COL_UPDATED_AT + " TEXT DEFAULT (DATETIME('NOW'))" +
             ")"
         );
+        db.execSQL(
+            "CREATE TABLE " + Contract.Ticket.TABLE + " (" +
+                    Contract.Ticket._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    Contract.Ticket.COL_OBJ_ID + " TEXT UNIQUE," +
+                    Contract.Ticket.COL_PARTICIPANT + " TEXT NOT NULL," +
+                    Contract.Ticket.COL_PARTICIPATE_TO + " TEXT NOT NULL," +
+                    Contract.Ticket.COL_VERIFIED + " INTEGER CHECK(" + Contract.Ticket.COL_VERIFIED + "=0 OR " + Contract.Ticket.COL_VERIFIED + "=1) DEFAULT 0," +
+                    Contract.Ticket.COL_CREATED_AT + " TEXT DEFAULT (DATETIME('NOW'))," +
+                    Contract.Ticket.COL_UPDATED_AT + " TEXT DEFAULT (DATETIME('NOW'))" +
+                ")"
+        );
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d(QattendApp.TAG, String.format("Upgrading database from version %s to %s", oldVersion, newVersion));
+        db.execSQL("DROP TABLE IF EXISTS " + Contract.Ticket.TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + Contract.Membership.TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + Contract.Member.TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + Contract.Event.TABLE);
