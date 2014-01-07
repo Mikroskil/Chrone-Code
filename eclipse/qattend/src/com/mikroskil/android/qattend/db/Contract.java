@@ -90,5 +90,7 @@ public final class Contract {
         public static final String COL_GENDER = "gender";
         public static final String COL_CREATED_AT = "createdAt";
         public static final String COL_UPDATED_AT = "updatedAt";
+        public static final String COL_LAST_SIGN_IN = "lastSignIn";
+        public static final String COL_ORG_COUNT = "orgCount";
     }
 }

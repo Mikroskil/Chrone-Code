@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 
-import com.mikroskil.android.qattend.NavigationDrawerFragment;
 import com.mikroskil.android.qattend.QattendApp;
 
 public class QattendProvider extends ContentProvider {
@@ -126,7 +125,7 @@ public class QattendProvider extends ContentProvider {
                         Contract.Membership.COL_APPLICANT_FROM, Contract.Member.COL_OBJ_ID, Contract.Membership.COL_APPROVED,
                         Contract.Membership.COL_APPLY_TO,
                         Contract.Membership.COL_CREATED_AT),
-                        new String[] { NavigationDrawerFragment.getActiveOrgId() });
+                        selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);

@@ -15,16 +15,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mikroskil.android.qattend.fragment.ProfileFragment;
-import com.parse.FunctionCallback;
-import com.parse.ParseCloud;
+import com.mikroskil.android.qattend.db.Contract;
+import com.mikroskil.android.qattend.db.model.ParseMember;
+import com.mikroskil.android.qattend.db.model.ParseOrganization;
 import com.parse.ParseException;
-
-import java.util.HashMap;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 public class CreateOrganizationActivity extends Activity {
-
-    private ProgressDialog mProgress;
 
     private String mUsername;
     private String mName;
@@ -95,32 +93,43 @@ public class CreateOrganizationActivity extends Activity {
         else {
             ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
                     .hideSoftInputFromWindow(mSubmitView.getWindowToken(), 0);
-            mProgress = new ProgressDialog(this);
-            mProgress.setMessage(getString(R.string.progress_creating));
-            mProgress.setIndeterminate(false);
-            mProgress.setCancelable(false);
-            mProgress.show();
-
-            HashMap<String, Object> params = new HashMap<String, Object>();
-            params.put("name", mName);
-            params.put("username", mUsername);
-
-            ParseCloud.callFunctionInBackground("createOrganization", params, new FunctionCallback<String>() {
-                @Override
-                public void done(String result, ParseException e) {
-                    mProgress.dismiss();
-                    if (null == e) {
-                        NavigationDrawerFragment.updateSpinnerAdapter();
-                        ProfileFragment.updateAdapter();
-                        Toast.makeText(CreateOrganizationActivity.this, result, Toast.LENGTH_LONG).show();
-                        finish();
-                    } else {
-                        Log.e(QattendApp.TAG, "create organization: " + e.getMessage());
-                        Toast.makeText(CreateOrganizationActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
+            createOrganization();
         }
+    }
+
+    private void createOrganization() {
+        Log.d(QattendApp.TAG, "create organization");
+
+        final ProgressDialog progress = new ProgressDialog(this);
+        progress.setMessage(getString(R.string.progress_creating));
+        progress.setIndeterminate(false);
+        progress.setCancelable(false);
+        progress.show();
+
+        final ParseOrganization org = new ParseOrganization();
+        ParseMember user = (ParseMember) ParseUser.getCurrentUser();
+        org.setName(mName);
+        org.setUsername(mUsername);
+        org.initializeMemberCount();
+        user.increment(Contract.Member.COL_ORG_COUNT);
+        org.setOwner(user);
+
+        org.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                Log.d(QattendApp.TAG, "create organization callback");
+                progress.dismiss();
+
+                if (e == null) {
+                    getContentResolver().insert(Contract.Organization.CONTENT_URI, org.getContentValues());
+                    Toast.makeText(CreateOrganizationActivity.this, "Organization created successfully", Toast.LENGTH_LONG).show();
+                    finish();
+                } else {
+                    Log.e(QattendApp.TAG, "create organization: " + e.getMessage());
+                    Toast.makeText(CreateOrganizationActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
 }

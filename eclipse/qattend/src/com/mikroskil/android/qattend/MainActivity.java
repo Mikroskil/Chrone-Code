@@ -16,6 +16,7 @@ import android.view.Window;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.mikroskil.android.qattend.db.PrefetchData;
 import com.mikroskil.android.qattend.fragment.EventFragment;
 import com.mikroskil.android.qattend.fragment.MemberFragment;
 import com.mikroskil.android.qattend.fragment.ProfileFragment;
@@ -31,6 +32,7 @@ public class MainActivity extends Activity
 
     private int mOrgPos;
     private int mPos;
+    private boolean prefetched = false;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -57,6 +59,11 @@ public class MainActivity extends Activity
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        if (!prefetched) {
+            new PrefetchData(this).execute();
+            prefetched = true;
+        }
     }
 
     @Override

@@ -18,8 +18,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mikroskil.android.qattend.db.model.ParseMember;
 import com.parse.ParseException;
-import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
 public class SignUpActivity extends Activity {
@@ -28,6 +28,7 @@ public class SignUpActivity extends Activity {
     private String mUsername;
     private String mEmail;
     private String mPassword;
+
     private EditText mNameView;
     private EditText mUsernameView;
     private EditText mEmailView;
@@ -137,12 +138,12 @@ public class SignUpActivity extends Activity {
         progress.setCancelable(false);
         progress.show();
 
-        ParseUser user = new ParseUser();
+        ParseMember user = new ParseMember();
         user.setUsername(mUsername);
         user.setPassword(mPassword);
         user.setEmail(mEmail);
-        user.put("name", mName);
-        user.put("orgCount", 0);
+        user.setName(mName);
+        user.initializeOrgCount();
 
         user.signUpInBackground(new SignUpCallback() {
             @Override

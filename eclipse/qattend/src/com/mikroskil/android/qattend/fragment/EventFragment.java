@@ -82,6 +82,7 @@ public class EventFragment extends ListFragment
 //        getListView().addHeaderView(space, null, false);
         setListAdapter(mAdapter);
 
+        Log.d(QattendApp.TAG, "init event loader");
         getLoaderManager().initLoader(0, null, this);
     }
 
@@ -101,6 +102,9 @@ public class EventFragment extends ListFragment
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        String orgId = NavigationDrawerFragment.getActiveOrgId();
+        if (orgId == null) return null;
+
         String[] projection = {
                 Contract.Event._ID,
                 Contract.Event.COL_TITLE,
@@ -129,7 +133,7 @@ public class EventFragment extends ListFragment
 
         return new CursorLoader(mContext, Contract.Event.CONTENT_URI,
                 projection, selection,
-                new String[] { NavigationDrawerFragment.getActiveOrgId() },
+                new String[] { orgId },
                 Contract.Event.COL_CREATED_AT + " DESC");
     }
 

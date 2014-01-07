@@ -17,6 +17,7 @@ import android.widget.SimpleCursorAdapter;
 
 import com.mikroskil.android.qattend.MainActivity;
 import com.mikroskil.android.qattend.MemberDetailActivity;
+import com.mikroskil.android.qattend.NavigationDrawerFragment;
 import com.mikroskil.android.qattend.QattendApp;
 import com.mikroskil.android.qattend.R;
 import com.mikroskil.android.qattend.db.Contract;
@@ -50,6 +51,8 @@ public class MemberFragment extends ListFragment
                 0);
 
         setListAdapter(mAdapter);
+
+        Log.d(QattendApp.TAG, "init member loader");
         getLoaderManager().initLoader(0, null, this);
     }
 
@@ -69,13 +72,15 @@ public class MemberFragment extends ListFragment
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        String orgId = NavigationDrawerFragment.getActiveOrgId();
+        if (orgId == null) return null;
         // send raw query snippet to content provider about 'approved' status.
         String selection = null;
         if (mPos == 4) selection = "WHERE A.%s = 1";
         else if (mPos == 5) selection = "WHERE A.%s = 0";
 
         return new CursorLoader(mContext, Contract.Member.CONTENT_URI,
-                null, selection, null, null);
+                null, selection, new String[] { orgId }, null);
     }
 
     @Override

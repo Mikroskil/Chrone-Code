@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mikroskil.android.qattend.db.model.ParseMember;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -35,6 +36,7 @@ public class SignInActivity extends AccountAuthenticatorActivity {
 
     private String mUsername;
     private String mPassword;
+
     private EditText mUsernameView;
     private EditText mPasswordView;
     private Button mSubmitView;
@@ -146,15 +148,16 @@ public class SignInActivity extends AccountAuthenticatorActivity {
         progress.setCancelable(false);
         progress.show();
 
-        ParseUser.logInInBackground(mUsername, mPassword, new LogInCallback() {
+        ParseMember.logInInBackground(mUsername, mPassword, new LogInCallback() {
             @Override
             public void done(ParseUser user, ParseException e) {
                 Log.d(QattendApp.TAG, "sign in callback");
                 progress.dismiss();
 
                 if (e == null) {
-                    user.put("lastSignIn", new Date());
-                    user.saveEventually();
+                    ParseMember me = (ParseMember) user;
+                    me.setLastSignIn(new Date());
+                    me.saveEventually();
                     Intent intent = new Intent(SignInActivity.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);

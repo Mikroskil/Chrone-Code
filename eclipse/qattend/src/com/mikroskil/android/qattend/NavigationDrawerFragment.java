@@ -3,16 +3,19 @@ package com.mikroskil.android.qattend;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,7 +31,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mikroskil.android.qattend.db.Contract;
-import com.mikroskil.android.qattend.db.QattendDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,7 +40,8 @@ import java.util.Date;
  * See the <a href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction">
  * design guidelines</a> for a complete explanation of the behaviors implemented here.
  */
-public class NavigationDrawerFragment extends Fragment {
+public class NavigationDrawerFragment extends Fragment
+    implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static Spinner mSpinnerView;
     private static SimpleCursorAdapter mAdapter;
@@ -107,16 +110,9 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerListView = (ListView) rootView.findViewById(R.id.listView);
         mSyncView = (TextView) rootView.findViewById(R.id.sync);
 
-        QattendDatabase dbHelper = new QattendDatabase(mContext);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + Contract.Organization.TABLE, null);
-
-//        if (cursor.getCount() == 0) mSpinnerView.setVisibility(View.GONE);
-//        else mSpinnerView.setSelection(0);
-
         mAdapter = new SimpleCursorAdapter(mContext,
                     android.R.layout.simple_spinner_dropdown_item,
-                    cursor,
+                    null,
                     new String[] { Contract.Organization.COL_NAME },
                     new int[] { android.R.id.text1 },
                     0);
@@ -159,6 +155,8 @@ public class NavigationDrawerFragment extends Fragment {
                 }, 1000);
             }
         });
+        Log.d(QattendApp.TAG, "init drawer loader");
+        getLoaderManager().initLoader(0, null, this);
 
         return rootView;
     }
@@ -324,6 +322,33 @@ public class NavigationDrawerFragment extends Fragment {
         return mContext.getActionBar();
     }
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        String[] projection = {
+                Contract.Organization._ID,
+                Contract.Organization.COL_OBJ_ID,
+                Contract.Organization.COL_NAME,
+                Contract.Organization.COL_USERNAME
+        };
+
+        return new CursorLoader(mContext, Contract.Organization.CONTENT_URI,
+                projection, null, null, Contract.Organization.COL_CREATED_AT + " DESC");
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        mAdapter.changeCursor(cursor);
+        if (cursor.getCount() > 0)
+            mSpinnerView.setVisibility(View.VISIBLE);
+        else
+            mSpinnerView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+        mAdapter.changeCursor(null);
+    }
+
     /**
      * Callbacks interface that all activities using this fragment must implement.
      */
@@ -334,14 +359,12 @@ public class NavigationDrawerFragment extends Fragment {
         void onNavigationDrawerItemSelected(int position);
     }
 
-    public static void updateSpinnerAdapter() {
-        mSpinnerView.setVisibility(View.VISIBLE);
-        mAdapter.notifyDataSetChanged();
-    }
-
     public static String getActiveOrgId () {
-        Cursor cursor = (Cursor) mAdapter.getItem(mState);
-        return cursor.getString(cursor.getColumnIndexOrThrow(Contract.Organization.COL_OBJ_ID));
+        if (mAdapter.getCount() > 0) {
+            Cursor cursor = (Cursor) mAdapter.getItem(mState);
+            return cursor.getString(cursor.getColumnIndexOrThrow(Contract.Organization.COL_OBJ_ID));
+        }
+        return null;
     }
 
     public static int getSpinnerState() {

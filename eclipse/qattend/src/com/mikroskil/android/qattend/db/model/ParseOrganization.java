@@ -54,8 +54,16 @@ public class ParseOrganization extends ParseObject {
         return getInt(Contract.Organization.COL_MEMBER_COUNT);
     }
 
+    public void initializeMemberCount() {
+        put(Contract.Organization.COL_MEMBER_COUNT, 0);
+    }
+
     public void incrementMemberCount() {
         increment(Contract.Organization.COL_MEMBER_COUNT);
+    }
+
+    public void setOwner(ParseMember user) {
+        put(Contract.Organization.COL_OWN_BY, user);
     }
 
     public ContentValues getContentValues() {

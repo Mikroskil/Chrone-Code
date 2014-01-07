@@ -2,7 +2,10 @@ package com.mikroskil.android.qattend.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,11 +23,13 @@ import com.mikroskil.android.qattend.OrganizationDetailActivity;
 import com.mikroskil.android.qattend.QattendApp;
 import com.mikroskil.android.qattend.R;
 import com.mikroskil.android.qattend.db.Contract;
+import com.mikroskil.android.qattend.db.model.ParseMember;
 import com.parse.ParseUser;
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment
+    implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static SimpleCursorAdapter mAdapter;
+    private SimpleCursorAdapter mAdapter;
 
     private Activity mContext;
 
@@ -42,26 +47,17 @@ public class ProfileFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
         Log.d(QattendApp.TAG, "query profile data");
 
-        ParseUser user = ParseUser.getCurrentUser();
-        ((TextView) rootView.findViewById(R.id.name)).setText(user.getString("name"));
+        ParseMember user = (ParseMember) ParseUser.getCurrentUser();
+        ((TextView) rootView.findViewById(R.id.name)).setText(user.getName());
         ((TextView) rootView.findViewById(R.id.username)).setText("@" + user.getUsername());
         ((TextView) rootView.findViewById(R.id.email)).setText(user.getEmail());
-        ((TextView) rootView.findViewById(R.id.gender)).setText((user.getBoolean("gender") ? "Male": "Female"));
-        ((TextView) rootView.findViewById(R.id.phone)).setText(user.getString("phone"));
-        ((TextView) rootView.findViewById(R.id.about)).setText(user.getString("about"));
-
-        String[] projection = {
-                Contract.Organization._ID,
-                Contract.Organization.COL_NAME,
-                Contract.Organization.COL_USERNAME
-        };
-
-        Cursor cursor = mContext.getContentResolver().query(Contract.Organization.CONTENT_URI,
-                projection, null, null, Contract.Organization.COL_CREATED_AT + " DESC");
+        ((TextView) rootView.findViewById(R.id.gender)).setText((user.getGender() ? "Male": "Female"));
+        ((TextView) rootView.findViewById(R.id.phone)).setText(user.getPhone());
+        ((TextView) rootView.findViewById(R.id.about)).setText(user.getAbout());
 
         ListView listView = (ListView) rootView.findViewById(R.id.listView);
         mAdapter = new SimpleCursorAdapter(mContext,
-                R.layout.card_organization, cursor,
+                R.layout.card_organization, null,
                 new String[] { Contract.Organization.COL_NAME, Contract.Organization.COL_USERNAME },
                 new int[] { R.id.name, R.id.username },
                 0);
@@ -80,12 +76,32 @@ public class ProfileFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        Log.d(QattendApp.TAG, "init profile loader");
+        getLoaderManager().initLoader(0, null, this);
 
         return rootView;
     }
 
-    public static void updateAdapter() {
-        mAdapter.notifyDataSetChanged();
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        String[] projection = {
+                Contract.Organization._ID,
+                Contract.Organization.COL_NAME,
+                Contract.Organization.COL_USERNAME
+        };
+
+        return new CursorLoader(mContext, Contract.Organization.CONTENT_URI,
+                projection, null, null, Contract.Organization.COL_CREATED_AT + " DESC");
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        mAdapter.changeCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mAdapter.changeCursor(null);
     }
 
 }

@@ -50,6 +50,22 @@ public class ParseMember extends ParseUser {
         put(Contract.Member.COL_ABOUT, about);
     }
 
+    public void initializeOrgCount() {
+        put(Contract.Member.COL_ORG_COUNT, 0);
+    }
+
+    public void incrementOrgCount() {
+        increment(Contract.Member.COL_ORG_COUNT);
+    }
+
+    public Date getLastSignIn() {
+        return getDate(Contract.Member.COL_LAST_SIGN_IN);
+    }
+
+    public void setLastSignIn(Date lastSignIn) {
+        put(Contract.Member.COL_LAST_SIGN_IN, lastSignIn);
+    }
+
     public ContentValues getContentValues() {
         SimpleDateFormat formatter = new SimpleDateFormat(Contract.DATE_TIME_FORMAT);
         ContentValues values = new ContentValues();
