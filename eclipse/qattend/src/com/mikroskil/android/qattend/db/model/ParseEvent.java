@@ -77,7 +77,7 @@ public class ParseEvent extends ParseObject {
     public ContentValues getContentValues() {
         SimpleDateFormat formatter = new SimpleDateFormat(Contract.DATE_TIME_FORMAT);
         ContentValues values = new ContentValues();
-        values.put(Contract.Event.COL_OBJ_ID, getObjectId());
+        if (getObjectId() != null) values.put(Contract.Event.COL_OBJ_ID, getObjectId());
         values.put(Contract.Event.COL_TITLE, getTitle());
         values.put(Contract.Event.COL_START_DATE, formatter.format(getStartDate()));
         values.put(Contract.Event.COL_END_DATE, formatter.format(getEndDate()));
@@ -85,8 +85,8 @@ public class ParseEvent extends ParseObject {
         values.put(Contract.Event.COL_DESC, getDesc());
         values.put(Contract.Event.COL_PRIVACY, getPrivacy());
         values.put(Contract.Event.COL_HOST_BY, getHostBy());
-        values.put(Contract.Event.COL_CREATED_AT, formatter.format(getCreatedAt()));
-        values.put(Contract.Event.COL_UPDATED_AT, formatter.format(getUpdatedAt()));
+        if (getCreatedAt() != null) values.put(Contract.Event.COL_CREATED_AT, formatter.format(getCreatedAt()));
+        if (getUpdatedAt() != null) values.put(Contract.Event.COL_UPDATED_AT, formatter.format(getUpdatedAt()));
         return values;
     }
 

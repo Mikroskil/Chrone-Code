@@ -15,5 +15,9 @@
     <string name="action_scanner">Scanner</string>
     <string name="action_search_member">Search Member</string>
     <string name="no_data">No Data</string>
+    <string name="prompt_title">Title</string>
+    <string name="prompt_location">Location</string>
+    <string name="prompt_desc">Description (optional)</string>
+    <string name="prompt_privacy">Is public?</string>
 
 </resources>

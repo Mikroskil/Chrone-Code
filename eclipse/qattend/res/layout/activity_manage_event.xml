@@ -8,6 +8,75 @@
     <LinearLayout
         style="@style/FormContainer">
 
+        <EditText
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapWords"
+            android:hint="@string/prompt_title"/>
+
+        <EditText
+            android:id="@+id/location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapWords"
+            android:hint="@string/prompt_location"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                style="?android:spinnerStyle"
+                android:id="@+id/startDate"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="3"/>
+
+            <Button
+                style="?android:spinnerStyle"
+                android:id="@+id/startTime"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="2"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                style="?android:spinnerStyle"
+                android:id="@+id/endDate"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="3"/>
+
+            <Button
+                style="?android:spinnerStyle"
+                android:id="@+id/endTime"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="2"/>
+
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/privacy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/prompt_privacy"/>
+
+        <EditText
+            android:id="@+id/desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine|textCapSentences"
+            android:hint="@string/prompt_desc"/>
+
     </LinearLayout>
 
 </ScrollView>

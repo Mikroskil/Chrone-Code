@@ -18,11 +18,14 @@ import java.text.SimpleDateFormat;
 
 public class EventDetailActivity extends Activity {
 
+    private long mId;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_activity_detail);
 
-        Uri uri = Uri.parse(Contract.Event.CONTENT_URI + "/" + getIntent().getLongExtra(Contract.Event._ID, 0));
+        mId = getIntent().getLongExtra(Contract.Event._ID, 0);
+        Uri uri = Uri.parse(Contract.Event.CONTENT_URI + "/" + mId);
 
         Cursor cursor = getContentResolver().query(uri, null, null, null, null);
 
@@ -61,7 +64,8 @@ public class EventDetailActivity extends Activity {
                 return true;
             case R.id.action_edit_event:
                 Intent intent = new Intent(this, ManageEventActivity.class);
-                intent.putExtra("EVENT_MODE", false);
+                intent.putExtra(MainActivity.EVENT_MODE, false);
+                intent.putExtra(Contract.Event._ID, mId);
                 startActivity(intent);
                 return true;
             case R.id.action_verify_attendee:

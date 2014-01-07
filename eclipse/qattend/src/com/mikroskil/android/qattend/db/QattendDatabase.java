@@ -34,7 +34,7 @@ public class QattendDatabase extends SQLiteOpenHelper {
         db.execSQL(
             "CREATE TABLE " + Contract.Event.TABLE + " (" +
                 Contract.Event._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                Contract.Event.COL_OBJ_ID + " TEXT NOT NULL UNIQUE," +
+                Contract.Event.COL_OBJ_ID + " TEXT UNIQUE," +
                 Contract.Event.COL_TITLE + " TEXT NOT NULL," +
                 Contract.Event.COL_START_DATE  + " TEXT NOT NULL," +
                 Contract.Event.COL_END_DATE + " TEXT NOT NULL," +
@@ -63,7 +63,7 @@ public class QattendDatabase extends SQLiteOpenHelper {
         db.execSQL(
             "CREATE TABLE " + Contract.Membership.TABLE + " (" +
                 Contract.Membership._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                Contract.Membership.COL_OBJ_ID + " TEXT NOT NULL UNIQUE," +
+                Contract.Membership.COL_OBJ_ID + " TEXT UNIQUE," +
                 Contract.Membership.COL_APPLICANT_FROM + " TEXT NOT NULL," +
                 Contract.Membership.COL_APPLY_TO + " TEXT NOT NULL," +
                 Contract.Membership.COL_APPROVED + " INTEGER CHECK(" + Contract.Membership.COL_APPROVED + "=0 OR " + Contract.Membership.COL_APPROVED + "=1) DEFAULT 0," +
