@@ -6,7 +6,6 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -71,13 +70,7 @@ public class ManageEventActivity extends Activity {
         actionBarView.findViewById(R.id.action_bar_ok).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isNew) {
-                    getContentResolver().insert(Contract.Event.CONTENT_URI, attemptCreateEvent());
-                }
-                else {
-                    throw new UnsupportedOperationException();
-                }
-                finish();
+                attemptCreateEvent();
             }
         });
         actionBarView.findViewById(R.id.action_bar_cancel).setOnClickListener(new View.OnClickListener() {
@@ -185,7 +178,7 @@ public class ManageEventActivity extends Activity {
 
     }
 
-    public ContentValues attemptCreateEvent() {
+    private void attemptCreateEvent() {
         Log.d(QattendApp.TAG, "attempt create event");
 
         mTitleView.setError(null);
@@ -210,10 +203,13 @@ public class ManageEventActivity extends Activity {
         }
 
         if (cancel) focusView.requestFocus();
-        return CreateEvent();
+        else {
+            if (isNew) CreateEvent();
+            else EditEvent();
+        }
     }
 
-    private ContentValues CreateEvent() {
+    private void CreateEvent() {
         ParseEvent event = new ParseEvent();
         event.setTitle(mTitle);
         try {
@@ -229,7 +225,11 @@ public class ManageEventActivity extends Activity {
         ParseOrganization org = ParseObject.createWithoutData(ParseOrganization.class, NavigationDrawerFragment.getActiveOrgId());
         event.setHostBy(org);
         event.saveEventually();
-        return event.getContentValues();
+        getContentResolver().insert(Contract.Event.CONTENT_URI, event.getContentValues());
+    }
+
+    private void EditEvent() {
+        throw new UnsupportedOperationException();
     }
 
     public static class DatePickerFragment extends DialogFragment
