@@ -21,5 +21,6 @@
     <string name="prompt_location">Location</string>
     <string name="prompt_desc">Description (optional)</string>
     <string name="prompt_privacy">Is public?</string>
+    <string name="show_tickets">Show Attendees</string>
 
 </resources>

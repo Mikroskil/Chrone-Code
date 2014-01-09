@@ -12,42 +12,16 @@ import com.mikroskil.android.qattend.QattendApp;
 
 public class QattendProvider extends ContentProvider {
 
-    private QattendDatabase mDbHelper;
-
-    /**
-     * URI ID for route: /organizations
-     */
     public static final int ROUTE_ORGS = 1;
-
-    /**
-     * URI ID for route: /organizations/{ID}
-     */
     public static final int ROUTE_ORGS_ID = 2;
-
-    /**
-     * URI ID for route: /events
-     */
     public static final int ROUTE_EVENTS = 3;
-
-    /**
-     * URI ID for route: /events/{ID}
-     */
     public static final int ROUTE_EVENTS_ID = 4;
-
-    /**
-     * URI ID for route: /members
-     */
     public static final int ROUTE_MEMBERS = 5;
-
-    /**
-     * URI ID for route: /members/{ID}
-     */
     public static final int ROUTE_MEMBERS_ID = 6;
-
-    /**
-     * URI ID for route: /memberships
-     */
     public static final int ROUTE_MEMBERSHIPS = 7;
+    public static final int ROUTE_MEMBERSHIPS_ID = 8;
+    public static final int ROUTE_TICKETS = 9;
+    public static final int ROUTE_TICKETS_ID = 10;
 
     /**
      * UriMatcher, used to decode incoming URIs.
@@ -61,7 +35,12 @@ public class QattendProvider extends ContentProvider {
         sUriMatcher.addURI(Contract.CONTENT_AUTHORITY, "members", ROUTE_MEMBERS);
         sUriMatcher.addURI(Contract.CONTENT_AUTHORITY, "members/*", ROUTE_MEMBERS_ID);
         sUriMatcher.addURI(Contract.CONTENT_AUTHORITY, "memberships", ROUTE_MEMBERSHIPS);
+        sUriMatcher.addURI(Contract.CONTENT_AUTHORITY, "memberships/*", ROUTE_MEMBERSHIPS_ID);
+        sUriMatcher.addURI(Contract.CONTENT_AUTHORITY, "tickets", ROUTE_TICKETS);
+        sUriMatcher.addURI(Contract.CONTENT_AUTHORITY, "tickets/*", ROUTE_TICKETS_ID);
     }
+
+    private QattendDatabase mDbHelper;
 
     @Override
     public boolean onCreate() {
@@ -72,6 +51,7 @@ public class QattendProvider extends ContentProvider {
     @Override
     public String getType(Uri uri) {
         final int match = sUriMatcher.match(uri);
+
         switch (match) {
             case ROUTE_ORGS:
                 return Contract.Organization.CONTENT_TYPE;
@@ -85,6 +65,14 @@ public class QattendProvider extends ContentProvider {
                 return Contract.Member.CONTENT_TYPE;
             case ROUTE_MEMBERS_ID:
                 return Contract.Member.CONTENT_ITEM_TYPE;
+            case ROUTE_MEMBERSHIPS:
+                return Contract.Membership.CONTENT_TYPE;
+            case ROUTE_MEMBERSHIPS_ID:
+                return Contract.Membership.CONTENT_ITEM_TYPE;
+            case ROUTE_TICKETS:
+                return Contract.Ticket.CONTENT_TYPE;
+            case ROUTE_TICKETS_ID:
+                return Contract.Ticket.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -119,7 +107,8 @@ public class QattendProvider extends ContentProvider {
                         new String[] { uri.getLastPathSegment() });
                 break;
             case ROUTE_MEMBERS:
-                cursor = db.rawQuery(String.format("SELECT B.%s, B.%s, B.%s FROM %s AS A INNER JOIN %s AS B ON A.%s = B.%s " + selection + " AND A.%s = ? ORDER BY A.%s DESC",
+                cursor = db.rawQuery(String.format("SELECT B.%s, B.%s, B.%s FROM %s AS A INNER JOIN %s AS B ON A.%s = B.%s " +
+                        selection + " AND A.%s = ? ORDER BY A.%s DESC",
                         Contract.Member._ID, Contract.Member.COL_NAME, Contract.Member.COL_USERNAME,
                         Contract.Membership.TABLE, Contract.Member.TABLE,
                         Contract.Membership.COL_APPLICANT_FROM, Contract.Member.COL_OBJ_ID, Contract.Membership.COL_APPROVED,
@@ -127,9 +116,29 @@ public class QattendProvider extends ContentProvider {
                         Contract.Membership.COL_CREATED_AT),
                         selectionArgs);
                 break;
+            case ROUTE_MEMBERSHIPS:
+                throw new UnsupportedOperationException(uri.toString());
+            case ROUTE_MEMBERSHIPS_ID:
+                cursor = db.rawQuery(String.format("SELECT %s FROM %s WHERE %s = ?",
+                        Contract.Membership.COL_APPLICANT_FROM, Contract.Membership.TABLE,
+                        Contract.Membership.COL_OBJ_ID),
+                        new String[] { uri.getLastPathSegment() });
+                break;
+            case ROUTE_TICKETS:
+                cursor = db.rawQuery(String.format("SELECT T.%s, M.%s, M.%s FROM %s AS T INNER JOIN %s AS M ON T.%s = M.%s WHERE T.%s = ? ORDER BY T.%s DESC",
+                        Contract.Ticket._ID, Contract.Member.COL_NAME, Contract.Member.COL_USERNAME,
+                        Contract.Ticket.TABLE, Contract.Member.TABLE,
+                        Contract.Ticket.COL_PARTICIPANT, Contract.Member.COL_OBJ_ID,
+                        Contract.Ticket.COL_PARTICIPATE_TO,
+                        Contract.Ticket.COL_CREATED_AT),
+                        selectionArgs);
+                break;
+            case ROUTE_TICKETS_ID:
+                throw new UnsupportedOperationException(uri.toString());
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+
         Log.d(QattendApp.TAG, String.format("uri=%s count=%s", uri, cursor.getCount()));
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
@@ -159,9 +168,14 @@ public class QattendProvider extends ContentProvider {
                 id = db.insertOrThrow(Contract.Membership.TABLE, null, values);
                 result = Uri.parse(Contract.Membership.CONTENT_URI + "/" + id);
                 break;
+            case ROUTE_TICKETS:
+                id = db.insertOrThrow(Contract.Ticket.TABLE, null, values);
+                result = Uri.parse(Contract.Ticket.CONTENT_URI + "/" + id);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+
         Log.d(QattendApp.TAG, String.format("id=%s uri=%s values=%s", id, uri, values));
         if (id != -1) getContext().getContentResolver().notifyChange(uri, null, false);
         return result;
@@ -173,8 +187,25 @@ public class QattendProvider extends ContentProvider {
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+    public int update(Uri uri, ContentValues values, String whereClause, String[] whereArgs) {
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        int uriMatch = sUriMatcher.match(uri);
+        int count;
+
+        switch (uriMatch) {
+            case ROUTE_EVENTS_ID:
+                count = db.rawQuery(String.format("UPDATE %s SET %2$s = %s + 1 WHERE %3$s = ?",
+                        Contract.Event.TABLE, Contract.Event.COL_TICKET_COUNT,
+                        Contract.Event.COL_OBJ_ID),
+                        new String[] { uri.getLastPathSegment() }).getCount();
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        Log.d(QattendApp.TAG, String.format("count=%s uri=%s values=%s", count, uri, values));
+        getContext().getContentResolver().notifyChange(uri, null, false);
+        return count;
     }
 
 }

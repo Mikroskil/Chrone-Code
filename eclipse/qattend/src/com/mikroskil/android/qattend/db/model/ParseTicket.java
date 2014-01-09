@@ -20,11 +20,11 @@ public class ParseTicket extends ParseObject {
     }
 
     public String getParticipateTo() {
-        return getParseObject(Contract.Ticket.COL_PARTICIPANT).getObjectId();
+        return getParseObject(Contract.Ticket.COL_PARTICIPATE_TO).getObjectId();
     }
 
     public void setParticipateTo(ParseEvent event) {
-        put(Contract.Ticket.COL_PARTICIPANT, event);
+        put(Contract.Ticket.COL_PARTICIPATE_TO, event);
     }
 
     public boolean isVerified() {

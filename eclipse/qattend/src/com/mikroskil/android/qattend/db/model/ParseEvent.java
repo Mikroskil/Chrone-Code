@@ -97,6 +97,7 @@ public class ParseEvent extends ParseObject {
         values.put(Contract.Event.COL_DESC, getDesc());
         values.put(Contract.Event.COL_PRIVACY, getPrivacy());
         values.put(Contract.Event.COL_HOST_BY, getHostBy());
+        values.put(Contract.Event.COL_TICKET_COUNT, getTicketCount());
         if (getCreatedAt() != null) values.put(Contract.Event.COL_CREATED_AT, formatter.format(getCreatedAt()));
         if (getUpdatedAt() != null) values.put(Contract.Event.COL_UPDATED_AT, formatter.format(getUpdatedAt()));
         return values;
@@ -112,8 +113,9 @@ public class ParseEvent extends ParseObject {
         String hostBy = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Event.COL_HOST_BY));
         String createdAt = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Event.COL_CREATED_AT));
         String updatedAt = cursor.getString(cursor.getColumnIndexOrThrow(Contract.Event.COL_UPDATED_AT));
+        int ticketCount = cursor.getInt(cursor.getColumnIndexOrThrow(Contract.Event.COL_TICKET_COUNT));
         int privacy = cursor.getInt(cursor.getColumnIndexOrThrow(Contract.Event.COL_PRIVACY));
-        return new Event(objId, title, startDate, endDate, location, desc, privacy, hostBy, createdAt, updatedAt);
+        return new Event(objId, title, startDate, endDate, location, desc, privacy, ticketCount, hostBy, createdAt, updatedAt);
     }
 
     public static class Event
@@ -125,12 +127,13 @@ public class ParseEvent extends ParseObject {
         public final String location;
         public final String desc;
         public final boolean privacy;
+        public final int ticketCount;
         public final String hostBy;
         public final Date createdAt;
         public final Date updatedAt;
 
         public Event(String objId, String title, String startDate, String endDate, String location,
-                     String desc, int privacy, String hostBy, String createdAt, String updatedAt) {
+                     String desc, int privacy, int ticketCount, String hostBy, String createdAt, String updatedAt) {
             SimpleDateFormat parser = new SimpleDateFormat(Contract.DATE_TIME_FORMAT);
             this.objId = objId;
             this.title = title;
@@ -138,6 +141,7 @@ public class ParseEvent extends ParseObject {
             this.desc = desc;
             this.privacy = privacy > 0;
             this.hostBy = hostBy;
+            this.ticketCount = ticketCount;
 
             Date tmp1 = null;
             Date tmp2 = null;

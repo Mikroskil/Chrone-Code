@@ -11,6 +11,7 @@ import com.mikroskil.android.qattend.db.model.ParseEvent;
 import com.mikroskil.android.qattend.db.model.ParseMember;
 import com.mikroskil.android.qattend.db.model.ParseMembership;
 import com.mikroskil.android.qattend.db.model.ParseOrganization;
+import com.mikroskil.android.qattend.db.model.ParseTicket;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -52,8 +53,7 @@ public class PrefetchData extends AsyncTask<Void, Void, Void> {
                                     ParseMember user = (ParseMember) member.getParseUser(Contract.Membership.COL_APPLICANT_FROM);
                                     mContext.getContentResolver().insert(Contract.Member.CONTENT_URI, user.getContentValues());
                                 }
-                            }
-                            else {
+                            } else {
                                 Log.e(QattendApp.TAG, "Splash Activity: " + e.getMessage());
                                 Toast.makeText(mContext, "Error fetching data: " + e.getMessage(), Toast.LENGTH_LONG).show();
                             }
@@ -66,10 +66,24 @@ public class PrefetchData extends AsyncTask<Void, Void, Void> {
                         @Override
                         public void done(List<ParseEvent> events, ParseException e) {
                             if (e == null) {
+                                ParseQuery<ParseTicket> ticketQ = ParseQuery.getQuery(ParseTicket.class);
+                                ticketQ.whereContainedIn(Contract.Ticket.COL_PARTICIPATE_TO, events);
+                                ticketQ.findInBackground(new FindCallback<ParseTicket>() {
+                                    @Override
+                                    public void done(List<ParseTicket> tickets, ParseException e) {
+                                        if (e == null) {
+                                            for (ParseTicket ticket : tickets)
+                                                mContext.getContentResolver().insert(Contract.Ticket.CONTENT_URI, ticket.getContentValues());
+                                        } else {
+                                            Log.e(QattendApp.TAG, "Splash Activity: " + e.getMessage());
+                                            Toast.makeText(mContext, "Error fetching data: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                });
+
                                 for (ParseEvent event : events)
                                     mContext.getContentResolver().insert(Contract.Event.CONTENT_URI, event.getContentValues());
-                            }
-                            else {
+                            } else {
                                 Log.e(QattendApp.TAG, "Splash Activity: " + e.getMessage());
                                 Toast.makeText(mContext, "Error fetching data: " + e.getMessage(), Toast.LENGTH_LONG).show();
                             }
@@ -78,8 +92,7 @@ public class PrefetchData extends AsyncTask<Void, Void, Void> {
 
                     for (ParseOrganization org : orgs)
                         mContext.getContentResolver().insert(Contract.Organization.CONTENT_URI, org.getContentValues());
-                }
-                else {
+                } else {
                     Log.e(QattendApp.TAG, "Splash Activity: " + e.getMessage());
                     Toast.makeText(mContext, "Error fetching data: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }

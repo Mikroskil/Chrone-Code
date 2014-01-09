@@ -73,6 +73,9 @@
         <activity android:name=".EventDetailActivity"
                   android:parentActivityName=".MainActivity" />
 
+        <activity android:name=".TicketActivity"
+                  android:parentActivityName=".EventDetailActivity" />
+
         <activity android:name=".OrganizationDetailActivity"
                   android:parentActivityName=".MainActivity" />
 

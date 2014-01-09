@@ -22,6 +22,10 @@ public class ScannerActivity extends CaptureActivity {
     @Override
     public void handleDecode(Result rawResult, Bitmap barcode, float scaleFactor) {
         Toast.makeText(this, "Scanned code " + rawResult.getText(), Toast.LENGTH_LONG).show();
+        Intent intent = new Intent();
+        intent.putExtra(EventDetailActivity.ARG_QR_RAW, rawResult.getText());
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     @Override
