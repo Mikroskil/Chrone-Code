@@ -27,8 +27,8 @@ public class QattendDatabase extends SQLiteOpenHelper {
                 Contract.Organization.COL_EMAIL + " TEXT," +
                 Contract.Organization.COL_ABOUT + " TEXT," +
                 Contract.Organization.COL_MEMBER_COUNT + " INTEGER DEFAULT 0," +
-                Contract.Organization.COL_CREATED_AT + " TEXT DEFAULT (DATETIME('NOW'))," +
-                Contract.Organization.COL_UPDATED_AT + " TEXT DEFAULT (DATETIME('NOW'))" +
+                Contract.Organization.COL_CREATED_AT + " TEXT DEFAULT CURRENT_TIMESTAMP," +
+                Contract.Organization.COL_UPDATED_AT + " TEXT DEFAULT CURRENT_TIMESTAMP" +
             ")"
         );
         db.execSQL(
@@ -43,8 +43,8 @@ public class QattendDatabase extends SQLiteOpenHelper {
                 Contract.Event.COL_DESC + " TEXT," +
                 Contract.Event.COL_HOST_BY + " TEXT NOT NULL," +
                 Contract.Event.COL_TICKET_COUNT + " INTEGER DEFAULT 0," +
-                Contract.Event.COL_CREATED_AT + " TEXT DEFAULT (DATETIME('NOW'))," +
-                Contract.Event.COL_UPDATED_AT + " TEXT DEFAULT (DATETIME('NOW'))" +
+                Contract.Event.COL_CREATED_AT + " TEXT DEFAULT CURRENT_TIMESTAMP," +
+                Contract.Event.COL_UPDATED_AT + " TEXT DEFAULT CURRENT_TIMESTAMP" +
             ")"
         );
         db.execSQL(
@@ -57,8 +57,8 @@ public class QattendDatabase extends SQLiteOpenHelper {
                 Contract.Member.COL_GENDER + " INTEGER CHECK(" + Contract.Member.COL_GENDER + "=0 OR " + Contract.Member.COL_GENDER + "=1) NOT NULL," +
                 Contract.Member.COL_PHONE + " TEXT," +
                 Contract.Member.COL_ABOUT + " TEXT," +
-                Contract.Member.COL_CREATED_AT + " TEXT DEFAULT (DATETIME('NOW'))," +
-                Contract.Member.COL_UPDATED_AT + " TEXT DEFAULT (DATETIME('NOW'))" +
+                Contract.Member.COL_CREATED_AT + " TEXT DEFAULT CURRENT_TIMESTAMP," +
+                Contract.Member.COL_UPDATED_AT + " TEXT DEFAULT CURRENT_TIMESTAMP" +
             ")"
         );
         db.execSQL(
@@ -68,8 +68,8 @@ public class QattendDatabase extends SQLiteOpenHelper {
                 Contract.Membership.COL_APPLICANT_FROM + " TEXT NOT NULL," +
                 Contract.Membership.COL_APPLY_TO + " TEXT NOT NULL," +
                 Contract.Membership.COL_APPROVED + " INTEGER CHECK(" + Contract.Membership.COL_APPROVED + "=0 OR " + Contract.Membership.COL_APPROVED + "=1) DEFAULT 0," +
-                Contract.Membership.COL_CREATED_AT + " TEXT DEFAULT (DATETIME('NOW'))," +
-                Contract.Membership.COL_UPDATED_AT + " TEXT DEFAULT (DATETIME('NOW'))" +
+                Contract.Membership.COL_CREATED_AT + " TEXT DEFAULT CURRENT_TIMESTAMP," +
+                Contract.Membership.COL_UPDATED_AT + " TEXT DEFAULT CURRENT_TIMESTAMP" +
             ")"
         );
         db.execSQL(
@@ -79,8 +79,8 @@ public class QattendDatabase extends SQLiteOpenHelper {
                     Contract.Ticket.COL_PARTICIPANT + " TEXT NOT NULL," +
                     Contract.Ticket.COL_PARTICIPATE_TO + " TEXT NOT NULL," +
                     Contract.Ticket.COL_VERIFIED + " INTEGER CHECK(" + Contract.Ticket.COL_VERIFIED + "=0 OR " + Contract.Ticket.COL_VERIFIED + "=1) DEFAULT 0," +
-                    Contract.Ticket.COL_CREATED_AT + " TEXT DEFAULT (DATETIME('NOW'))," +
-                    Contract.Ticket.COL_UPDATED_AT + " TEXT DEFAULT (DATETIME('NOW'))" +
+                    Contract.Ticket.COL_CREATED_AT + " TEXT DEFAULT CURRENT_TIMESTAMP," +
+                    Contract.Ticket.COL_UPDATED_AT + " TEXT DEFAULT CURRENT_TIMESTAMP" +
                 ")"
         );
     }

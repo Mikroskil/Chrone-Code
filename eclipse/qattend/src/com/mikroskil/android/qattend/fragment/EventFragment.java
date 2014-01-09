@@ -115,18 +115,18 @@ public class EventFragment extends ListFragment
         String selection = null;
 
         if (mPos == 1) {
-            selection = String.format("%s=? AND DATETIME('NOW') BETWEEN %s AND %s",
+            selection = String.format("%s=? AND CURRENT_TIMESTAMP BETWEEN %s AND %s",
                     Contract.Event.COL_HOST_BY,
                     Contract.Event.COL_START_DATE,
                     Contract.Event.COL_END_DATE);
         }
         else if (mPos == 2) {
-            selection = String.format("%s=? AND DATETIME('NOW') < %s",
+            selection = String.format("%s=? AND CURRENT_TIMESTAMP < %s",
                     Contract.Event.COL_HOST_BY,
                     Contract.Event.COL_START_DATE);
         }
         else if (mPos == 3) {
-            selection = String.format("%s=? AND DATETIME('NOW') > %s",
+            selection = String.format("%s=? AND CURRENT_TIMESTAMP > %s",
                     Contract.Event.COL_HOST_BY,
                     Contract.Event.COL_END_DATE);
         }
