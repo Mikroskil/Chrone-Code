@@ -22,5 +22,8 @@
     <string name="prompt_desc">Description (optional)</string>
     <string name="prompt_privacy">Is public?</string>
     <string name="show_tickets">Show Attendees</string>
+    <string name="all_tickets">All Tickets</string>
+    <string name="verified_tickets">Verified Tickets</string>
+    <string name="unverified_tickets">Unverified Tickets</string>
 
 </resources>
