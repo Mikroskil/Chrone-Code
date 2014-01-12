@@ -25,16 +25,25 @@ import com.mikroskil.android.qattend.db.Contract;
 public class MemberFragment extends ListFragment
     implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private static final String ARG_SECTION_NUMBER = "section_number";
     private SimpleCursorAdapter mAdapter;
     private Activity mContext;
     private int mPos;
 
     public MemberFragment() {}
 
+    public static MemberFragment newInstance(int pos) {
+        Bundle args = new Bundle();
+        args.putInt(ARG_SECTION_NUMBER, pos);
+        MemberFragment f = new MemberFragment();
+        f.setArguments(args);
+        return f;
+    }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mPos = getArguments().getInt(MainActivity.ARG_SECTION_NUMBER);
+        mPos = getArguments().getInt(ARG_SECTION_NUMBER);
         mContext = activity;
         ((MainActivity) activity).onSectionAttached(mPos);
     }

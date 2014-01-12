@@ -28,9 +28,9 @@ public class TicketFragment extends ListFragment
 
     public TicketFragment() {}
 
-    public static TicketFragment newInstance(int sectionNumber, String eventId) {
+    public static TicketFragment newInstance(int pos, String eventId) {
         Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        args.putInt(ARG_SECTION_NUMBER, pos);
         args.putString(ARG_EVENT_ID, eventId);
         TicketFragment f = new TicketFragment();
         f.setArguments(args);

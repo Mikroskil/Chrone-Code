@@ -24,7 +24,6 @@ import com.mikroskil.android.qattend.fragment.ProfileFragment;
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
-    public static final String ARG_SECTION_NUMBER = "sectionNumber";
     public static final String KEY_ORG_POS = "organizationPosition";
     public static final String EVENT_MODE = "event_mode";
 
@@ -67,31 +66,18 @@ public class MainActivity extends Activity
     }
 
     @Override
-    public void onNavigationDrawerItemSelected(int position) {
-        mPos = position;
+    public void onNavigationDrawerItemSelected(int pos) {
+        mPos = pos;
 
-        // update the main content by replacing fragments
-        if (position == 0) {
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, position);
-            ProfileFragment fragment = new ProfileFragment();
-            fragment.setArguments(args);
-            getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
-        }
-        else if (position >= 1 && position <= 3) {
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, position);
-            EventFragment fragment = new EventFragment();
-            fragment.setArguments(args);
-            getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
-        }
-        else if (position >= 4 && position <= 5) {
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, position);
-            MemberFragment fragment = new MemberFragment();
-            fragment.setArguments(args);
-            getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
-        }
+        if (pos == 0)
+            getFragmentManager().beginTransaction()
+                .replace(R.id.container, ProfileFragment.newInstance(pos)).commit();
+        else if (pos >= 1 && pos <= 3)
+            getFragmentManager().beginTransaction()
+                .replace(R.id.container, EventFragment.newInstance(pos)).commit();
+        else if (pos >= 4 && pos <= 5)
+            getFragmentManager().beginTransaction()
+                .replace(R.id.container, MemberFragment.newInstance(pos)).commit();
     }
 
     public void onSectionAttached(int number) {

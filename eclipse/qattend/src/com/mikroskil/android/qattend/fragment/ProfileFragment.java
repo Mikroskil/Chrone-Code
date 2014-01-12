@@ -29,17 +29,25 @@ import com.parse.ParseUser;
 public class ProfileFragment extends Fragment
     implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private static final String ARG_SECTION_NUMBER = "section_number";
     private SimpleCursorAdapter mAdapter;
-
     private Activity mContext;
 
     public ProfileFragment() {}
+
+    public static ProfileFragment newInstance(int pos) {
+        Bundle args = new Bundle();
+        args.putInt(ARG_SECTION_NUMBER, pos);
+        ProfileFragment f = new ProfileFragment();
+        f.setArguments(args);
+        return f;
+    }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mContext = activity;
-        ((MainActivity) activity).onSectionAttached(getArguments().getInt(MainActivity.ARG_SECTION_NUMBER));
+        ((MainActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
     @Override
