@@ -1,6 +1,7 @@
 package com.mikroskil.android.qattend;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -132,7 +133,39 @@ public class EventDetailActivity extends Activity {
     }
 
     private void verifyAttendee(Intent data) {
+        Uri uri = Uri.parse(Contract.Membership.CONTENT_URI + "/" + data.getStringExtra(ARG_QR_RAW));
+        Log.d(QattendApp.TAG, "rawCodeUri=" + uri);
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        if (cursor != null) {
+            if (cursor.moveToNext()) {
+                ContentValues values = new ContentValues();
+                values.put(Contract.Ticket.COL_VERIFIED, true);
 
+                int count = getContentResolver().update(Contract.Ticket.CONTENT_URI, values, Contract.Ticket.COL_PARTICIPANT + " = ?",
+                        new String[] { cursor.getString(cursor.getColumnIndexOrThrow(Contract.Membership.COL_APPLICANT_FROM)) });
+
+                if (count == 1) {
+                    // TODO: Remove these if sync already works
+                    Cursor c = getContentResolver().query(Contract.Ticket.CONTENT_URI,
+                            new String[] { Contract.Ticket.COL_OBJ_ID },
+                            Contract.Ticket.COL_PARTICIPANT + " = ?",
+                            new String[] { cursor.getString(cursor.getColumnIndexOrThrow(Contract.Membership.COL_APPLICANT_FROM)) },
+                            null);
+                    if (c != null && c.moveToFirst()) {
+                        ParseTicket ticket = ParseObject.createWithoutData(ParseTicket.class, c.getString(c.getColumnIndexOrThrow(Contract.Ticket.COL_OBJ_ID)));
+                        ticket.setVerified(true);
+                        ticket.saveEventually();
+                        c.close();
+                    }
+
+                    Toast.makeText(this, "Verified", Toast.LENGTH_LONG).show();
+                }
+                else Toast.makeText(this, "Unable to verify", Toast.LENGTH_LONG).show();
+            }
+            cursor.close();
+        } else {
+            Toast.makeText(this, "Your membership Id doesn't valid.", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void addAttendee(Intent data) {

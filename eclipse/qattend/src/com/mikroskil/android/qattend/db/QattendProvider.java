@@ -125,13 +125,17 @@ public class QattendProvider extends ContentProvider {
                         new String[] { uri.getLastPathSegment() });
                 break;
             case ROUTE_TICKETS:
-                cursor = db.rawQuery(String.format("SELECT T.%s, M.%s, M.%s FROM %s AS T INNER JOIN %s AS M ON T.%s = M.%s WHERE T.%s = ? ",
-                        Contract.Ticket._ID, Contract.Member.COL_NAME, Contract.Member.COL_USERNAME,
-                        Contract.Ticket.TABLE, Contract.Member.TABLE,
-                        Contract.Ticket.COL_PARTICIPANT, Contract.Member.COL_OBJ_ID,
-                        Contract.Ticket.COL_PARTICIPATE_TO) + selection +
-                        "ORDER BY T." + Contract.Ticket.COL_CREATED_AT + " DESC",
-                        selectionArgs);
+                if (projection != null)
+                    cursor = db.query(Contract.Ticket.TABLE, projection, selection, selectionArgs, null, null, sortOrder);
+                else {
+                    cursor = db.rawQuery(String.format("SELECT T.%s, M.%s, M.%s FROM %s AS T INNER JOIN %s AS M ON T.%s = M.%s WHERE T.%s = ? ",
+                            Contract.Ticket._ID, Contract.Member.COL_NAME, Contract.Member.COL_USERNAME,
+                            Contract.Ticket.TABLE, Contract.Member.TABLE,
+                            Contract.Ticket.COL_PARTICIPANT, Contract.Member.COL_OBJ_ID,
+                            Contract.Ticket.COL_PARTICIPATE_TO) + selection +
+                            "ORDER BY T." + Contract.Ticket.COL_CREATED_AT + " DESC",
+                            selectionArgs);
+                }
                 break;
             case ROUTE_TICKETS_ID:
                 throw new UnsupportedOperationException(uri.toString());
@@ -198,6 +202,9 @@ public class QattendProvider extends ContentProvider {
                         Contract.Event.TABLE, Contract.Event.COL_TICKET_COUNT,
                         Contract.Event.COL_OBJ_ID),
                         new String[] { uri.getLastPathSegment() }).getCount();
+                break;
+            case ROUTE_TICKETS:
+                count = db.update(Contract.Ticket.TABLE, values, whereClause, whereArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);

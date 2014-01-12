@@ -44,6 +44,11 @@ public class TicketFragment extends ListFragment
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_ticket, container, false);
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
@@ -58,11 +63,6 @@ public class TicketFragment extends ListFragment
 
         Log.d(QattendApp.TAG, "init ticket loader");
         getLoaderManager().initLoader(0, getArguments(), this);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_ticket, container, false);
     }
 
     @Override
