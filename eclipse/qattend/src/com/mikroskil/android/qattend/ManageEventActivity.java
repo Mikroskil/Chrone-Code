@@ -50,6 +50,7 @@ public class ManageEventActivity extends Activity {
     protected SimpleDateFormat mTimeFormat = new SimpleDateFormat(Contract.TIME_FORMAT);
     protected SimpleDateFormat mDateTimeFormat = new SimpleDateFormat(Contract.DATE_TIME_FORMAT);
 
+    private Uri currentUri;
     private boolean isNew;
     private TextView mTitleView;
     private TextView mLocationView;
@@ -58,6 +59,7 @@ public class ManageEventActivity extends Activity {
 
     private String mTitle;
     private String mLocation;
+    private String mEventId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,8 +104,8 @@ public class ManageEventActivity extends Activity {
             mEndDateBtn.setText(mDateFormat.format(cal.getTime()));
             mEndTimeBtn.setText(mTimeFormat.format(cal.getTime()));
         } else {
-            Uri uri = Uri.parse(Contract.Event.CONTENT_URI + "/" + getIntent().getLongExtra(Contract.Event._ID, 0));
-            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            currentUri = Uri.parse(Contract.Event.CONTENT_URI + "/" + getIntent().getLongExtra(Contract.Event._ID, 0));
+            Cursor cursor = getContentResolver().query(currentUri, null, null, null, null);
             if (cursor != null) {
                 if (cursor.moveToNext()) {
                     ParseEvent.Event event = ParseEvent.fromCursor(cursor);
@@ -115,6 +117,7 @@ public class ManageEventActivity extends Activity {
                     mEndTimeBtn.setText(mTimeFormat.format(event.endDate));
                     mPrivacyView.setChecked(event.privacy);
                     mDescView.setText(event.desc);
+                    mEventId = event.objId;
                 }
                 cursor.close();
             }
@@ -203,13 +206,12 @@ public class ManageEventActivity extends Activity {
         }
 
         if (cancel) focusView.requestFocus();
-        else {
-            if (isNew) CreateEvent();
-            else EditEvent();
-        }
+        else if (isNew) createEvent();
+        else editEvent();
     }
 
-    private void CreateEvent() {
+    private void createEvent() {
+        // TODO remove this block if sync already works
         ParseEvent event = new ParseEvent();
         event.setTitle(mTitle);
         try {
@@ -225,11 +227,28 @@ public class ManageEventActivity extends Activity {
         ParseOrganization org = ParseObject.createWithoutData(ParseOrganization.class, NavigationDrawerFragment.getActiveOrgId());
         event.setHostBy(org);
         event.saveEventually();
+
         getContentResolver().insert(Contract.Event.CONTENT_URI, event.getContentValues());
+        finish();
     }
 
-    private void EditEvent() {
-        throw new UnsupportedOperationException();
+    private void editEvent() {
+        // TODO remove this block if sync already works
+        ParseEvent event = ParseObject.createWithoutData(ParseEvent.class, mEventId);
+        event.setTitle(mTitle);
+        try {
+            event.setStartDate(mDateTimeFormat.parse(mStartDateBtn.getText() + " " + mStartTimeBtn.getText() + ":00"));
+            event.setEndDate(mDateTimeFormat.parse(mEndDateBtn.getText() + " " + mEndTimeBtn.getText() + ":00"));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        event.setLocation(mLocation);
+        event.setDesc(mDescView.getText().toString().trim());
+        event.setPrivacy(mPrivacyView.isChecked());
+        event.saveEventually();
+
+        getContentResolver().update(currentUri, event.getContentValues(), null, null);
+        finish();
     }
 
     public static class DatePickerFragment extends DialogFragment

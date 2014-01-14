@@ -145,7 +145,7 @@ public class EventDetailActivity extends Activity {
                         new String[] { cursor.getString(cursor.getColumnIndexOrThrow(Contract.Membership.COL_APPLICANT_FROM)) });
 
                 if (count == 1) {
-                    // TODO: Remove these if sync already works
+                    // TODO remove this block if sync already works
                     Cursor c = getContentResolver().query(Contract.Ticket.CONTENT_URI,
                             new String[] { Contract.Ticket.COL_OBJ_ID },
                             Contract.Ticket.COL_PARTICIPANT + " = ?",

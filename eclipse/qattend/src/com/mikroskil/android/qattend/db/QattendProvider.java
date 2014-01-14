@@ -198,10 +198,15 @@ public class QattendProvider extends ContentProvider {
 
         switch (uriMatch) {
             case ROUTE_EVENTS_ID:
-                count = db.rawQuery(String.format("UPDATE %s SET %2$s = %s + 1 WHERE %3$s = ?",
-                        Contract.Event.TABLE, Contract.Event.COL_TICKET_COUNT,
-                        Contract.Event.COL_OBJ_ID),
-                        new String[] { uri.getLastPathSegment() }).getCount();
+                if (values != null) {
+                    count = db.update(Contract.Event.TABLE, values, Contract.Event._ID + " = ?",
+                            new String[] { uri.getLastPathSegment() });
+                } else {
+                    count = db.rawQuery(String.format("UPDATE %s SET %2$s = %s + 1 WHERE %3$s = ?",
+                            Contract.Event.TABLE, Contract.Event.COL_TICKET_COUNT,
+                            Contract.Event.COL_OBJ_ID),
+                            new String[] { uri.getLastPathSegment() }).getCount();
+                }
                 break;
             case ROUTE_TICKETS:
                 count = db.update(Contract.Ticket.TABLE, values, whereClause, whereArgs);

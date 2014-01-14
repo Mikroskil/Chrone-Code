@@ -67,7 +67,13 @@ public class ParseEvent extends ParseObject {
     }
 
     public String getHostBy() {
-        return getParseObject(Contract.Event.COL_HOST_BY).getObjectId();
+        String hostBy = null;
+        try {
+            hostBy = getParseObject(Contract.Event.COL_HOST_BY).getObjectId();
+        } catch (Exception e) {
+            Log.w(QattendApp.TAG, e.getMessage());
+        }
+        return hostBy;
     }
 
     public void setHostBy(ParseOrganization org) {
@@ -75,7 +81,13 @@ public class ParseEvent extends ParseObject {
     }
 
     public int getTicketCount() {
-        return getInt(Contract.Event.COL_TICKET_COUNT);
+        int count = -1;
+        try {
+            count = getInt(Contract.Event.COL_TICKET_COUNT);
+        } catch (Exception e) {
+            Log.w(QattendApp.TAG, e.getMessage());
+        }
+        return count;
     }
 
     public void initTicketCount() {
@@ -96,8 +108,8 @@ public class ParseEvent extends ParseObject {
         values.put(Contract.Event.COL_LOCATION, getLocation());
         values.put(Contract.Event.COL_DESC, getDesc());
         values.put(Contract.Event.COL_PRIVACY, getPrivacy());
-        values.put(Contract.Event.COL_HOST_BY, getHostBy());
-        values.put(Contract.Event.COL_TICKET_COUNT, getTicketCount());
+        if (getHostBy() != null) values.put(Contract.Event.COL_HOST_BY, getHostBy());
+        if (getTicketCount() != -1) values.put(Contract.Event.COL_TICKET_COUNT, getTicketCount());
         if (getCreatedAt() != null) values.put(Contract.Event.COL_CREATED_AT, formatter.format(getCreatedAt()));
         if (getUpdatedAt() != null) values.put(Contract.Event.COL_UPDATED_AT, formatter.format(getUpdatedAt()));
         return values;
