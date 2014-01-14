@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              android:minHeight="?android:listPreferredItemHeight"
+              android:divider="?android:dividerVertical"
+              android:dividerPadding="8dp"
+              android:showDividers="middle">
+
+    <LinearLayout
+        android:id="@+id/item"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingLeft="?android:listPreferredItemPaddingLeft"
+        android:paddingRight="?android:listPreferredItemPaddingRight"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:background="?android:selectableItemBackground">
+
+        <TextView
+            android:id="@android:id/text1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:layout_marginTop="8dip"/>
+
+        <TextView
+            android:id="@android:id/text2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/action"
+        style="?android:borderlessButtonStyle"
+        android:layout_width="@dimen/standard_touch_target_size"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_navigation_accept"
+        android:contentDescription="@string/action_approve_request" />
+
+</LinearLayout>

@@ -211,6 +211,9 @@ public class QattendProvider extends ContentProvider {
             case ROUTE_TICKETS:
                 count = db.update(Contract.Ticket.TABLE, values, whereClause, whereArgs);
                 break;
+            case ROUTE_MEMBERSHIPS:
+                count = db.update(Contract.Membership.TABLE, values, whereClause, whereArgs);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }

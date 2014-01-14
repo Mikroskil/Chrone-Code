@@ -25,5 +25,6 @@
     <string name="all_tickets">All Tickets</string>
     <string name="verified_tickets">Verified Tickets</string>
     <string name="unverified_tickets">Unverified Tickets</string>
+    <string name="action_approve_request">Approve Request</string>
 
 </resources>

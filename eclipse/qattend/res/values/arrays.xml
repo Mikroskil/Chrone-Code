@@ -6,8 +6,8 @@
         <item>Ongoing Events</item>
         <item>Upcoming Events</item>
         <item>Past Events</item>
-        <item>Active Members</item>
-        <item>User Request</item>
+        <item>Members</item>
+        <item>User Requests</item>
     </string-array>
 
     <string-array name="language_entries_preference">
