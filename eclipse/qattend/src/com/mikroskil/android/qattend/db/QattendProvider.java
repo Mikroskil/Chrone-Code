@@ -91,7 +91,7 @@ public class QattendProvider extends ContentProvider {
                         new String[] { uri.getLastPathSegment() });
                 break;
             case ROUTE_ORGS:
-                cursor = db.query(Contract.Organization.TABLE, projection, null, null, null, null, sortOrder);
+                cursor = db.query(Contract.Organization.TABLE, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             case ROUTE_EVENTS_ID:
                 cursor = db.rawQuery(String.format("SELECT * FROM %s WHERE %s=?",
@@ -117,7 +117,8 @@ public class QattendProvider extends ContentProvider {
                         selectionArgs);
                 break;
             case ROUTE_MEMBERSHIPS:
-                throw new UnsupportedOperationException(uri.toString());
+                cursor = db.query(Contract.Membership.TABLE, projection, selection, selectionArgs, null, null, sortOrder);
+                break;
             case ROUTE_MEMBERSHIPS_ID:
                 cursor = db.rawQuery(String.format("SELECT %s FROM %s WHERE %s = ?",
                         Contract.Membership.COL_APPLICANT_FROM, Contract.Membership.TABLE,
@@ -157,23 +158,23 @@ public class QattendProvider extends ContentProvider {
 
         switch (uriMatch) {
             case ROUTE_EVENTS:
-                id = db.insertOrThrow(Contract.Event.TABLE, null, values);
+                id = db.insertWithOnConflict(Contract.Event.TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
                 result = Uri.parse(Contract.Event.CONTENT_URI + "/" + id);
                 break;
             case ROUTE_ORGS:
-                id = db.insertOrThrow(Contract.Organization.TABLE, null, values);
+                id = db.insertWithOnConflict(Contract.Organization.TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
                 result = Uri.parse(Contract.Organization.CONTENT_URI + "/" + id);
                 break;
             case ROUTE_MEMBERS:
-                id = db.insertOrThrow(Contract.Member.TABLE, null, values);
+                id = db.insertWithOnConflict(Contract.Member.TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
                 result = Uri.parse(Contract.Member.CONTENT_URI + "/" + id);
                 break;
             case ROUTE_MEMBERSHIPS:
-                id = db.insertOrThrow(Contract.Membership.TABLE, null, values);
+                id = db.insertWithOnConflict(Contract.Membership.TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
                 result = Uri.parse(Contract.Membership.CONTENT_URI + "/" + id);
                 break;
             case ROUTE_TICKETS:
-                id = db.insertOrThrow(Contract.Ticket.TABLE, null, values);
+                id = db.insertWithOnConflict(Contract.Ticket.TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
                 result = Uri.parse(Contract.Ticket.CONTENT_URI + "/" + id);
                 break;
             default:
